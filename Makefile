@@ -1,6 +1,6 @@
 CXX      = g++
 CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic
-LDFLAGS  = -L /usr/local/lib -lsfml-system -lsfml-window
+LDFLAGS  = -L /usr/local/lib -L ./Libraries/SFML/lib -lsfml-system -lsfml-window
 
 SRCFILE = Sources
 INCFILE = Includes
