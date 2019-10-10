@@ -18,3 +18,24 @@ Projet_Moteur_de_jeu_Imagerie_3D_Sons_et_musique
 - github
 - modèle de phong
 - matrice MVA pour les objets  
+
+# PROG
+
+Voxel :
+- Position X,Y,Z
+- Couleur
+- Echelle
+
+
+VoxelSet :
+  - Ensemble De Voxel qui défini une entité
+
+Bloc :
+  - VoxelSet de 8x8x8 Voxel, Traite l'affiche
+
+Player :
+    - VoxelSet
+    - Caméra
+    - GUN
+
+    
