@@ -64,9 +64,9 @@ int main() {
     }
 
     VoxelWorld world{10, 10, 10};
-    VoxelSet firstSet{world, program, 1, {500}};
+    VoxelSet firstSet{world, program, 1, {200}};
 
-    world.setColor(3, glm::vec4{0.f, 1.f, 1.f, 1.f});
+    world.setColor(200, glm::vec4{0.f, 1.f, 1.f, 1.f});
 
 
 

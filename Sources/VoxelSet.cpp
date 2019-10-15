@@ -160,12 +160,13 @@ void VoxelSet::reshape(const float voxelDimension) {
 void VoxelSet::remakeGLShape() {
 
     glBindVertexArray(m_vao);
-
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(m_finalVertexArray), m_finalVertexArray.data(), GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
+    
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, sizeof(GLfloat)*7, reinterpret_cast<void*>(0));
+    glEnableVertexAttribArray(0);
     glBindAttribLocation(m_program, 0, "vertex");
 
    	glEnableVertexAttribArray(1);
@@ -176,12 +177,12 @@ void VoxelSet::remakeGLShape() {
 void VoxelSet::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
 
 	glUseProgram(m_program);
-    glBindVertexArray(m_vbo);
+    glBindVertexArray(m_vao);
 
     glm::mat4 mvp{m_modelMatrix};
     m_modelMatrix *= viewMatrix;
     m_modelMatrix *= projectionMatrix;
- 
     glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
+    
     glDrawArrays(GL_TRIANGLES, 0, 3); 
 }
