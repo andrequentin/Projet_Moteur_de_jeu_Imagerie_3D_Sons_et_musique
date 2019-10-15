@@ -1,6 +1,6 @@
 CXX      = g++
 CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic
-LDFLAGS  = -L ./Libraries/GLFW/ ./Libraries/GLEW/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl
+LDFLAGS  = -L ./Libraries/GLFW/ -L ./Libraries/GLEW/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl
 
 SRCFILE = Sources
 INCFILE = Includes
