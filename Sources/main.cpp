@@ -48,7 +48,7 @@ int main() {
 
     glfwPollEvents();
 
-    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 1.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
+    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 4.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f)};
 
     bool haveToStop{false};

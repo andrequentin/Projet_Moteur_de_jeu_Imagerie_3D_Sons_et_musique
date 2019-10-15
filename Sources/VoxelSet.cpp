@@ -10,6 +10,8 @@ VoxelSet::VoxelSet(VoxelWorld &voxelWorld,
 	m_program{shaderProgram},
 	m_MVPProgramLocation{glGetUniformLocation(m_program, "MVPMatrix")} { 
 
+	m_modelMatrix.identity();
+
 	glGenVertexArrays(1, &m_vao);
 	glGenBuffers(1, &m_vbo);
 
@@ -129,6 +131,11 @@ void VoxelSet::reshape(const float voxelDimension) {
 		m_vertexPosition[i*nbVectorPerVoxel + 35] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, -verticeSize};
 
 		m_vertexColor[i*6 + 5] = m_voxelWorld.getColor(m_voxelSet[i]);
+	}
+
+	for(size_t i {0}; i < m_vertexPosition.size(); i++) {
+
+		std::cout << m_vertexPosition[i][0] << " " << m_vertexPosition[i][1]  << " "  << m_vertexPosition[i][2] << std::endl;
 	}
 
 
