@@ -1,262 +1,93 @@
+#include <GL/glew.h>
 
-////////////////////////////////////////////////////////////
-// Headers
-////////////////////////////////////////////////////////////
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
+#include <GLFW/glfw3.h>
 
 #include <glm/vec3.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 
-#ifndef GL_SRGB8_ALPHA8
-#define GL_SRGB8_ALPHA8 0x8C43
-#endif
+#include "VoxelSet.hpp"
+#include "VoxelWorld.hpp"
+#include "LoadProgram.hpp"
 
+int main() {
 
-////////////////////////////////////////////////////////////
-/// Entry point of application
-///
-/// \return Application exit code
-///
-////////////////////////////////////////////////////////////
-int main()
-{
-    bool exit = false;
-    bool sRgb = false;
+    glfwInit();
 
-    glm::vec3 test{1.0, 2.0, 3.0};
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
-    while (!exit)
-    {
-        // Request a 24-bits depth buffer when creating the window
-        sf::ContextSettings contextSettings;
-        contextSettings.depthBits = 24;
-        contextSettings.sRgbCapable = sRgb;
+    // Open a window and create its OpenGL context
+    GLFWwindow* window{glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL)};
 
-        // Create the main window
-        sf::RenderWindow window(sf::VideoMode(800, 600), "SFML graphics with OpenGL", sf::Style::Default, contextSettings);
-        window.setVerticalSyncEnabled(true);
+    if(window == nullptr){
 
-        // Create a sprite for the background
-        sf::Texture backgroundTexture;
-        backgroundTexture.setSrgb(sRgb);
-        if (!backgroundTexture.loadFromFile("resources/background.jpg"))
-            return EXIT_FAILURE;
-        sf::Sprite background(backgroundTexture);
-
-        // Create some text to draw on top of our OpenGL object
-        sf::Font font;
-        if (!font.loadFromFile("resources/sansation.ttf"))
-            return EXIT_FAILURE;
-        sf::Text text("SFML / OpenGL demo", font);
-        sf::Text sRgbInstructions("Press space to toggle sRGB conversion", font);
-        sf::Text mipmapInstructions("Press return to toggle mipmapping", font);
-        text.setFillColor(sf::Color(255, 255, 255, 170));
-        sRgbInstructions.setFillColor(sf::Color(255, 255, 255, 170));
-        mipmapInstructions.setFillColor(sf::Color(255, 255, 255, 170));
-        text.setPosition(250.f, 450.f);
-        sRgbInstructions.setPosition(150.f, 500.f);
-        mipmapInstructions.setPosition(180.f, 550.f);
-
-        // Load a texture to apply to our 3D cube
-        sf::Texture texture;
-        if (!texture.loadFromFile("resources/texture.jpg"))
-            return EXIT_FAILURE;
-
-        // Attempt to generate a mipmap for our cube texture
-        // We don't check the return value here since
-        // mipmapping is purely optional in this example
-        texture.generateMipmap();
-
-        // Make the window the active window for OpenGL calls
-        window.setActive(true);
-
-        // Enable Z-buffer read and write
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        glClearDepth(1.f);
-
-        // Disable lighting
-        glDisable(GL_LIGHTING);
-
-        // Configure the viewport (the same size as the window)
-        glViewport(0, 0, window.getSize().x, window.getSize().y);
-
-        // Setup a perspective projection
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        GLfloat ratio = static_cast<float>(window.getSize().x) / window.getSize().y;
-        glFrustum(-ratio, ratio, -1.f, 1.f, 1.f, 500.f);
-
-        // Bind the texture
-        glEnable(GL_TEXTURE_2D);
-        sf::Texture::bind(&texture);
-
-        // Define a 3D cube (6 faces made of 2 triangles composed by 3 vertices)
-        static const GLfloat cube[] =
-        {
-            // positions    // texture coordinates
-            -20, -20, -20,  0, 0,
-            -20,  20, -20,  1, 0,
-            -20, -20,  20,  0, 1,
-            -20, -20,  20,  0, 1,
-            -20,  20, -20,  1, 0,
-            -20,  20,  20,  1, 1,
-
-             20, -20, -20,  0, 0,
-             20,  20, -20,  1, 0,
-             20, -20,  20,  0, 1,
-             20, -20,  20,  0, 1,
-             20,  20, -20,  1, 0,
-             20,  20,  20,  1, 1,
-
-            -20, -20, -20,  0, 0,
-             20, -20, -20,  1, 0,
-            -20, -20,  20,  0, 1,
-            -20, -20,  20,  0, 1,
-             20, -20, -20,  1, 0,
-             20, -20,  20,  1, 1,
-
-            -20,  20, -20,  0, 0,
-             20,  20, -20,  1, 0,
-            -20,  20,  20,  0, 1,
-            -20,  20,  20,  0, 1,
-             20,  20, -20,  1, 0,
-             20,  20,  20,  1, 1,
-
-            -20, -20, -20,  0, 0,
-             20, -20, -20,  1, 0,
-            -20,  20, -20,  0, 1,
-            -20,  20, -20,  0, 1,
-             20, -20, -20,  1, 0,
-             20,  20, -20,  1, 1,
-
-            -20, -20,  20,  0, 0,
-             20, -20,  20,  1, 0,
-            -20,  20,  20,  0, 1,
-            -20,  20,  20,  0, 1,
-             20, -20,  20,  1, 0,
-             20,  20,  20,  1, 1
-        };
-
-        // Enable position and texture coordinates vertex components
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 5 * sizeof(GLfloat), cube);
-        glTexCoordPointer(2, GL_FLOAT, 5 * sizeof(GLfloat), cube + 3);
-
-        // Disable normal and color vertex components
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_COLOR_ARRAY);
-
-        // Make the window no longer the active window for OpenGL calls
-        window.setActive(false);
-
-        // Create a clock for measuring the time elapsed
-        sf::Clock clock;
-
-        // Flag to track whether mipmapping is currently enabled
-        bool mipmapEnabled = true;
-
-        // Start game loop
-        while (window.isOpen())
-        {
-            // Process events
-            sf::Event event;
-            while (window.pollEvent(event))
-            {
-                // Close window: exit
-                if (event.type == sf::Event::Closed)
-                {
-                    exit = true;
-                    window.close();
-                }
-
-                // Escape key: exit
-                if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
-                {
-                    exit = true;
-                    window.close();
-                }
-
-                // Return key: toggle mipmapping
-                if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Enter))
-                {
-                    if (mipmapEnabled)
-                    {
-                        // We simply reload the texture to disable mipmapping
-                        if (!texture.loadFromFile("resources/texture.jpg"))
-                            return EXIT_FAILURE;
-
-                        mipmapEnabled = false;
-                    }
-                    else
-                    {
-                        texture.generateMipmap();
-
-                        mipmapEnabled = true;
-                    }
-                }
-
-                // Space key: toggle sRGB conversion
-                if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Space))
-                {
-                    sRgb = !sRgb;
-                    window.close();
-                }
-
-                // Adjust the viewport when the window is resized
-                if (event.type == sf::Event::Resized)
-                {
-                    // Make the window the active window for OpenGL calls
-                    window.setActive(true);
-
-                    glViewport(0, 0, event.size.width, event.size.height);
-
-                    // Make the window no longer the active window for OpenGL calls
-                    window.setActive(false);
-                }
-            }
-
-            // Draw the background
-            window.pushGLStates();
-            window.draw(background);
-            window.popGLStates();
-
-            // Make the window the active window for OpenGL calls
-            window.setActive(true);
-
-            // Clear the depth buffer
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            // We get the position of the mouse cursor, so that we can move the box accordingly
-            float x =  sf::Mouse::getPosition(window).x * 200.f / window.getSize().x - 100.f;
-            float y = -sf::Mouse::getPosition(window).y * 200.f / window.getSize().y + 100.f;
-
-            // Apply some transformations
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            glTranslatef(x, y, -100.f);
-            glRotatef(clock.getElapsedTime().asSeconds() * 50.f, 1.f, 0.f, 0.f);
-            glRotatef(clock.getElapsedTime().asSeconds() * 30.f, 0.f, 1.f, 0.f);
-            glRotatef(clock.getElapsedTime().asSeconds() * 90.f, 0.f, 0.f, 1.f);
-
-            // Draw the cube
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
-            // Make the window no longer the active window for OpenGL calls
-            window.setActive(false);
-
-            // Draw some text on top of our OpenGL object
-            window.pushGLStates();
-            window.draw(text);
-            window.draw(sRgbInstructions);
-            window.draw(mipmapInstructions);
-            window.popGLStates();
-
-            // Finally, display the rendered frame on screen
-            window.display();
-        }
+        std::cout << "Can't create a window, glfw error." << std::endl;
+        const char* errorMessage;
+        int code = glfwGetError(&errorMessage);
+        std::cout << "GLFW error " << code << ": " << errorMessage << std::endl;
+        glfwTerminate();
+        return -1;
     }
 
-    return EXIT_SUCCESS;
+    glfwMakeContextCurrent(window);
+
+    // Initialize GLEW
+    glewExperimental = true; // Needed for core profile
+    if (glewInit() != GLEW_OK) {
+        std::cout << "Can't initialize GLEW." << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    // Ensure we can capture the escape key being pressed below
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+    glfwPollEvents();
+
+    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 1.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f)};
+
+    bool haveToStop{false};
+
+    GLuint program{0};
+    if(!createProgram(program, "Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag")) { 
+
+        std::cout << "Error with shaders load." << std::endl;
+        return -1; 
+    }
+
+    VoxelWorld world{10, 10, 10};
+    VoxelSet firstSet{world, program, 1, {3}};
+
+    world.setColor(3, glm::vec4{0.f, 1.f, 1.f, 1.f});
+
+    while (!haveToStop) {
+
+        //Event
+       
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
+
+
+        //Update
+
+
+        //Draw
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.f);
+
+        firstSet.draw(view, projection);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    } 
+
+    glDeleteProgram(program);
+    glfwTerminate();
+
+    return 0;
 }
