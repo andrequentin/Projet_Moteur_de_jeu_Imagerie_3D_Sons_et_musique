@@ -30,7 +30,7 @@ void VoxelSet::addVoxel(const unsigned int voxelID) { m_voxelSet.emplace_back(vo
 void VoxelSet::reshape(const float voxelDimension) {
 
 	const float verticeSize{voxelDimension/2.f};
-	const unsigned int nbVectorPerVoxel{6*2*3}, nbVectorPerFace{6};
+	const unsigned int nbVectorPerVoxel{6*2*3};
 
 	/*
 		6 faces
@@ -39,38 +39,38 @@ void VoxelSet::reshape(const float voxelDimension) {
 		3 coordinate per vertice
 	*/
 
-	m_vertexPosition.resize(3);
 
 	/* 
 		6 faces
 		1 color per face
 		4 coordinate per color
 	*/
-	m_vertexColor.resize(m_voxelSet.size()*6);
 
-	//m_finalVertexArray.resize(m_vertexPosition.size()*3 + m_vertexColor.size()*4);
+	m_vertexPosition.resize(nbVectorPerVoxel*m_voxelSet.size());
+	m_vertexColor.resize(6*m_voxelSet.size());
 
-	m_finalVertexArray.resize(m_vertexPosition.size()*3);
+	m_finalVertexArray.resize(m_vertexPosition.size()*(3+4)); //3 for vertex, 4 for color
 
 	glm::vec3 currentCenterPosition;
+	glm::vec4 currentColor;
 
-	for(size_t i {0}; i < 1; i++) {
+	for(size_t i {0}; i < m_voxelSet.size(); i++) {
 
 		currentCenterPosition = m_voxelWorld.getVoxelPosition(m_voxelSet[i])*voxelDimension;
+		currentColor = m_voxelWorld.getColor(m_voxelSet[i]);
 
 		//Face 1
 
-		m_vertexPosition[i*nbVectorPerVoxel] = glm::vec3{-1, -1, 0};
-		m_vertexPosition[i*nbVectorPerVoxel + 1] = glm::vec3{0, 1, 0};
-		m_vertexPosition[i*nbVectorPerVoxel + 2] = glm::vec3{1, -1, 0};
+		m_vertexPosition[i*nbVectorPerVoxel] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, verticeSize};
+		m_vertexPosition[i*nbVectorPerVoxel + 1] = currentCenterPosition + glm::vec3{-verticeSize, -verticeSize, verticeSize};
+		m_vertexPosition[i*nbVectorPerVoxel + 2] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, verticeSize};
 
-		/*m_vertexPosition[i*nbVectorPerVoxel + 3] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, verticeSize};
+		m_vertexPosition[i*nbVectorPerVoxel + 3] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 4] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 5] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, verticeSize};
 
-		m_vertexColor[i*6] = m_voxelWorld.getColor(m_voxelSet[i]);
+		m_vertexColor[i*6] = currentColor;
 
-		/*
 		//Face 2
 
 		m_vertexPosition[i*nbVectorPerVoxel + 6] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, verticeSize};
@@ -81,7 +81,7 @@ void VoxelSet::reshape(const float voxelDimension) {
 		m_vertexPosition[i*nbVectorPerVoxel + 10] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, -verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 11] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, -verticeSize};
 
-		m_vertexColor[i*6 + 1] = m_voxelWorld.getColor(m_voxelSet[i]);
+		m_vertexColor[i*6 + 1] = currentColor;
 
 
 		//Face 3
@@ -94,7 +94,7 @@ void VoxelSet::reshape(const float voxelDimension) {
 		m_vertexPosition[i*nbVectorPerVoxel + 16] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, -verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 17] = currentCenterPosition + glm::vec3{-verticeSize, -verticeSize, -verticeSize};
 
-		m_vertexColor[i*6 + 2] = m_voxelWorld.getColor(m_voxelSet[i]);
+		m_vertexColor[i*6 + 2] = currentColor;
 
 
 		//Face 4
@@ -105,15 +105,13 @@ void VoxelSet::reshape(const float voxelDimension) {
 
 		m_vertexPosition[i*nbVectorPerVoxel + 21] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, -verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 22] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, verticeSize};
-		m_vertexPosition[i*nbVectorPerVoxel + 23] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, -verticeSize};
+		m_vertexPosition[i*nbVectorPerVoxel + 23] = currentCenterPosition + glm::vec3{-verticeSize, -verticeSize, verticeSize};
 
-		m_vertexColor[i*6 + 3] = m_voxelWorld.getColor(m_voxelSet[i]);
-
-	*/
+		m_vertexColor[i*6 + 3] = currentColor;
 
 		//Face 5
 
-		/*m_vertexPosition[i*nbVectorPerVoxel + 24] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, -verticeSize};
+		m_vertexPosition[i*nbVectorPerVoxel + 24] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, -verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 25] = currentCenterPosition + glm::vec3{-verticeSize, verticeSize, verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 26] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, verticeSize};
 
@@ -121,7 +119,7 @@ void VoxelSet::reshape(const float voxelDimension) {
 		m_vertexPosition[i*nbVectorPerVoxel + 28] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, -verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 29] = currentCenterPosition + glm::vec3{verticeSize, verticeSize, verticeSize};
 
-		m_vertexColor[i*6 + 4] = m_voxelWorld.getColor(m_voxelSet[i]);
+		m_vertexColor[i*6 + 4] = currentColor;
 
 
 		//Face 6
@@ -134,28 +132,20 @@ void VoxelSet::reshape(const float voxelDimension) {
 		m_vertexPosition[i*nbVectorPerVoxel + 34] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, verticeSize};
 		m_vertexPosition[i*nbVectorPerVoxel + 35] = currentCenterPosition + glm::vec3{verticeSize, -verticeSize, -verticeSize};
 
-		m_vertexColor[i*6 + 5] = m_voxelWorld.getColor(m_voxelSet[i]);*/
+		m_vertexColor[i*6 + 5] = currentColor;
 	}
 
 
 	for(size_t i {0}; i < m_vertexPosition.size(); i++) {
 
-		m_finalVertexArray[i*3] = m_vertexPosition[i][0];
-		m_finalVertexArray[i*3 + 1] = m_vertexPosition[i][1];
-		m_finalVertexArray[i*3 + 2] = m_vertexPosition[i][2];
+		m_finalVertexArray[i*7] = m_vertexPosition[i][0];
+		m_finalVertexArray[i*7 + 1] = m_vertexPosition[i][1];
+		m_finalVertexArray[i*7 + 2] = m_vertexPosition[i][2];
 
-		// 1 color per face -> 1 color = 6 vertex 
-
-		//m_finalVertexArray.emplace_back(m_vertexColor[i/6][0]);
-		//m_finalVertexArray.emplace_back(m_vertexColor[i/6][1]);
-		//m_finalVertexArray.emplace_back(m_vertexColor[i/6][2]);
-		//m_finalVertexArray.emplace_back(m_vertexColor[i/6][3]);
-	}
-
-
-	for(size_t i {0}; i < m_finalVertexArray.size(); i++) {
-
-		std::cout << m_finalVertexArray[i] << std::endl;
+		m_finalVertexArray[i*7 + 3] = m_vertexColor[i/6][0];
+		m_finalVertexArray[i*7 + 4] = m_vertexColor[i/6][1];
+		m_finalVertexArray[i*7 + 5] = m_vertexColor[i/6][2];
+		m_finalVertexArray[i*7 + 6] = m_vertexColor[i/6][3];
 	}
 
 	remakeGLShape();
@@ -166,16 +156,16 @@ void VoxelSet::remakeGLShape() {
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(m_finalVertexArray), m_finalVertexArray.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_finalVertexArray.size()*sizeof(GLfloat), m_finalVertexArray.data(), GL_STATIC_DRAW);
 
     
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, sizeof(GLfloat)*3, reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*7, reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
     glBindAttribLocation(m_program, 0, "vertex");
 
-   	//glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(GLfloat)*7, reinterpret_cast<void*>(3));
-    //glBindAttribLocation(m_program, 1, "color");
+   	glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*7, reinterpret_cast<void*>(sizeof(GLfloat)*3));
+    glBindAttribLocation(m_program, 1, "color");
 }
 
 void VoxelSet::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
@@ -184,9 +174,9 @@ void VoxelSet::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatr
     glBindVertexArray(m_vao);
 
     glm::mat4 mvp{m_modelMatrix};
-    m_modelMatrix *= viewMatrix;
-    m_modelMatrix *= projectionMatrix;
+    mvp *= viewMatrix;
+    //mvp *= projectionMatrix;
     glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
     
-    glDrawArrays(GL_TRIANGLES, 0, 9); 
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexPosition.size()); 
 }

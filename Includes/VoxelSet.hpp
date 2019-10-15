@@ -43,7 +43,7 @@ class VoxelSet {
         
         std::vector<glm::vec3> m_vertexPosition;
         std::vector<glm::vec4> m_vertexColor;
-        std::vector<float> m_finalVertexArray;        
+        std::vector<GLfloat> m_finalVertexArray;        
         
         glm::mat4 m_modelMatrix;
 };

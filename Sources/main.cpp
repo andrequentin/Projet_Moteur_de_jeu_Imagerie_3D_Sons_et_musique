@@ -5,6 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/transform.hpp> 
 
 #include "VoxelSet.hpp"
 #include "VoxelWorld.hpp"
@@ -21,7 +22,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
     // Open a window and create its OpenGL context
-    GLFWwindow* window{glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL)};
+    GLFWwindow* window{glfwCreateWindow( 800, 800, "C'est le projet de votre année", NULL, NULL)};
 
     if(window == nullptr){
 
@@ -43,16 +44,12 @@ int main() {
         return -1;
     }
 
-    
-    glClearColor(0.1f, 0.35f, 0.4f, 0.0f);
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-    glfwPollEvents();
-
-    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 5.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f)};
+    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 1.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 800.f, 0.1f, 100.0f)};
 
     bool haveToStop{false};
 
@@ -64,17 +61,25 @@ int main() {
     }
 
     VoxelWorld world{10, 10, 10};
-    VoxelSet firstSet{world, program, 1, {0}};
-
     world.setColor(0, glm::vec4{0.f, 1.f, 0.f, 1.f});
 
-    //Mettre les sommets dans un vertex buffer glBufferData()
+    VoxelSet firstSet{world, program, 1, {0}};
+
+    const float rotateSpeed{1.f};
 
     while (!haveToStop) {
 
         //Event
+
+        glfwPollEvents();
        
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
+
+        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
+
+        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
 
 
         //Update
@@ -83,12 +88,12 @@ int main() {
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.f);
+        glClearColor(0.1f, 0.35f, 0.4f, 0.0f);
 
         firstSet.draw(view, projection);
-
+        
         glfwSwapBuffers(window);
-        glfwPollEvents();
+
     } 
 
     glDeleteProgram(program);
