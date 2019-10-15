@@ -43,6 +43,9 @@ int main() {
         return -1;
     }
 
+    
+    glClearColor(0.1f, 0.35f, 0.4f, 0.0f);
+
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -61,9 +64,36 @@ int main() {
     }
 
     VoxelWorld world{10, 10, 10};
-    VoxelSet firstSet{world, program, 1, {3}};
+    VoxelSet firstSet{world, program, 1, {500}};
 
     world.setColor(3, glm::vec4{0.f, 1.f, 1.f, 1.f});
+
+
+
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    // Create and compile our GLSL program from the shaders
+    GLuint programID;
+    createProgram(programID, "vertex_shader.glsl", "fragment_shader.glsl");
+
+        static const GLfloat g_vertex_buffer_data[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        0.0f,  1.0f, 0.0f,
+    };
+
+
+    GLuint vertexBuffer;
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_TRUE, sizeof(GLfloat)*3, (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindAttribLocation(programID, 0, "vertex");
+
+    //Mettre les sommets dans un vertex buffer glBufferData()
 
     while (!haveToStop) {
 
@@ -81,6 +111,10 @@ int main() {
         glClearColor(0.0f, 0.0f, 0.0f, 0.f);
 
         firstSet.draw(view, projection);
+
+        /*glUseProgram(programID);
+        glBindVertexArray(VertexArrayID);
+        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle*/
 
         glfwSwapBuffers(window);
         glfwPollEvents();

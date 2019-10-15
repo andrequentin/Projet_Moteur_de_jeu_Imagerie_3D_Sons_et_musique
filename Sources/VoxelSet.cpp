@@ -8,9 +8,10 @@ VoxelSet::VoxelSet(VoxelWorld &voxelWorld,
 	m_voxelWorld{voxelWorld},
 	m_voxelSet{voxelSet},
 	m_program{shaderProgram},
-	m_MVPProgramLocation{glGetUniformLocation(m_program, "MVPMatrix")} { 
+	m_MVPProgramLocation{glGetUniformLocation(m_program, "MVPMatrix")},
+	m_modelMatrix{glm::mat4{1.f}} { 
 
-	m_modelMatrix.identity();
+	//m_modelMatrix.identity();
 
 	glGenVertexArrays(1, &m_vao);
 	glGenBuffers(1, &m_vbo);

@@ -9,6 +9,6 @@ out vec4 toFragColor;
 
 void main() {
 
-   gl_Position = MVPMatrix*vec4(vertex, 1.0);
+   gl_Position = vec4(vertex, 1.0);
    toFragColor = color;
 }
