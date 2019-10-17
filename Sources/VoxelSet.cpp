@@ -173,9 +173,12 @@ void VoxelSet::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatr
 	glUseProgram(m_program);
     glBindVertexArray(m_vao);
 
-    glm::mat4 mvp{m_modelMatrix};
+    /*glm::mat4 mvp{m_modelMatrix};
     mvp *= viewMatrix;
-    //mvp *= projectionMatrix;
+    mvp *= projectionMatrix;*/
+    glm::mat4 mvp{projectionMatrix};
+    mvp *= viewMatrix;
+    mvp *= m_modelMatrix;
     glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
     
     glDrawArrays(GL_TRIANGLES, 0, m_vertexPosition.size()); 

@@ -22,7 +22,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
     // Open a window and create its OpenGL context
-    GLFWwindow* window{glfwCreateWindow( 800, 800, "C'est le projet de votre année", NULL, NULL)};
+    GLFWwindow* window{glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL)};
 
     if(window == nullptr){
 
@@ -44,12 +44,11 @@ int main() {
         return -1;
     }
 
+    glEnable(GL_DEPTH_TEST);
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    // Ensure we can capture the escape key being pressed below
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 1.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 800.f, 0.1f, 100.0f)};
+    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 30.f)};
 
     bool haveToStop{false};
 
@@ -61,9 +60,18 @@ int main() {
     }
 
     VoxelWorld world{10, 10, 10};
-    world.setColor(0, glm::vec4{0.f, 1.f, 0.f, 1.f});
+    world.setColor(0, glm::vec4{1.f, 1.f, 1.f, 1.f});
+    world.setColor(1, glm::vec4{1.f, 0.5f, 0.5f, 1.f});
+    world.setColor(2, glm::vec4{1.f, 0.f, 0.f, 1.f});
+    world.setColor(10, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(11, glm::vec4{1.f, 1.f, 0.f, 1.f});
+    world.setColor(20, glm::vec4{0.f, 1.f, 0.f, 1.f});
+    world.setColor(100, glm::vec4{0.5f, 0.5f, 1.f, 1.f});
+    world.setColor(101, glm::vec4{1.f, 0.f, 1.f, 1.f});
+    world.setColor(110, glm::vec4{0.5f, 1.f, 1.f, 1.f});
+    world.setColor(200, glm::vec4{0.f, 0.f, 1.f, 1.f});
 
-    VoxelSet firstSet{world, program, 1, {0}};
+    VoxelSet firstSet{world, program, 1, {0, 1, 2, 10, 11, 20, 100, 101, 110, 200}};
 
     const float rotateSpeed{1.f};
 
