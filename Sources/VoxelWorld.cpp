@@ -7,7 +7,7 @@ VoxelWorld::VoxelWorld(const unsigned int x, const unsigned int y, const unsigne
 
 	for(glm::vec4 &currentVoxel: m_voxels) {
 
-		currentVoxel = glm::vec4 {0.f, 0.f, 0.f, 0.f};
+		currentVoxel = glm::vec4 {0.0f, 0.0f, 0.0f, 0.0f};
 	}
 }
 

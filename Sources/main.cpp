@@ -72,7 +72,14 @@ int main() {
     world.setColor(110, glm::vec4{0.5f, 1.f, 1.f, 1.f});
     world.setColor(200, glm::vec4{0.f, 0.f, 1.f, 1.f});
 
-    VoxelSet firstSet{world, program, 1, {0, 1, 2, 10, 11, 20, 100, 101, 110, 200, 222, 6, 7, 8, 9}};
+    std::vector<unsigned int> transparencyTest;
+
+    for(unsigned int i{0};i < 1000; i++) {
+
+        transparencyTest.emplace_back(i);
+    }
+
+    VoxelSet firstSet{world, program, 1, transparencyTest};
 
     const float rotateSpeed{1.f};
 
@@ -97,7 +104,7 @@ int main() {
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.1f, 0.35f, 0.4f, 0.0f);
+        glClearColor(0.1f, 0.45f, 0.55f, 1.0f);
 
         firstSet.draw(view, projection);
         
