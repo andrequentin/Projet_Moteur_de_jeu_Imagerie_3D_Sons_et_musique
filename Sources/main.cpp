@@ -45,7 +45,8 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 30.f)};
@@ -71,7 +72,7 @@ int main() {
     world.setColor(110, glm::vec4{0.5f, 1.f, 1.f, 1.f});
     world.setColor(200, glm::vec4{0.f, 0.f, 1.f, 1.f});
 
-    VoxelSet firstSet{world, program, 1, {0, 1, 2, 10, 11, 20, 100, 101, 110, 200}};
+    VoxelSet firstSet{world, program, 1, {0, 1, 2, 10, 11, 20, 100, 101, 110, 200, 222, 6, 7, 8, 9}};
 
     const float rotateSpeed{1.f};
 
