@@ -34,6 +34,10 @@ class VoxelSet {
 
 		void remakeGLShape();
 
+		std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations() const;
+		std::vector<std::pair<unsigned int, glm::vec3>> selectVisibleFaces(const std::vector<std::pair<unsigned int, glm::vec3>> &facesToSelect) const;
+		std::vector<glm::vec3> getFaceFromOrientation(const glm::vec3 &position, const glm::vec3 &orientation, const float voxelDimension) const;
+
 		VoxelWorld &m_voxelWorld;
 
 		std::vector<unsigned int> m_voxelSet;

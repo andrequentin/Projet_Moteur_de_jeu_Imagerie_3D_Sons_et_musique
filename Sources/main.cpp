@@ -47,6 +47,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
     glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 30.f)};
@@ -61,20 +62,20 @@ int main() {
     }
 
     VoxelWorld world{10, 10, 10};
-    world.setColor(0, glm::vec4{1.f, 1.f, 1.f, 1.f});
-    world.setColor(1, glm::vec4{1.f, 0.5f, 0.5f, 1.f});
-    world.setColor(2, glm::vec4{1.f, 0.f, 0.f, 1.f});
+    world.setColor(0, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(1, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(2, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
     world.setColor(10, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(11, glm::vec4{1.f, 1.f, 0.f, 1.f});
-    world.setColor(20, glm::vec4{0.f, 1.f, 0.f, 1.f});
-    world.setColor(100, glm::vec4{0.5f, 0.5f, 1.f, 1.f});
-    world.setColor(101, glm::vec4{1.f, 0.f, 1.f, 1.f});
-    world.setColor(110, glm::vec4{0.5f, 1.f, 1.f, 1.f});
-    world.setColor(200, glm::vec4{0.f, 0.f, 1.f, 1.f});
+    world.setColor(11, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(20, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(100, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(101, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
 
     std::vector<unsigned int> transparencyTest;
 
-    for(unsigned int i{0};i < 1000; i++) {
+    for(unsigned int i{0}; i < 1'000; i++) {
 
         transparencyTest.emplace_back(i);
     }

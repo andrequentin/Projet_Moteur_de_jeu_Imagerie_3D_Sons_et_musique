@@ -7,6 +7,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+//#define EmptyVoxel glm::vec4{0.f, 0.f, 0.f, 0.f}
+
 class VoxelWorld {
 
 	public:
