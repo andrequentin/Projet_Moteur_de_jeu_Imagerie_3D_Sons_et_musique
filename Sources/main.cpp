@@ -76,7 +76,7 @@ int main() {
     VoxelWorld world{20,20,20};
     glm::vec3 dimworld(world.getWoldDimensions());
 
-    world.perlinGen(4);
+    world.generationTerrain(4);
 
     std::vector<unsigned int> transparencyTest;
 

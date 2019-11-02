@@ -75,7 +75,7 @@ glm::vec3 VoxelWorld::getVoxelPosition(const unsigned int voxelID) const {
 
 glm::vec3 VoxelWorld::getWoldDimensions() const { return glm::vec3{m_sizeX, m_sizeY, m_sizeZ}; }
 
-void VoxelWorld::perlinGen( unsigned int interpolationFrequency){
+void VoxelWorld::generationTerrain( unsigned int interpolationFrequency){
 	// BRUIT ALÉATOIRE
 	std::vector<std::vector<unsigned int>> bruit;
 	bruit.resize(m_sizeX);
