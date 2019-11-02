@@ -1,6 +1,6 @@
 #include "VoxelWorld.hpp"
-#include <stdlib.h>
-#include <time.h>
+#include <ctime>
+#include <random>
 #include <iostream>
 VoxelWorld::VoxelWorld(const unsigned int x, const unsigned int y, const unsigned int z):
 	m_sizeX{x}, m_sizeY{y}, m_sizeZ{z} {
@@ -75,56 +75,59 @@ glm::vec3 VoxelWorld::getVoxelPosition(const unsigned int voxelID) const {
 
 glm::vec3 VoxelWorld::getWoldDimensions() const { return glm::vec3{m_sizeX, m_sizeY, m_sizeZ}; }
 
-void VoxelWorld::perlinGen( unsigned int frequenceInterpolation){
+void VoxelWorld::perlinGen( unsigned int interpolationFrequency){
 	// BRUIT ALÉATOIRE
 	std::vector<std::vector<unsigned int>> bruit;
 	bruit.resize(m_sizeX);
-	srand (time(NULL));
-
-	for(unsigned  i = 0;i < m_sizeX ;i++){
-		for(unsigned int j = 0;j < m_sizeY; j++){
-			bruit[i].push_back((unsigned int)rand()%(m_sizeZ/2)+1);
+	auto const seed = std::time(nullptr);
+  std::default_random_engine engin { seed };
+	for(unsigned  x{0};x < m_sizeX ;x++){
+		for(unsigned int y{0};y < m_sizeY; y++){
+			bruit[x].push_back(engin()%(m_sizeZ/interpolationFrequency)+1);
+			std::cout<<bruit[x][y]<<"\t";
 		}
+		std::cout<<std::endl;
 	}
 
-	if(m_sizeX % frequenceInterpolation != 0 || m_sizeY % frequenceInterpolation != 0){
-		throw std::runtime_error("Error : m_sizeX and m_sizeY must be multiples of frequenceInterpolation");
-		return;
+	if(m_sizeX % interpolationFrequency != 0 || m_sizeY % interpolationFrequency != 0){
+		throw std::runtime_error("Error : m_sizeX and m_sizeY must be multiples of interpolationFrequency");
 	}
 
 	//INTERPOLATION LINÉAIRE 2D
-	for(unsigned int f = 0;f < frequenceInterpolation;f++){
-		for(unsigned int g = 0;g < frequenceInterpolation;g++){
-			unsigned int l=(m_sizeX*f)/frequenceInterpolation;
-			unsigned int	m=(m_sizeX*(f+1))/frequenceInterpolation-1;
-			if(f>0)l--;
-			unsigned int	o=(m_sizeY*g)/frequenceInterpolation;
-			unsigned int	p=(m_sizeY*(g+1))/frequenceInterpolation-1;
-			if(g>0)o--;
-			int a=bruit[l][o],
-					b=bruit[l][p],
-					c=bruit[m][o],
-					d=bruit[m][p];
+	for(unsigned int f{0};f < interpolationFrequency;f++){
+		for(unsigned int g{0};g < interpolationFrequency;g++){
+			unsigned int minX{(m_sizeX*f)/interpolationFrequency};
+			unsigned int	maxX{(m_sizeX*(f+1))/interpolationFrequency-1};
+			if(f>0)minX--;
+			unsigned int	minY{(m_sizeY*g)/interpolationFrequency};
+			unsigned int	maxY{(m_sizeY*(g+1))/interpolationFrequency-1};
+			if(g>0)minY--;
+			double 	a (bruit[minX][minY]), // point d'interpolation 0-0
+							b (bruit[minX][maxY]), // point d'interpolation 0-1
+							c (bruit[maxX][minY]), // point d'interpolation 1-0
+							d (bruit[maxX][maxY]); // point d'interpolation 1-1
 
-			for(int i = l; i <= m; i++){
-				for(int j = o; j <= p; j++){
-					double 	u=((double)i-(double)l)/((double)m-(double)l),
-									v=((double)j-(double)o)/((double)p-(double)o);
-					double	ap=a*(1.0-u) + c*(u),
-									bp=b*(1.0-u) + d*(u);
-					bruit[i][j] = (unsigned int )(ap*(1.0-v) + bp*(v));
+			for(unsigned int i = minX; i <= maxX; i++){
+				for(unsigned int j = minY; j <= maxY; j++){
+					double 	u=static_cast<double>(i-minX)/static_cast<double>(maxX-minX), // distance entre a et la coordonées x du point courant
+									v=static_cast<double>(j-minY)/static_cast<double>(maxY-minY); // distance entre b et la coordonées y du point courant
+					double	ap (a*(1.0-u) + c*(u)), // ap = interpolation a-c distance u
+									bp (b*(1.0-u) + d*(u)); // bp = interpolation b-d distance u
+					bruit[i][j] = static_cast<unsigned int>(ap*(1.0-v) + bp*(v)); //interpolation ap-bp distance v
 				}
 			}
 		}
 	}
 	std::cout<<"--------------"<<std::endl;
 
-	for(unsigned int i = 0;i < m_sizeX ;i++){
-		for(unsigned int j = 0;j < m_sizeY; j++){
-			for(unsigned int k = 0;k<bruit[i][j];k++){
-				setColor(getVoxelID(i,j,k), glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+	for(unsigned int x{0};x < m_sizeX ;x++){
+		for(unsigned int y{0};y < m_sizeY; y++){
+			std::cout<<bruit[x][y]<<"\t";
+			for(unsigned int z{0};z<bruit[x][y];z++){
+				setColor(getVoxelID(x,y,z), glm::vec4{0.5f, 1.f, 0.5f, 1.f});
 			}
 		}
+		std::cout<<std::endl;
 	}
 	return;
 }

@@ -73,14 +73,14 @@ int main() {
     // world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
     // world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
 
-    VoxelWorld world{10,10,10};
+    VoxelWorld world{20,20,20};
+    glm::vec3 dimworld(world.getWoldDimensions());
 
-    world.perlinGen((unsigned int)2);
+    world.perlinGen(4);
 
     std::vector<unsigned int> transparencyTest;
 
-    for(unsigned int i{0}; i < 1'000; i++) {
-
+    for(unsigned int i{0}; i < dimworld[0]*dimworld[1]*dimworld[2]; i++) {
         transparencyTest.emplace_back(i);
     }
 

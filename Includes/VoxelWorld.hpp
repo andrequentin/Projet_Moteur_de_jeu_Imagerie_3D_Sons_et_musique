@@ -26,7 +26,7 @@ class VoxelWorld {
 
 		glm::vec3 getWoldDimensions() const;
 
-		void perlinGen( unsigned int );
+		void perlinGen( unsigned int interpolationFrequency);
 
 	private:
 
