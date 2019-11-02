@@ -5,7 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtx/transform.hpp> 
+#include <glm/gtx/transform.hpp>
 
 #include "VoxelSet.hpp"
 #include "VoxelWorld.hpp"
@@ -55,23 +55,27 @@ int main() {
     bool haveToStop{false};
 
     GLuint program{0};
-    if(!createProgram(program, "Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag")) { 
+    if(!createProgram(program, "Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag")) {
 
         std::cout << "Error with shaders load." << std::endl;
-        return -1; 
+        return -1;
     }
 
-    VoxelWorld world{10, 10, 10};
-    world.setColor(0, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(1, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(2, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(10, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(11, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(20, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(100, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(101, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // VoxelWorld world{10, 10, 10};
+    // world.setColor(0, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(1, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(2, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(10, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(11, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(20, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(100, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(101, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+    // world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+
+    VoxelWorld world{10,10,10};
+
+    world.perlinGen((unsigned int)2);
 
     std::vector<unsigned int> transparencyTest;
 
@@ -89,7 +93,7 @@ int main() {
         //Event
 
         glfwPollEvents();
-       
+
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
 
         if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
@@ -108,10 +112,10 @@ int main() {
         glClearColor(0.1f, 0.45f, 0.55f, 1.0f);
 
         firstSet.draw(view, projection);
-        
+
         glfwSwapBuffers(window);
 
-    } 
+    }
 
     glDeleteProgram(program);
     glfwTerminate();

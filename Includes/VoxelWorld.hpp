@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <stdexcept>
-
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -27,8 +26,10 @@ class VoxelWorld {
 
 		glm::vec3 getWoldDimensions() const;
 
+		void perlinGen( unsigned int );
+
 	private:
-		
+
 		std::vector<glm::vec4> m_voxels;
 
 		const unsigned int m_sizeX, m_sizeY, m_sizeZ;
