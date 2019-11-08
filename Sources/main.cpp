@@ -102,6 +102,11 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
 
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, -1.f}); }
+
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{-1.f, 0.f, 0.f}); }
 
         //Update
 
