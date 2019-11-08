@@ -84,9 +84,9 @@ void VoxelWorld::generationTerrain( unsigned int interpolationFrequency){
 	for(unsigned  x{0};x < m_sizeX ;x++){
 		for(unsigned int y{0};y < m_sizeY; y++){
 			bruit[x].push_back(engin()%(m_sizeZ/interpolationFrequency)+1);
-			std::cout<<bruit[x][y]<<"\t";
+			// std::cout<<bruit[x][y]<<"\t";
 		}
-		std::cout<<std::endl;
+		// std::cout<<std::endl;
 	}
 
 	if(m_sizeX % interpolationFrequency != 0 || m_sizeY % interpolationFrequency != 0){
@@ -118,16 +118,16 @@ void VoxelWorld::generationTerrain( unsigned int interpolationFrequency){
 			}
 		}
 	}
-	std::cout<<"--------------"<<std::endl;
+	// std::cout<<"--------------"<<std::endl;
 
 	for(unsigned int x{0};x < m_sizeX ;x++){
 		for(unsigned int y{0};y < m_sizeY; y++){
-			std::cout<<bruit[x][y]<<"\t";
+			// std::cout<<bruit[x][y]<<"\t";
 			for(unsigned int z{0};z<bruit[x][y];z++){
 				setColor(getVoxelID(x,y,z), glm::vec4{0.5f, 1.f, 0.5f, 1.f});
 			}
 		}
-		std::cout<<std::endl;
+		// std::cout<<std::endl;
 	}
 	return;
 }

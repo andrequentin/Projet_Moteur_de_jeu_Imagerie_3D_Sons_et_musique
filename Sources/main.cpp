@@ -73,10 +73,10 @@ int main() {
     // world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
     // world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
 
-    VoxelWorld world{20,20,20};
+    VoxelWorld world{100,100,40};
     glm::vec3 dimworld(world.getWoldDimensions());
 
-    world.generationTerrain(4);
+    world.generationTerrain(10);
 
     std::vector<unsigned int> transparencyTest;
 
@@ -102,11 +102,15 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, 1.f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, -1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{-1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, -0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.3f, 0.f}); }
+
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, 0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, -0.3f}); }
+
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{-0.3f, 0.f, 0.f}); }
 
         //Update
 
