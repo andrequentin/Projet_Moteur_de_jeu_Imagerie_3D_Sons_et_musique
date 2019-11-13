@@ -117,7 +117,7 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.3f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
 
-        cameraTest->updateTransformations();
+        cameraTranslations->updateTransformations();
 
         //Update
 
