@@ -10,6 +10,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 class SceneObject {
 
@@ -33,8 +35,9 @@ class SceneObject {
 
     protected:
 
-        glm::mat4 m_translationMatrix, m_rotationMatrix, m_scaleMatrix;
         glm::mat4 m_localTransformations, m_globalTransformations;
+        glm::mat4 m_translationMatrix, m_scaleMatrix;
+        glm::quat m_rotations;
 
         std::vector<std::shared_ptr<SceneObject>> m_childObjects;
 };

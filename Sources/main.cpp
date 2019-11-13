@@ -77,9 +77,12 @@ int main() {
     std::shared_ptr<Camera> camera{std::make_shared<Camera>()};
     camera->lookAt(glm::vec3{0.f, 0.f, 20.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f});
 
+    std::shared_ptr<SceneObject> cameraTranslations{std::make_shared<SceneObject>()};
+
     SceneObject sceneGraph;
+    cameraTranslations->addChild(camera);
     sceneGraph.addChild(firstSet);
-    sceneGraph.addChild(camera);
+    sceneGraph.addChild(cameraTranslations);
     sceneGraph.updateTransformations();
 
 
@@ -95,23 +98,26 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
 
-        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
-        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
 
         if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
 
+        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, -0.3f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.3f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.f, -0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, -0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.3f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { camera->translate(glm::vec3{0.3f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { camera->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.f, 0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.f, -0.3f}); }
 
-        camera->updateTransformations();
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
+
+        cameraTest->updateTransformations();
 
         //Update
 
