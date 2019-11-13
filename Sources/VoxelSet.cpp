@@ -273,18 +273,20 @@ std::vector<glm::vec3> VoxelSet::getFaceFromOrientation(const glm::vec3 &positio
 	return quad;
 }
 
-void VoxelSet::draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+void VoxelSet::draw(const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {
 
 	glUseProgram(m_program);
     glBindVertexArray(m_vao);
 
-    /*glm::mat4 mvp{m_modelMatrix};
-    mvp *= viewMatrix;
-    mvp *= projectionMatrix;*/
     glm::mat4 mvp{projectionMatrix};
     mvp *= viewMatrix;
     mvp *= m_modelMatrix;
     glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
     
-    glDrawArrays(GL_TRIANGLES, 0, m_vertexPosition.size()); 
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexPosition.size());
+
+    for(std::shared_ptr<SceneObject> currentChild: m_childObjects) {
+
+        currentChild->draw(viewMatrix, projectionMatrix);
+    }
 }

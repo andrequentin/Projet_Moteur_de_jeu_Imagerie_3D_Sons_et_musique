@@ -26,7 +26,7 @@ class VoxelWorld {
 
 		glm::vec3 getWoldDimensions() const;
 
-		void generationTerrain( unsigned int interpolationFrequency);
+		void generateWorld( unsigned int interpolationFrequency);
 
 	private:
 

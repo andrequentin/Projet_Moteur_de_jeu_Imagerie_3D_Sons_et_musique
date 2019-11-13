@@ -11,6 +11,9 @@
 #include "VoxelWorld.hpp"
 #include "LoadProgram.hpp"
 
+#include "SceneObject.hpp"
+#include "Camera.hpp"
+
 int main() {
 
     glfwInit();
@@ -49,9 +52,6 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    glm::mat4 view{glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f})};
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 30.f)};
-
     bool haveToStop{false};
 
     GLuint program{0};
@@ -61,22 +61,10 @@ int main() {
         return -1;
     }
 
-    // VoxelWorld world{10, 10, 10};
-    // world.setColor(0, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(1, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(2, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(10, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(11, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(20, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(100, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(101, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(110, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-    // world.setColor(200, glm::vec4{0.5f, 1.f, 0.5f, 1.f});
-
     VoxelWorld world{100,100,40};
     glm::vec3 dimworld(world.getWoldDimensions());
 
-    world.generationTerrain(10);
+    world.generateWorld(10);
 
     std::vector<unsigned int> transparencyTest;
 
@@ -84,10 +72,21 @@ int main() {
         transparencyTest.emplace_back(i);
     }
 
-    VoxelSet firstSet{world, program, 1, transparencyTest};
+    std::shared_ptr<VoxelSet> firstSet{std::make_shared<VoxelSet>(world, program, 1, transparencyTest)};
+
+    std::shared_ptr<Camera> camera{std::make_shared<Camera>()};
+    camera->lookAt(glm::vec3{0.f, 0.f, 20.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f});
+
+    SceneObject sceneGraph;
+    sceneGraph.addChild(firstSet);
+    sceneGraph.addChild(camera);
+    sceneGraph.updateTransformations();
+
 
     const float rotateSpeed{1.f};
 
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 100.f)};
+   
     while (!haveToStop) {
 
         //Event
@@ -96,21 +95,23 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
 
-        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { view = glm::rotate(view, glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
 
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, -0.3f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, -0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.3f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.f, 0.f, -0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.f, 0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { camera->translate(glm::vec3{0.f, 0.f, -0.3f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{0.3f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { projection = glm::translate(projection,  glm::vec3{-0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { camera->translate(glm::vec3{0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { camera->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
+
+        camera->updateTransformations();
 
         //Update
 
@@ -120,10 +121,9 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.1f, 0.45f, 0.55f, 1.0f);
 
-        firstSet.draw(view, projection);
+        sceneGraph.draw(camera->getCameraTransformations(), projection);
 
         glfwSwapBuffers(window);
-
     }
 
     glDeleteProgram(program);

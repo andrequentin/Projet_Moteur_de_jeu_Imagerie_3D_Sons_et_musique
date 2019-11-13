@@ -10,10 +10,11 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "VoxelWorld.hpp"
+#include "SceneObject.hpp"
 
 #include <iostream>
 
-class VoxelSet {
+class VoxelSet: public SceneObject {
 
 	public:
 
@@ -28,7 +29,7 @@ class VoxelSet {
 
 		void reshape(const float voxelDimension = 1.f);
 		
-		void draw(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
+		void draw(const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix);
 
 	private:
 
