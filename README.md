@@ -6,7 +6,7 @@ Projet_Moteur_de_jeu_Imagerie_3D_Sons_et_musique
 ### Moteur Voxel
 # HMIN 316 Sons et musique
 ### Ben la musique
-
+Moi : musique milieu et fin, guillaume : début et combat
 # Projet :
 - Moteur voxel
 - Map générer procéduralement
@@ -21,21 +21,36 @@ Projet_Moteur_de_jeu_Imagerie_3D_Sons_et_musique
 
 # PROG
 
-Voxel :
-- Position X,Y,Z
-- Couleur
-- Echelle
+- ECS (ECS guillaume)
+- Personnages :
+  - sauter -> moteur physique
+    - position (vec3)
+    - vitesse (vec3 )
+    - accélération (vec3)
+    - collisions par cubes ()
+  - avancer
+  - tirer avec une arme
+    - minigun
+    - bazooka
+    - grenade
+    - revolver silencieux
+- Projectile : vitesse (pas de gravité sauf grenade)
+- changer d'arme
+- courrir
+- C.A.C MACHETTE
+- génération de terrain
+  - générer sturcture
+  - génération énnemies
+- algo difficulté
+- ennemies :
+  - IA
+  - FSM
+  - repere joueur selon son et vues
+- son : FMOD
 
-
-VoxelSet :
-  - Ensemble De Voxel qui défini une entité
-
-Bloc :
-  - VoxelSet de 8x8x8 Voxel, Traite l'affiche
-
-Player :
-    - VoxelSet
-    - Caméra
-    - GUN
-
-    
+- UI : menu
+  - jouer
+  - options
+  - quitter
+- HUD
+- écran victoire

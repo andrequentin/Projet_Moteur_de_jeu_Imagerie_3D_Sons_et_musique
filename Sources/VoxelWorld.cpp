@@ -125,7 +125,7 @@ void VoxelWorld::generateWorld( unsigned int interpolationFrequency){
 		for(unsigned int y{0};y < m_sizeY; y++){
 			// std::cout<<bruit[x][y]<<"\t";
 			for(unsigned int z{0};z<bruit[x][y];z++){
-				setColor(getVoxelID(x,y,z), glm::vec4{0.5f, 1.f, 0.5f, 1.f});
+				setColor(getVoxelID(x,y,z), glm::vec4{((float)z/m_sizeZ),((float)z/m_sizeZ) , ((float)z/m_sizeZ) , 1.f});
 			}
 		}
 		// std::cout<<std::endl;

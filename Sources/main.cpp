@@ -50,7 +50,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
     bool haveToStop{false};
 
@@ -61,10 +61,10 @@ int main() {
         return -1;
     }
 
-    VoxelWorld world{100,100,40};
+    VoxelWorld world{120,240,80};
     glm::vec3 dimworld(world.getWoldDimensions());
 
-    world.generateWorld(10);
+    world.generateWorld(4);
 
     std::vector<unsigned int> transparencyTest;
 
@@ -88,8 +88,8 @@ int main() {
 
     const float rotateSpeed{1.f};
 
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 100.f)};
-   
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 200.f)};
+
     while (!haveToStop) {
 
         //Event
@@ -111,8 +111,8 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, -0.3f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.3f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.f, -0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, 0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, -0.3f}); }
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.3f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
