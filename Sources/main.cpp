@@ -14,7 +14,9 @@
 #include "SceneObject.hpp"
 #include "Camera.hpp"
 
-int main() {
+#include "GulgEngine/GulgEngine.hpp"
+
+bool initOpenGL(GLFWwindow **window) {
 
     glfwInit();
 
@@ -24,42 +26,66 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
-    // Open a window and create its OpenGL context
-    GLFWwindow* window{glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL)};
+        // Open a window and create its OpenGL context
+    *window = glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL);
 
-    if(window == nullptr){
+    if(*window == nullptr){
 
-        std::cout << "Can't create a window, glfw error." << std::endl;
+        std::cout << "ERROR: Can't create a window, glfw error." << std::endl;
         const char* errorMessage;
         int code = glfwGetError(&errorMessage);
         std::cout << "GLFW error " << code << ": " << errorMessage << std::endl;
-        glfwTerminate();
-        return -1;
+        return false;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(*window);
 
     // Initialize GLEW
-    glewExperimental = true; // Needed for core profile
+    glewExperimental = true; 
     if (glewInit() != GLEW_OK) {
         std::cout << "Can't initialize GLEW." << std::endl;
         glfwTerminate();
-        return -1;
+        return false;
     }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+    return true;
+}
+
+int main() {
+
+    GLFWwindow* window;
+
+    if(!initOpenGL(&window)) {
+
+        glfwTerminate();
+        return -1;
+    }
+
+    Gg::GulgEngine engine;
+
+    if(!engine.loadSignatures("Datas/Signatures")) {
+
+        std::cout << "Gulg error: Can't open signatures file." << std::endl;
+        return -1;
+    }
+
 
     bool haveToStop{false};
 
-    GLuint program{0};
-    if(!createProgram(program, "Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag")) {
+    if(!engine.loadProgram("Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag", "MainProgram")) {
 
         std::cout << "Error with shaders load." << std::endl;
         return -1;
     }
+
+    GLuint program{engine.getProgram("MainProgram")};
+
+
 
     VoxelWorld world{120,240,80};
     glm::vec3 dimworld(world.getWoldDimensions());

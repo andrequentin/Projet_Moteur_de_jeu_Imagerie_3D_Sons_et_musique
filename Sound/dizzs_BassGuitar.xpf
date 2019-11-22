@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE multimedia-project>
+<multimedia-project version="1.0" creator="Linux MultiMedia Studio (LMMS)" creatorversion="0.4.15" type="instrumenttracksettings">
+  <head/>
+  <instrumenttracksettings muted="0" type="0" name="BassGuitar">
+    <instrumenttrack pan="0" fxch="5" pitch="0" basenote="81" vol="126">
+      <instrument name="tripleoscillator">
+        <tripleoscillator phoffset2="0" userwavefile0="" finer0="0" userwavefile1="" finer1="0" userwavefile2="" finer2="-1" coarse0="0" coarse1="-12" coarse2="0" finel0="0" finel1="0" modalgo1="2" modalgo2="2" finel2="1" pan0="-4" modalgo3="2" pan1="9" stphdetun0="18" pan2="0" stphdetun1="0" wavetype0="2" stphdetun2="0" wavetype1="1" wavetype2="1" vol0="24" vol1="35" phoffset0="0" phoffset1="0" vol2="60"/>
+      </instrument>
+      <eldata fres="2.4" ftype="8" fcut="351" fwet="1">
+        <elvol lspd_denominator="4" pdel="0" userwavefile="" dec="1" lamt="0" syncmode="0" latt="0" rel="0.22" sus="0" amt="1" x100="0" att="0.044" lpdel="0" hold="0.043" lshp="0" lspd="0.1" ctlenvamt="0" lspd_numerator="4"/>
+        <elcut lspd_denominator="4" pdel="0" userwavefile="" dec="0.414" lamt="0" syncmode="0" latt="0" rel="0.187" sus="0" amt="0.54" x100="0" att="0" lpdel="0" hold="0" lshp="0" lspd="0.1" ctlenvamt="0" lspd_numerator="4"/>
+        <elres lspd_denominator="4" pdel="0" userwavefile="" dec="0.56" lamt="0" syncmode="0" latt="0" rel="0.344" sus="0" amt="-0.885" x100="0" att="0.065" lpdel="0" hold="0" lshp="0" lspd="0.1" ctlenvamt="0" lspd_numerator="4"/>
+      </eldata>
+      <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+      <arpeggiator arptime="100" arprange="1" arptime_denominator="4" syncmode="0" arpmode="0" arp-enabled="0" arp="0" arptime_numerator="4" arpdir="0" arpgate="100"/>
+      <midiport inputcontroller="0" fixedoutputvelocity="-1" inputchannel="0" outputcontroller="0" writable="0" outputchannel="1" fixedinputvelocity="-1" fixedoutputnote="-1" outputprogram="1" readable="0"/>
+      <fxchain numofeffects="2" enabled="1">
+        <effect autoquit_numerator="4" autoquit_denominator="4" syncmode="0" autoquit="1" gate="0" name="ladspaeffect" wet="0.58" on="1">
+          <ladspacontrols port11="5" port12="1.83" port13="0.325" port02link="1" port14="0.1625" port06link="1" port15="0" port16="0.264973" ports="14" port17="0.737426" port03link="1" port07link="1" port01="5" port02="1.83" port04link="1" port03="0.325" port04="0.1625" port05="0" port06="0.264973" port07="0.737426" link="1" port01link="1" port05link="1"/>
+          <key>
+            <attribute value="caps" name="file"/>
+            <attribute value="AmpVTS" name="plugin"/>
+          </key>
+        </effect>
+        <effect autoquit_numerator="4" autoquit_denominator="4" syncmode="0" autoquit="1" gate="0" name="ladspaeffect" wet="1" on="1">
+          <ladspacontrols port015="180" port016="0" port017="1" port018="34.65" port04="0" port05="0.32" port06="1.44" port07="1.76" ports="10" port012="9.1575" port013="7.8"/>
+          <key>
+            <attribute value="calf" name="file"/>
+            <attribute value="BassEnhancer" name="plugin"/>
+          </key>
+        </effect>
+      </fxchain>
+    </instrumenttrack>
+  </instrumenttracksettings>
+</multimedia-project>

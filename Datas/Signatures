@@ -1,0 +1,16 @@
+CharacterSprite
+AnimationSetName
+BotWalk
+TopWalk
+LeftWalk
+RightWalk
+CurrentAnimation
+AnimationTimer
+AnimationSprite
+Animation
+PhysicPosition
+GraphicPosition
+Speed
+Hitbox
+GraphicHitbox
+Mass
