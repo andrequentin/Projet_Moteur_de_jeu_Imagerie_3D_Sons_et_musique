@@ -16,6 +16,8 @@
 
 #include "GulgEngine/GulgEngine.hpp"
 
+#include "Components/Mesh.hpp"
+
 bool initOpenGL(GLFWwindow **window) {
 
     glfwInit();
@@ -84,37 +86,38 @@ int main() {
     }
 
     GLuint program{engine.getProgram("MainProgram")};
+    Gg::Component::Mesh mesh{program};
 
+    mesh.m_vertexPosition.resize(4);
+    mesh.m_vertexPosition[0] = glm::vec3{0.f, 0.f, 0.f};
+    mesh.m_vertexPosition[1] = glm::vec3{0.f, 1.f, 0.f};
+    mesh.m_vertexPosition[2] = glm::vec3{1.f, 0.f, 0.f};
+    mesh.m_vertexPosition[3] = glm::vec3{1.f, 1.f, 0.f};
 
+    for(unsigned int i{0}; i < 4; i++) {
 
-    VoxelWorld world{120,240,80};
-    glm::vec3 dimworld(world.getWoldDimensions());
-
-    world.generateWorld(4);
-
-    std::vector<unsigned int> transparencyTest;
-
-    for(unsigned int i{0}; i < dimworld[0]*dimworld[1]*dimworld[2]; i++) {
-        transparencyTest.emplace_back(i);
+        mesh.m_vertexColor.emplace_back(glm::vec3{0.55f, 0.45f, 0.1f});
     }
 
-    std::shared_ptr<VoxelSet> firstSet{std::make_shared<VoxelSet>(world, program, 1, transparencyTest)};
+    for(unsigned int i{0}; i < 4; i++) {
 
-    std::shared_ptr<Camera> camera{std::make_shared<Camera>()};
-    camera->lookAt(glm::vec3{0.f, 0.f, 20.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f});
+        mesh.m_vertexNormal.emplace_back(glm::vec3{1.f, 0.f, 0.f});
+    }
 
-    std::shared_ptr<SceneObject> cameraTranslations{std::make_shared<SceneObject>()};
+    mesh.m_vertexIndice.emplace_back(0);
+    mesh.m_vertexIndice.emplace_back(1);
+    mesh.m_vertexIndice.emplace_back(2);
 
-    SceneObject sceneGraph;
-    cameraTranslations->addChild(camera);
-    sceneGraph.addChild(firstSet);
-    sceneGraph.addChild(cameraTranslations);
-    sceneGraph.updateTransformations();
+    mesh.m_vertexIndice.emplace_back(1);
+    mesh.m_vertexIndice.emplace_back(3);
+    mesh.m_vertexIndice.emplace_back(2);
+
+    mesh.reshape();
 
 
-    const float rotateSpeed{1.f};
 
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 200.f)};
+
+
 
     while (!haveToStop) {
 
@@ -124,41 +127,19 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
 
-        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 1.f, 0.f}); }
-
-        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{1.f, 0.f, 0.f}); }
-
-        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { camera->rotate(glm::radians(-rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
-        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { camera->rotate(glm::radians(rotateSpeed), glm::vec3{0.f, 0.f, 1.f}); }
-
-
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, -0.3f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.f, 0.3f, 0.f}); }
-
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, -0.3f}); }
-
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{0.3f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { cameraTranslations->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
-
-        cameraTranslations->updateTransformations();
 
         //Update
-
 
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.1f, 0.45f, 0.55f, 1.0f);
 
-        sceneGraph.draw(camera->getCameraTransformations(), projection);
+        mesh.draw();
 
         glfwSwapBuffers(window);
     }
 
-    glDeleteProgram(program);
     glfwTerminate();
 
     return 0;
