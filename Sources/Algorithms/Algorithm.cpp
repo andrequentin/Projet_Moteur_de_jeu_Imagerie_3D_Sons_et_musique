@@ -22,6 +22,4 @@ void AbstractAlgorithm::deleteEntity(const Entity entity) {
 
 Signature AbstractAlgorithm::getSignature() const { return m_signature; }
 
-void AbstractAlgorithm::apply(const long unsigned int elapsedTime) {}
-
 }}

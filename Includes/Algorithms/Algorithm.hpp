@@ -24,7 +24,6 @@ class AbstractAlgorithm {
 		Signature getSignature() const;
 
 		virtual void apply() = 0;
-		virtual void apply(const long unsigned int elapsedTime); 
 
 	protected:
 

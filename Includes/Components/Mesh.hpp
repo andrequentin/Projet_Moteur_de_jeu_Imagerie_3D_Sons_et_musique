@@ -78,10 +78,15 @@ struct Mesh: public AbstractComponent {
 		return std::static_pointer_cast<AbstractComponent>(currentClone); 
 	}
 
-	void draw() {
+	void draw(const glm::mat4 &modelMatrix, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {
 
 		glBindVertexArray(m_vertexArrayID);
 		glUseProgram(m_program);
+
+		glm::mat4 mvp{projectionMatrix};
+	    mvp *= viewMatrix;
+	    mvp *= modelMatrix;
+	    glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
 
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexIndiceID);
 	    glDrawElements(GL_TRIANGLES, m_vertexIndice.size(), GL_UNSIGNED_INT, reinterpret_cast<void*>(0));

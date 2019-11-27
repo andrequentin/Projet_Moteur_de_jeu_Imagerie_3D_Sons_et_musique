@@ -1,14 +1,14 @@
-#include "Systems/AbstractSystem.hpp"
+#include "Systems/System.hpp"
 
 namespace Gg {
 
 namespace Systems {
 
-AbstractSystem::AbstractSystem(GulgEngine &gulgEngine): m_gulgEngine{gulgEngine} {}
+System::System(GulgEngine &gulgEngine): m_gulgEngine{gulgEngine} {}
 
-AbstractSystem::~AbstractSystem() {}
+System::~System() {}
 
-void AbstractSystem::addEntity(const Entity newEntity) {
+void System::addEntity(const Entity newEntity) {
 
 	for(std::unique_ptr<Algorithm::AbstractAlgorithm> &currentAlgo: m_algorithms) {
 
@@ -19,12 +19,12 @@ void AbstractSystem::addEntity(const Entity newEntity) {
 	}
 }
 
-void AbstractSystem::deleteEntity(const Entity newEntity) {
+void System::deleteEntity(const Entity newEntity) {
 
 	for(std::unique_ptr<Algorithm::AbstractAlgorithm> &currentAlgo: m_algorithms) { currentAlgo->deleteEntity(newEntity); }
 }
 
-void AbstractSystem::applyAlgorithms() {
+void System::applyAlgorithms() {
 
 	for(std::unique_ptr<Algorithm::AbstractAlgorithm> &currentAlgo: m_algorithms) { currentAlgo->apply(); }
 }
