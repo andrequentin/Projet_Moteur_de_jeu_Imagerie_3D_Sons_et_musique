@@ -16,7 +16,7 @@
 #include "Systems/UpdateScene.hpp"
 #include "Systems/DrawScene.hpp"
 
-#include "NewMap.cpp"
+#include "NewMap.hpp"
 
 bool initOpenGL(GLFWwindow **window) {
 

@@ -7,6 +7,7 @@
 #include <GL/gl.h>
 
 #include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 #include "Components/Component.hpp"
 
