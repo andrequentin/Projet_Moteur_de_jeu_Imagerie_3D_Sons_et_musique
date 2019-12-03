@@ -16,6 +16,7 @@
 #include "Systems/UpdateScene.hpp"
 #include "Systems/DrawScene.hpp"
 
+#include "NewLevel.hpp"
 
 bool initOpenGL(GLFWwindow **window) {
 
@@ -42,7 +43,7 @@ bool initOpenGL(GLFWwindow **window) {
     glfwMakeContextCurrent(*window);
 
     // Initialize GLEW
-    glewExperimental = true; 
+    glewExperimental = true;
     if (glewInit() != GLEW_OK) {
         std::cout << "Can't initialize GLEW." << std::endl;
         glfwTerminate();
@@ -85,36 +86,32 @@ int main() {
     }
 
     GLuint program{engine.getProgram("MainProgram")};
-   
 
-    Gg::Entity gameID{engine.getNewEntity()}, 
-               worldID{engine.getNewEntity()}, 
+
+    Gg::Entity gameID{engine.getNewEntity()},
+               worldID{engine.getNewEntity()},
                cameraID{engine.getNewEntity()},
                cameraTranslateID{engine.getNewEntity()};
 
+    newLevel(engine,worldID,program);
+
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
-    std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraTranslateScene{std::make_shared<Gg::Component::SceneObject>()};
 
     std::shared_ptr<Gg::Component::Transformation> gameTransformation{std::make_shared<Gg::Component::Transformation>()};
-    std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTranslateTransformation{std::make_shared<Gg::Component::Transformation>()};
 
-    std::shared_ptr<Gg::Component::Mesh> worldMesh{std::make_shared<Gg::Component::Mesh>(program)};
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
-    engine.addComponentToEntity(worldID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldScene));
     engine.addComponentToEntity(cameraID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraScene));
     engine.addComponentToEntity(cameraTranslateID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTranslateScene));
 
     engine.addComponentToEntity(gameID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameTransformation));
-    engine.addComponentToEntity(worldID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldTransformation));
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
     engine.addComponentToEntity(cameraTranslateID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTranslateTransformation));
 
-    engine.addComponentToEntity(worldID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldMesh));
 
 
 
@@ -133,31 +130,6 @@ int main() {
 
 
 
-    worldMesh->m_vertexPosition.resize(4);
-    worldMesh->m_vertexPosition[0] = glm::vec3{0.f, 0.f, 0.f};
-    worldMesh->m_vertexPosition[1] = glm::vec3{0.f, 1.f, 0.f};
-    worldMesh->m_vertexPosition[2] = glm::vec3{1.f, 0.f, 0.f};
-    worldMesh->m_vertexPosition[3] = glm::vec3{1.f, 1.f, 0.f};
-
-    for(unsigned int i{0}; i < 4; i++) {
-
-        worldMesh->m_vertexColor.emplace_back(glm::vec3{0.55f, 0.45f, 0.1f});
-    }
-
-    for(unsigned int i{0}; i < 4; i++) {
-
-        worldMesh->m_vertexNormal.emplace_back(glm::vec3{1.f, 0.f, 0.f});
-    }
-
-    worldMesh->m_vertexIndice.emplace_back(0);
-    worldMesh->m_vertexIndice.emplace_back(1);
-    worldMesh->m_vertexIndice.emplace_back(2);
-
-    worldMesh->m_vertexIndice.emplace_back(1);
-    worldMesh->m_vertexIndice.emplace_back(3);
-    worldMesh->m_vertexIndice.emplace_back(2);
-
-    worldMesh->reshape();
 
 
 
@@ -183,10 +155,10 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { cameraTranslateTransformation->translate(glm::vec3{0.f, -0.3f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { cameraTranslateTransformation->translate(glm::vec3{0.f, 0.3f, 0.f}); }
-        
+
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, 0.3f}); }
         if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { projection = glm::translate(projection,glm::vec3{0.f, 0.f, -0.3f}); }
-        
+
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { cameraTranslateTransformation->translate(glm::vec3{0.3f, 0.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { cameraTranslateTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
 
