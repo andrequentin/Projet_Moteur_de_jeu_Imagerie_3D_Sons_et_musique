@@ -1,18 +1,29 @@
-#ifndef VOXEL_WORLD_HPP
-#define VOXEL_WORLD_HPP
+#ifndef VOXEL_MAP_HPP
+#define VOXEL_MAP_HPP
 
 #include <vector>
 #include <stdexcept>
+#include <ctime>
+#include <random>
+#include <iostream>
+
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-//#define EmptyVoxel glm::vec4{0.f, 0.f, 0.f, 0.f}
+#include "Components/Component.hpp"
 
-class VoxelWorld {
+class VoxelMap: public Gg::Component::AbstractComponent{
 
 	public:
 
-		VoxelWorld(const unsigned int x, const unsigned int y, const unsigned int z);
+		VoxelMap(const unsigned int x, const unsigned int y, const unsigned int z);
+
+		VoxelMap(const VoxelMap &map);
+
+		virtual std::shared_ptr<AbstractComponent> clone() const{ 
+
+			return std::static_pointer_cast<Gg::Component::AbstractComponent>(std::make_shared<VoxelMap>(*this)); 
+		}
 
 		glm::vec4 getColor(const unsigned int x, const unsigned int y, const unsigned int z) const;
 		void setColor(const unsigned int x, const unsigned int y, const unsigned int z, const glm::vec4 &color);
@@ -24,9 +35,7 @@ class VoxelWorld {
 
 		glm::vec3 getVoxelPosition(const unsigned int voxelID) const;
 
-		glm::vec3 getWoldDimensions() const;
-
-		void generationTerrain( unsigned int interpolationFrequency);
+		std::array<unsigned int, 3> getWorldDimensions() const;
 
 	private:
 

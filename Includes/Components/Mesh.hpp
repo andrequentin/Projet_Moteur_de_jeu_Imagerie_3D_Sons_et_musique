@@ -29,6 +29,25 @@ struct Mesh: public AbstractComponent {
 			glGenBuffers(1, &m_vertexColorID);
 		}
 
+	Mesh(const Mesh &mesh):
+		m_program{mesh.m_program},
+		m_MVPProgramLocation{mesh.m_MVPProgramLocation},
+		m_vertexPosition{mesh.m_vertexPosition},
+		m_vertexNormal{mesh.m_vertexNormal},
+		m_vertexColor{mesh.m_vertexColor},
+		m_vertexIndice{mesh.m_vertexIndice},
+		m_modelMatrix{mesh.m_modelMatrix} {
+
+
+		glGenVertexArrays(1, &m_vertexArrayID);
+		glGenBuffers(1, &m_vertexPositionID);
+		glGenBuffers(1, &m_vertexNormalID);
+		glGenBuffers(1, &m_vertexIndiceID);
+		glGenBuffers(1, &m_vertexColorID);
+
+		reshape();
+	}
+
 	~Mesh() {
 
 		glDeleteBuffers(1, &m_vertexColorID);
@@ -37,6 +56,13 @@ struct Mesh: public AbstractComponent {
 		glDeleteBuffers(1, &m_vertexPositionID);
 		glDeleteVertexArrays(1, &m_vertexArrayID);
 	}
+
+
+	virtual std::shared_ptr<AbstractComponent> clone() const { 
+
+		return std::static_pointer_cast<AbstractComponent>(std::make_shared<Mesh>(*this)); 
+	}
+
 
 	void reshape() {
 
@@ -59,23 +85,6 @@ struct Mesh: public AbstractComponent {
 
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexIndiceID);
 	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_vertexIndice.size() * sizeof(unsigned int), &m_vertexIndice[0], GL_STATIC_DRAW);
-	}
-
-	virtual std::shared_ptr<AbstractComponent> clone() const { 
-
-		std::shared_ptr<Mesh> currentClone(std::make_shared<Mesh>(m_program));
-
-		currentClone->m_program = m_program;
-		currentClone->m_MVPProgramLocation = m_MVPProgramLocation;
-		currentClone->m_vertexPosition = m_vertexPosition;
-		currentClone->m_vertexNormal = m_vertexNormal;
-		currentClone->m_vertexColor = m_vertexColor;
-		currentClone->m_vertexIndice = m_vertexIndice;
-		currentClone->m_modelMatrix = m_modelMatrix;
-
-		currentClone->reshape();
-
-		return std::static_pointer_cast<AbstractComponent>(currentClone); 
 	}
 
 	void draw(const glm::mat4 &modelMatrix, const glm::mat4 &viewMatrix, const glm::mat4 &projectionMatrix) {

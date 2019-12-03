@@ -16,7 +16,7 @@
 #include "Systems/UpdateScene.hpp"
 #include "Systems/DrawScene.hpp"
 
-#include "NewLevel.hpp"
+#include "NewMap.cpp"
 
 bool initOpenGL(GLFWwindow **window) {
 
@@ -93,7 +93,7 @@ int main() {
                cameraID{engine.getNewEntity()},
                cameraTranslateID{engine.getNewEntity()};
 
-    newLevel(engine,worldID,program);
+    newMap(engine,worldID,program);
 
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -102,6 +102,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> gameTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTranslateTransformation{std::make_shared<Gg::Component::Transformation>()};
+    std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
 
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
