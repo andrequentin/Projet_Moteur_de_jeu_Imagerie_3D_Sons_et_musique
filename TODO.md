@@ -1,11 +1,6 @@
 TODO
 ===
 
-# Moteur
-
-- Mettre ECS
-- Modifier pour permettre OpenGL  
-
 # Musique
 
 - Mettre FMOD
@@ -15,6 +10,7 @@ TODO
 
 # Graphisme
 
+- Ajouter normales lors de la création du mesh de la carte
 - Modéle de phong
 - Ombres
 
@@ -32,6 +28,7 @@ TODO
 
 # Génération procédurale
 
+- Optimiser la création du mesh de la carte
 - Terrain plus enclavé
 - Ajouter structures (maison, arbres ...)
 - Ajouter annemis

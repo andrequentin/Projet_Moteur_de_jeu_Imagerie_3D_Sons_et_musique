@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic
+CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic -O3
 LDFLAGS  = -L ./Libraries/GLFW/ -L ./Libraries/GLEW/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl
 
 SRCFILE = Sources

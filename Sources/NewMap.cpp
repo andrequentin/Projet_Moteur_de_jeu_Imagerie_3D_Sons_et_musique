@@ -266,7 +266,7 @@ void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
 	std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
 	std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
 	std::shared_ptr<Gg::Component::Mesh> worldMesh{std::make_shared<Gg::Component::Mesh>(program)};
-	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(40, 80, 40)};
+	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(120, 120, 80)};
 
 	engine.addComponentToEntity(worldID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldScene));
 	engine.addComponentToEntity(worldID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldTransformation));
