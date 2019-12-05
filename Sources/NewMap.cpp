@@ -1,5 +1,51 @@
 #include "NewMap.hpp"
 
+double cubic_interpolate(double a,double b,double d){
+    //Calcul des coefficients de notre polynôme
+    double a3 = 1.5*a - 1.5*b ;
+    double a2 = - 2.5*a + 2*b ;
+    double a1 = 0.5*b;
+    double a0 = a;
+    //Calcul de la valeur de ce polynôme en t
+    return (a3 * d*d*d) + (a2 * d*d) + (a1 * d) + a0;
+	}
+
+unsigned int biInterpolation(double a,double b,double c,double d,double u,double v){
+	double  ap {cubic_interpolate(a,c,u)},
+	 	 			bp  {cubic_interpolate(b,d,u)},
+					result  {cubic_interpolate(ap,bp,v)};
+
+	  return static_cast<unsigned int>(result);
+}
+void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin){
+
+	unsigned int hmax{9},hmin{5};
+
+	//Tronc
+	unsigned int height =hmin+ engin()%(hmax-hmin);
+	for(unsigned int i = 0;i<=height;i++){
+		currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.0f,1.0f});
+	}
+	for(int i=-2;i<=2;i++){
+		for(int j=-2;j<=2;j++){
+			for(int k=-2;k<=2;k++){
+				if( (i*i+j*j+k*k)<=9&& (static_cast<int>(x)+i)>= 0 &&(static_cast<int>(y)+j)>= 0 &&(static_cast<int>(z)+k)>= 0 && (x+i)< currentMap.getWorldDimensions()[0]&&(y+j)< currentMap.getWorldDimensions()[1] && (z+k+height)< currentMap.getWorldDimensions()[2]){
+					currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.15f,0.51f,0.0f,1.0f});
+				}
+			}
+		}
+	}
+
+
+	//Branches
+
+
+
+	//Feuilles
+
+
+
+}
 void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency){
 
 	// BRUIT PERLIN ALÉATOIRE
@@ -8,13 +54,16 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 	bruit.resize(worldDimension[0]);
 
 	auto const seed = std::time(nullptr);
+//	auto const seed=1575536532;
+	std::cout<<seed<<std::endl;
 	std::default_random_engine engin { seed };
+	std::vector<std::vector<bool> > t;
+	t.resize(worldDimension[0]);
 	for(unsigned  x{0};x < worldDimension[0] ;x++){
-	for(unsigned int y{0};y < worldDimension[1]; y++){
-	 bruit[x].push_back(engin()%(worldDimension[2]/interpolationFrequency)+1);
-	 // std::cout<<bruit[x][y]<<"\t";
-	}
-	// std::cout<<std::endl;
+		for(unsigned int y{0};y < worldDimension[1]; y++){
+		 bruit[x].push_back(engin()%(worldDimension[2]/(interpolationFrequency/2)));
+		 t[x].push_back((worldDimension[0]*worldDimension[1]*0.997f)<(engin()%(worldDimension[0]*worldDimension[1])));
+	 }
 	}
 
 	if(worldDimension[0] % interpolationFrequency != 0 || worldDimension[1] % interpolationFrequency != 0){
@@ -35,30 +84,30 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 			c (bruit[maxX][minY]), // point d'interpolation 1-0
 			d (bruit[maxX][maxY]); // point d'interpolation 1-1
 
-	 for(unsigned int i = minX; i <= maxX; i++) {
-		 for(unsigned int j = minY; j <= maxY; j++) {
-		double  u=static_cast<double>(i-minX)/static_cast<double>(maxX-minX), // distance entre a et la coordonées x du point courant
-				 v=static_cast<double>(j-minY)/static_cast<double>(maxY-minY); // distance entre b et la coordonées y du point courant
-		double  ap (a*(1.0-u) + c*(u)), // ap = interpolation a-c distance u
-				 bp (b*(1.0-u) + d*(u)); // bp = interpolation b-d distance u
-		bruit[i][j] = static_cast<unsigned int>(ap*(1.0-v) + bp*(v)); //interpolation ap-bp distance v
-		 }
-	 }
-	}
+			for(unsigned int i = minX; i <= maxX; i++) {
+				for(unsigned int j = minY; j <= maxY; j++) {
+			 		double  u=static_cast<double>(i-minX)/static_cast<double>(maxX-minX), // distance entre a et la coordonées x du point courant
+				 					v=static_cast<double>(j-minY)/static_cast<double>(maxY-minY); // distance entre b et la coordonées y du point courant
+					bruit[i][j]=biInterpolation(a,b,c,d,u,v);
+		  	}
+	 		}
+		}
 	}
 	// std::cout<<"--------------"<<std::endl;
 
 	for(unsigned int x{0};x < worldDimension[0] ;x++){
-	for(unsigned int y{0};y < worldDimension[1]; y++){
-	 // std::cout<<bruit[x][y]<<"\t";
-	 for(unsigned int z{0};z<bruit[x][y];z++){
-		 currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{(static_cast<float>(z)/worldDimension[2]),
-														 (static_cast<float>(z)/worldDimension[2]), 
-														 (static_cast<float>(z)/worldDimension[2]), 1.f});
-	 }
+		for(unsigned int y{0};y < worldDimension[1]; y++){
+			for(unsigned int z{0};z<worldDimension[2] && z<=bruit[x][y]  ;z++){
+				if(z==bruit[x][y]){
+					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.24f,0.56f,0.0f ,1.f});
+				}else{
+					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.56f,0.24f,0.0f, 1.f});
+				}
+			}
+		 	if(t[x][y])	putTreeHere(x,y,bruit[x][y],currentMap,engin);
+		}
 	}
-	// std::cout<<std::endl;
-	}
+
 }
 
 std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations(const unsigned int voxelMapSize) {
@@ -118,11 +167,11 @@ std::array<unsigned int, 4> getPointsOfOrientedFace(const glm::vec3 &orientation
 
 	if(orientation[0] == 1.f) {  quad[0] = 1; quad[1] = 5; quad[2] = 6; quad[3] = 2; }
 	if(orientation[0] == -1.f) { quad[0] = 0; quad[1] = 3; quad[2] = 7; quad[3] = 4; }
-	if(orientation[1] == 1.f) {  quad[0] = 4; quad[1] = 7; quad[2] = 6; quad[3] = 5; }	
+	if(orientation[1] == 1.f) {  quad[0] = 4; quad[1] = 7; quad[2] = 6; quad[3] = 5; }
 	if(orientation[1] == -1.f) { quad[0] = 0; quad[1] = 1; quad[2] = 2; quad[3] = 3; }
 	if(orientation[2] == 1.f) {  quad[0] = 3; quad[1] = 7; quad[2] = 6; quad[3] = 2; }
 	if(orientation[2] == -1.f) { quad[0] = 0; quad[1] = 4; quad[2] = 5; quad[3] = 1; }
-	
+
 
 	return quad;
 }
@@ -146,10 +195,10 @@ std::array<unsigned int, 6> getTrianglesOfOrientedFace(const glm::vec3 &orientat
 	if(orientation[2] == 1.f) {  triangle[0] = 3; triangle[1] = 7; triangle[2] = 2;
 								 triangle[3] = 7; triangle[4] = 2; triangle[5] = 6; }
 
-	if(orientation[2] == -1.f) { triangle[0] = 0; triangle[1] = 4; triangle[2] = 1; 
+	if(orientation[2] == -1.f) { triangle[0] = 0; triangle[1] = 4; triangle[2] = 1;
 								 triangle[3] = 4; triangle[4] = 5; triangle[5] = 1; }
 
-	
+
 
 	return triangle;
 }
@@ -236,7 +285,7 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 
 		for(unsigned int j{0}; j < pointsToDraw.size() && !foundPair; j++) {
 
-			if(pointsToDraw[j].first == trianglesToDraw[i].first && pointsToDraw[j].second == trianglesToDraw[i].second) { 
+			if(pointsToDraw[j].first == trianglesToDraw[i].first && pointsToDraw[j].second == trianglesToDraw[i].second) {
 
 				foundPair = true;
 				mesh.m_vertexIndice[i] = j;
@@ -266,7 +315,7 @@ void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
 	std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
 	std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
 	std::shared_ptr<Gg::Component::Mesh> worldMesh{std::make_shared<Gg::Component::Mesh>(program)};
-	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(120, 120, 80)};
+	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(80, 80, 20)};
 
 	engine.addComponentToEntity(worldID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldScene));
 	engine.addComponentToEntity(worldID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldTransformation));

@@ -27,7 +27,7 @@ TODO
 - Ajouter armes
 
 # Génération procédurale
-
+https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
 - Optimiser la création du mesh de la carte
 - Terrain plus enclavé
 - Ajouter structures (maison, arbres ...)
