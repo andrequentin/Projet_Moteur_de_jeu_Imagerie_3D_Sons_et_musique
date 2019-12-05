@@ -19,17 +19,17 @@ unsigned int biInterpolation(double a,double b,double c,double d,double u,double
 }
 void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin){
 
-	unsigned int hmax{9},hmin{5};
+	unsigned int hmax{12},hmin{3};
 
 	//Tronc
 	unsigned int height =hmin+ engin()%(hmax-hmin);
 	for(unsigned int i = 0;i<=height;i++){
 		currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.0f,1.0f});
 	}
-	for(int i=-2;i<=2;i++){
-		for(int j=-2;j<=2;j++){
-			for(int k=-2;k<=2;k++){
-				if( (i*i+j*j+k*k)<=9&& (static_cast<int>(x)+i)>= 0 &&(static_cast<int>(y)+j)>= 0 &&(static_cast<int>(z)+k)>= 0 && (x+i)< currentMap.getWorldDimensions()[0]&&(y+j)< currentMap.getWorldDimensions()[1] && (z+k+height)< currentMap.getWorldDimensions()[2]){
+	for(int i=-1 * (height/2);i<=static_cast<int>(height/2);i++){
+		for(int j=-1 *(height/2);j<=static_cast<int>(height/2);j++){
+			for(int k=-1 * (height/2);k<=static_cast<int>(height/2);k++){
+				if( static_cast<unsigned int>((i*i+j*j+k*k))<=(height*3/2)&& (static_cast<int>(x)+i)>= 0 &&(static_cast<int>(y)+j)>= 0 &&(static_cast<int>(z)+k)>= 0 && (x+i)< currentMap.getWorldDimensions()[0]&&(y+j)< currentMap.getWorldDimensions()[1] && (z+k+height)< currentMap.getWorldDimensions()[2]){
 					currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.15f,0.51f,0.0f,1.0f});
 				}
 			}
