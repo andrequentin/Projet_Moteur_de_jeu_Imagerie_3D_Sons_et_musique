@@ -17,31 +17,89 @@ unsigned int biInterpolation(double a,double b,double c,double d,double u,double
 
 	  return static_cast<unsigned int>(result);
 }
+void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin,unsigned int depth,unsigned int j){
+  switch(j){
+    case 0:
+      x-=1;y-=1;
+    break;
+    case 1:
+      x-=1;
+    break;
+    case 2:
+      x-=1;y+=1;
+    break;
+    case 3:
+      y-=1;
+    break;
+    case 4:
+    x+=1;y-=1;
+    break;
+    case 5:
+    y+=1;
+    break;
+    case 6:
+    x+=1;
+    break;
+    case 7:
+    x+=1;y+=1;
+    break;
+  }
+  if(x<currentMap.getWorldDimensions()[0] && y<currentMap.getWorldDimensions()[1] &&z<currentMap.getWorldDimensions()[2] ){
+    currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.5f,0.28f,0.0f,1.0f});
+  }
+  if(depth!=0){
+    treeBranch(x,y,z+1,currentMap,engin,depth-1,j);
+  }
+  for(int i{-1};i<=1;i++){
+    for(int j{-1};j<=1;j++){
+      for(int k{-1};k<=1;k++){
+        if( i*i+k*k+j*j <= 1 &&
+            (static_cast<int>(x)+i)>=0 &&
+            (static_cast<int>(y)+j)>=0 &&
+            (static_cast<int>(z)+k)>=0 &&
+            ((x+i) < currentMap.getWorldDimensions()[0]) &&
+            ((y+j) < currentMap.getWorldDimensions()[1]) &&
+            ((z+k) < currentMap.getWorldDimensions()[2]) &&
+            (currentMap.getColor(x+i,y+j,z+k)[3]==0.0f)
+            ){
+
+              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k), glm::vec4{0.25f,0.5f,0.0f,1.0f});
+          }
+        }
+      }
+    }
+  }
+
 void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin){
 
-	unsigned int hmax{12},hmin{3};
+	unsigned int hmax{15},hmin{5};
 
 	//Tronc
 	unsigned int height =hmin+ engin()%(hmax-hmin);
-	for(unsigned int i = 0;i<=height;i++){
-		currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.0f,1.0f});
-	}
-	for(int i=-1 * (height/2);i<=static_cast<int>(height/2);i++){
-		for(int j=-1 *(height/2);j<=static_cast<int>(height/2);j++){
-			for(int k=-1 * (height/2);k<=static_cast<int>(height/2);k++){
-				if( static_cast<unsigned int>((i*i+j*j+k*k))<=(height*3/2)&& (static_cast<int>(x)+i)>= 0 &&(static_cast<int>(y)+j)>= 0 &&(static_cast<int>(z)+k)>= 0 && (x+i)< currentMap.getWorldDimensions()[0]&&(y+j)< currentMap.getWorldDimensions()[1] && (z+k+height)< currentMap.getWorldDimensions()[2]){
-					currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.15f,0.51f,0.0f,1.0f});
-				}
-			}
-		}
-	}
-
-
-	//Branches
-
-
-
-	//Feuilles
+  unsigned int depth{static_cast<unsigned int>(engin()%(height/2))};
+  for (unsigned int i {0};(i+z) < currentMap.getWorldDimensions()[2] && i<=height ;i++){
+     currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.0f,1.0f});
+     for(unsigned int j{0};j<8;j++){
+       if(engin()%8 ==j && i>2){
+           treeBranch(x,y,z+i,currentMap,engin,depth,j);
+       }
+     }
+  }
+  for(int i{-2};i<=2;i++){
+    for(int j{-2};j<=2;j++){
+      for(int k{-2};k<=2;k++){
+        if( i*i+k*k+j*j <= 4 &&
+            (static_cast<int>(x)+i)>=0 &&
+            (static_cast<int>(y)+j)>=0 &&
+            (static_cast<int>(z)+k)>=0 &&
+            ((x+i) < currentMap.getWorldDimensions()[0]) &&
+            ((y+j) < currentMap.getWorldDimensions()[1]) &&
+            ((z+k) < currentMap.getWorldDimensions()[2])  ){
+              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.25f,0.5f,0.0f,1.0f});
+          }
+        }
+      }
+    }
 
 
 
@@ -315,7 +373,7 @@ void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
 	std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
 	std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
 	std::shared_ptr<Gg::Component::Mesh> worldMesh{std::make_shared<Gg::Component::Mesh>(program)};
-	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(80, 80, 20)};
+	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(80, 80, 40)};
 
 	engine.addComponentToEntity(worldID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldScene));
 	engine.addComponentToEntity(worldID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldTransformation));
