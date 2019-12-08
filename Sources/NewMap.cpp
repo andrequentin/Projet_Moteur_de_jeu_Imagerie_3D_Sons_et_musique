@@ -17,7 +17,7 @@ unsigned int biInterpolation(double a,double b,double c,double d,double u,double
 
 	  return static_cast<unsigned int>(result);
 }
-void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin,unsigned int depth,unsigned int j){
+void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMap,std::default_random_engine &engin,unsigned int depth, int j){
   switch(j){
     case 0:
       x-=1;y-=1;
@@ -49,7 +49,7 @@ void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMa
   }
   if(depth!=0){
 
-    unsigned int nj = -1;
+    int nj = -1;
     nj += engin()%3;
 
     treeBranch(x,y,z+1,currentMap,engin,depth-1,(j+nj)%8);
