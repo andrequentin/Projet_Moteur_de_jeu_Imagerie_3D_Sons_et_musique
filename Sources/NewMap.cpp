@@ -29,26 +29,30 @@ void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMa
       x-=1;y+=1;
     break;
     case 3:
-      y-=1;
+      y+=1;
     break;
     case 4:
-    x+=1;y-=1;
+    x+=1;y+=1;
     break;
     case 5:
-    y+=1;
-    break;
-    case 6:
     x+=1;
     break;
+    case 6:
+    x+=1;y-=1;
+    break;
     case 7:
-    x+=1;y+=1;
+    y-=1;
     break;
   }
   if(x<currentMap.getWorldDimensions()[0] && y<currentMap.getWorldDimensions()[1] &&z<currentMap.getWorldDimensions()[2] ){
     currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.5f,0.28f,0.0f,1.0f});
   }
   if(depth!=0){
-    treeBranch(x,y,z+1,currentMap,engin,depth-1,j);
+
+    unsigned int nj = -1;
+    nj += engin()%3;
+
+    treeBranch(x,y,z+1,currentMap,engin,depth-1,(j+nj)%8);
   }
   for(int i{-1};i<=1;i++){
     for(int j{-1};j<=1;j++){
@@ -105,7 +109,6 @@ void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentM
 
 }
 void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency){
-
 	// BRUIT PERLIN ALÉATOIRE
 	std::vector<std::vector<unsigned int>> bruit;
 	std::array<unsigned int, 3> worldDimension{currentMap.getWorldDimensions()};
