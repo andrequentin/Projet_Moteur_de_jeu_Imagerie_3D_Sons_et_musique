@@ -254,10 +254,10 @@ std::array<unsigned int, 6> getTrianglesOfOrientedFace(const glm::vec3 &orientat
 								 triangle[3] = 1; triangle[4] = 2; triangle[5] = 3; }
 
 	if(orientation[2] == 1.f) {  triangle[0] = 3; triangle[1] = 7; triangle[2] = 2;
-								 triangle[3] = 7; triangle[4] = 2; triangle[5] = 6; }
+								 triangle[3] = 7; triangle[4] = 6; triangle[5] = 2; }
 
-	if(orientation[2] == -1.f) { triangle[0] = 0; triangle[1] = 4; triangle[2] = 1;
-								 triangle[3] = 4; triangle[4] = 5; triangle[5] = 1; }
+	if(orientation[2] == -1.f) { triangle[0] = 0; triangle[1] = 1; triangle[2] = 4;
+								 triangle[3] = 1; triangle[4] = 5; triangle[5] = 4; }
 
 
 
@@ -363,8 +363,35 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 	for(unsigned int i{0}; i < pointsToDraw.size(); i++) {
 
 		mesh.m_vertexPosition[i] = getPositionOfPoint(map, pointsToDraw[i].first, pointsToDraw[i].second);
-		mesh.m_vertexNormal[i] = glm::vec3{1.f, 1.f, 1.f};
 		mesh.m_vertexColor[i]  = map.getColor(pointsToDraw[i].first);
+	}
+
+	//Normals
+
+	std::vector<std::pair<glm::vec3, unsigned int>> normalToCompute;
+	normalToCompute.resize(mesh.m_vertexNormal.size());
+
+	glm::vec3 currentNormal;
+
+	for(unsigned int i{0}; i < mesh.m_vertexIndice.size(); i += 3) {
+
+		currentNormal = glm::triangleNormal(mesh.m_vertexPosition[mesh.m_vertexIndice[i]],
+											mesh.m_vertexPosition[mesh.m_vertexIndice[i + 1]],
+											mesh.m_vertexPosition[mesh.m_vertexIndice[i + 2]]);
+
+		normalToCompute[mesh.m_vertexIndice[i]].first += currentNormal;
+		normalToCompute[mesh.m_vertexIndice[i + 1]].first += currentNormal;
+		normalToCompute[mesh.m_vertexIndice[i + 2]].first += currentNormal;
+
+		normalToCompute[mesh.m_vertexIndice[i]].second++;
+		normalToCompute[mesh.m_vertexIndice[i + 1]].second++;
+		normalToCompute[mesh.m_vertexIndice[i + 2]].second++;
+	}
+
+
+	for(unsigned int i{0}; i < mesh.m_vertexNormal.size(); i++) {
+
+		mesh.m_vertexNormal[i] = normalToCompute[i].first/static_cast<float>(normalToCompute[i].second);
 	}
 }
 

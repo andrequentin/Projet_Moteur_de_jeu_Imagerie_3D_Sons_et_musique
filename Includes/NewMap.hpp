@@ -1,6 +1,8 @@
 #ifndef NEW_MAP_HPP
 #define NEW_MAP_HPP
 
+#include <glm/gtx/normal.hpp>
+
 #include "GulgEngine/GulgEngine.hpp"
 
 #include "Components/Mesh.hpp"

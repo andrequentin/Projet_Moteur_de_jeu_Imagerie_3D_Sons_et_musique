@@ -20,8 +20,9 @@ struct Mesh: public AbstractComponent {
 	Mesh(GLuint program):
 
 		m_program{program},
-		m_MVPProgramLocation{glGetUniformLocation(m_program, "MVPMatrix")},
-		m_modelMatrix{glm::mat4{1.f}} {
+		m_modelMatrixID{glGetUniformLocation(m_program, "ModelMatrix")},
+		m_viewMatrixID{glGetUniformLocation(m_program, "ViewMatrix")},
+		m_projectionMatrixID{glGetUniformLocation(m_program, "ProjectionMatrix")} {
 
 			glGenVertexArrays(1, &m_vertexArrayID);
 			glGenBuffers(1, &m_vertexPositionID);
@@ -32,12 +33,13 @@ struct Mesh: public AbstractComponent {
 
 	Mesh(const Mesh &mesh):
 		m_program{mesh.m_program},
-		m_MVPProgramLocation{mesh.m_MVPProgramLocation},
+		m_modelMatrixID{mesh.m_modelMatrixID},
+		m_viewMatrixID{mesh.m_viewMatrixID},
+		m_projectionMatrixID{mesh.m_projectionMatrixID},
 		m_vertexPosition{mesh.m_vertexPosition},
 		m_vertexNormal{mesh.m_vertexNormal},
 		m_vertexColor{mesh.m_vertexColor},
-		m_vertexIndice{mesh.m_vertexIndice},
-		m_modelMatrix{mesh.m_modelMatrix} {
+		m_vertexIndice{mesh.m_vertexIndice} {
 
 
 		glGenVertexArrays(1, &m_vertexArrayID);
@@ -93,22 +95,19 @@ struct Mesh: public AbstractComponent {
 		glBindVertexArray(m_vertexArrayID);
 		glUseProgram(m_program);
 
-		glm::mat4 mvp{projectionMatrix};
-	    mvp *= viewMatrix;
-	    mvp *= modelMatrix;
-	    glUniformMatrix4fv(m_MVPProgramLocation, 1, GL_FALSE, &mvp[0][0]);
+	    glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
+	    glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &viewMatrix[0][0]);
+	    glUniformMatrix4fv(m_projectionMatrixID, 1, GL_FALSE, &projectionMatrix[0][0]);
 
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexIndiceID);
 	    glDrawElements(GL_TRIANGLES, m_vertexIndice.size(), GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 	}
 
 	GLuint m_program, m_vertexArrayID, m_vertexIndiceID, m_vertexPositionID, m_vertexNormalID, m_vertexColorID;
-	GLint m_MVPProgramLocation;
+	const GLint m_modelMatrixID, m_viewMatrixID, m_projectionMatrixID;
         
     std::vector<glm::vec3> m_vertexPosition, m_vertexNormal, m_vertexColor;
-    std::vector<unsigned int> m_vertexIndice;
-        
-    glm::mat4 m_modelMatrix;        
+    std::vector<unsigned int> m_vertexIndice;         
 };
 
 }}
