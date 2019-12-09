@@ -10,8 +10,7 @@ TODO
 
 # Graphisme
 
-- Ajouter normales lors de la création du mesh de la carte
-- Modéle de phong
+- Modéle de phong (a continuer/refaire -> séparer en différents types de lumieres ?)
 - Ombres
 
 # Physique
@@ -28,9 +27,8 @@ TODO
 
 # Génération procédurale
 https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
-- Optimiser la création du mesh de la carte
 - Terrain plus enclavé
-- Ajouter structures (maison, arbres ...)
+- Ajouter structures (maison)
 - Ajouter annemis
 - Ajuster génération selon difficulté (nombre)
 
@@ -48,4 +46,15 @@ https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
 - HUD
 - écran de victoire avec stats
 
+# Bugs à corriger
+
+- Axes inversés ? (lumière en z = -10 qu lieu de z = 10);
+
 # Bonus, à faire si on a du temps
+
+- Ajout dans le systeme Lightning pas convainquant
+
+# Bonus, à faire plus tard
+
+- A vérifier: lors de l'ajout d'une entité, vérification de compatibilité avec tous les algorithmes ?
+- Que mettre dans l'espace de nom Gg et ne pas mettre dedans

@@ -260,7 +260,6 @@ std::array<unsigned int, 6> getTrianglesOfOrientedFace(const glm::vec3 &orientat
 								 triangle[3] = 1; triangle[4] = 5; triangle[5] = 4; }
 
 
-
 	return triangle;
 }
 
@@ -295,103 +294,43 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 
 	std::array<unsigned int, 4> pointsToAdd;
 
+	mesh.m_vertexPosition.resize(allFaces.size()*4);
+    mesh.m_vertexNormal.resize(allFaces.size()*4);
+	mesh.m_vertexColor.resize(allFaces.size()*4);
+	mesh.m_vertexIndice.resize(allFaces.size()*6);
+
+	glm::vec3 currentNormal;
+
 	for(unsigned int i{0}; i < allFaces.size(); i++) {
 
 		pointsToAdd = getPointsOfOrientedFace(allFaces[i].second);
 
-		pointsToDrawWithDoublon[i*4] = std::make_pair(allFaces[i].first, pointsToAdd[0]);
-		pointsToDrawWithDoublon[i*4 + 1] = std::make_pair(allFaces[i].first, pointsToAdd[1]);
-		pointsToDrawWithDoublon[i*4 + 2] = std::make_pair(allFaces[i].first, pointsToAdd[2]);
-		pointsToDrawWithDoublon[i*4 + 3] = std::make_pair(allFaces[i].first, pointsToAdd[3]);
-	}
+		mesh.m_vertexPosition[i*4] = getPositionOfPoint(map, allFaces[i].first, pointsToAdd[0]);
+		mesh.m_vertexPosition[i*4 + 1] = getPositionOfPoint(map, allFaces[i].first, pointsToAdd[1]);
+		mesh.m_vertexPosition[i*4 + 2] = getPositionOfPoint(map, allFaces[i].first, pointsToAdd[2]);
+		mesh.m_vertexPosition[i*4 + 3] = getPositionOfPoint(map, allFaces[i].first, pointsToAdd[3]);
 
-	std::vector<std::pair<unsigned int, unsigned int>> pointsToDraw;
-	pointsToDraw.reserve(pointsToDrawWithDoublon.size());
+		mesh.m_vertexColor[i*4] = map.getColor(allFaces[i].first);
+		mesh.m_vertexColor[i*4 + 1] = map.getColor(allFaces[i].first);
+		mesh.m_vertexColor[i*4 + 2] = map.getColor(allFaces[i].first);
+		mesh.m_vertexColor[i*4 + 3] = map.getColor(allFaces[i].first);
 
-	bool foundPair{false};
+		currentNormal = glm::triangleNormal(mesh.m_vertexPosition[i*4],
+											mesh.m_vertexPosition[i*4 + 1],
+											mesh.m_vertexPosition[i*4 + 2]);
 
-	for(unsigned int i{0}; i < pointsToDrawWithDoublon.size(); i++) {
+		mesh.m_vertexNormal[i*4] = currentNormal;
+		mesh.m_vertexNormal[i*4 + 1] = currentNormal;
+		mesh.m_vertexNormal[i*4 + 2] = currentNormal;
+		mesh.m_vertexNormal[i*4 + 3] = currentNormal;
 
-		foundPair = false;
+		mesh.m_vertexIndice[i*6] = i*4;
+		mesh.m_vertexIndice[i*6 + 1] = i*4 + 1;
+		mesh.m_vertexIndice[i*6 + 2] = i*4 + 2;
 
-		for(unsigned int j{0}; j < pointsToDraw.size() && !foundPair; j++) {
-
-			if(pointsToDraw[j].first == pointsToDrawWithDoublon[i].first && pointsToDraw[j].second == pointsToDrawWithDoublon[i].second) { foundPair = true; }
-		}
-
-		if(!foundPair) { pointsToDraw.emplace_back(pointsToDrawWithDoublon[i]); }
-	}
-
-	std::array<unsigned int, 6> trianglesToAdd;
-	std::vector<std::pair<unsigned int, unsigned int>> trianglesToDraw;
-	trianglesToDraw.resize(allFaces.size()*6);
-
-	for(unsigned int i{0}; i < allFaces.size(); i++) {
-
-		trianglesToAdd = getTrianglesOfOrientedFace(allFaces[i].second);
-
-		trianglesToDraw[i*6] = std::make_pair(allFaces[i].first, trianglesToAdd[0]);
-		trianglesToDraw[i*6 + 1] = std::make_pair(allFaces[i].first, trianglesToAdd[1]);
-		trianglesToDraw[i*6 + 2] = std::make_pair(allFaces[i].first, trianglesToAdd[2]);
-		trianglesToDraw[i*6 + 3] = std::make_pair(allFaces[i].first, trianglesToAdd[3]);
-		trianglesToDraw[i*6 + 4] = std::make_pair(allFaces[i].first, trianglesToAdd[4]);
-		trianglesToDraw[i*6 + 5] = std::make_pair(allFaces[i].first, trianglesToAdd[5]);
-	}
-
-	mesh.m_vertexIndice.resize(trianglesToDraw.size());
-
-	for(unsigned int i{0}; i < trianglesToDraw.size(); i++) {
-
-		foundPair = false;
-
-		for(unsigned int j{0}; j < pointsToDraw.size() && !foundPair; j++) {
-
-			if(pointsToDraw[j].first == trianglesToDraw[i].first && pointsToDraw[j].second == trianglesToDraw[i].second) {
-
-				foundPair = true;
-				mesh.m_vertexIndice[i] = j;
-			}
-		}
-
-		if(!foundPair) { mesh.m_vertexIndice[i] = 0; }
-	}
-
-	mesh.m_vertexPosition.resize(pointsToDraw.size());
-	mesh.m_vertexNormal.resize(pointsToDraw.size());
-	mesh.m_vertexColor.resize(pointsToDraw.size());
-
-	for(unsigned int i{0}; i < pointsToDraw.size(); i++) {
-
-		mesh.m_vertexPosition[i] = getPositionOfPoint(map, pointsToDraw[i].first, pointsToDraw[i].second);
-		mesh.m_vertexColor[i]  = map.getColor(pointsToDraw[i].first);
-	}
-
-	//Normals
-
-	std::vector<std::pair<glm::vec3, unsigned int>> normalToCompute;
-	normalToCompute.resize(mesh.m_vertexNormal.size());
-
-	glm::vec3 currentNormal;
-
-	for(unsigned int i{0}; i < mesh.m_vertexIndice.size(); i += 3) {
-
-		currentNormal = glm::triangleNormal(mesh.m_vertexPosition[mesh.m_vertexIndice[i]],
-											mesh.m_vertexPosition[mesh.m_vertexIndice[i + 1]],
-											mesh.m_vertexPosition[mesh.m_vertexIndice[i + 2]]);
-
-		normalToCompute[mesh.m_vertexIndice[i]].first += currentNormal;
-		normalToCompute[mesh.m_vertexIndice[i + 1]].first += currentNormal;
-		normalToCompute[mesh.m_vertexIndice[i + 2]].first += currentNormal;
-
-		normalToCompute[mesh.m_vertexIndice[i]].second++;
-		normalToCompute[mesh.m_vertexIndice[i + 1]].second++;
-		normalToCompute[mesh.m_vertexIndice[i + 2]].second++;
-	}
-
-
-	for(unsigned int i{0}; i < mesh.m_vertexNormal.size(); i++) {
-
-		mesh.m_vertexNormal[i] = normalToCompute[i].first/static_cast<float>(normalToCompute[i].second);
+		mesh.m_vertexIndice[i*6 + 3] = i*4;
+		mesh.m_vertexIndice[i*6 + 4] = i*4 + 2;
+		mesh.m_vertexIndice[i*6 + 5] = i*4 + 3;
 	}
 }
 
@@ -403,7 +342,7 @@ void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
 	std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
 	std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
 	std::shared_ptr<Gg::Component::Mesh> worldMesh{std::make_shared<Gg::Component::Mesh>(program)};
-	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(80, 80, 40)};
+	std::shared_ptr<VoxelMap> worldMap{std::make_shared<VoxelMap>(200, 600, 40)};
 
 	engine.addComponentToEntity(worldID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldScene));
 	engine.addComponentToEntity(worldID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldTransformation));

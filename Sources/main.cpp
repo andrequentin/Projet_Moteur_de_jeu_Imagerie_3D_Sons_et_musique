@@ -128,31 +128,9 @@ int main() {
     sceneDraw.addEntity(worldID);
     sceneDraw.setCameraEntity(cameraID);
 
-    struct Light {
-
-        glm::vec3 position;
-        glm::vec3 color;
-        float ambient;
-
-    } sbla;
-
-    sbla.position = glm::vec3{40.f, 40.f, 2.f};
-    sbla.color = glm::vec3{1.f, 1.f, 1.f};
-    sbla.ambient = 0.0f;
-
-    glUseProgram(program);
 
 
-    GLint lPos = glGetUniformLocation(program, "LPosition");
-    GLint lColor = glGetUniformLocation(program, "LColor");
-    GLint lAmbient = glGetUniformLocation(program, "LAmbient");
-
-    glUniform3fv(lPos, 1, &sbla.position[0]);
-    glUniform3fv(lColor, 1, &sbla.color[0]);
-    glUniform1f(lAmbient, 1.f);
-
-
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 1.f, 200.f)};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 5.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
 
 

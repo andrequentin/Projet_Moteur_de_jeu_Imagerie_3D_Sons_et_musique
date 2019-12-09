@@ -20,8 +20,8 @@ class System {
 		System(GulgEngine &gulgEngine);
 		virtual ~System(); 
 
-		void addEntity(const Entity newEntity);
-		void deleteEntity(const Entity newEntity);
+		virtual void addEntity(const Entity newEntity);
+		virtual void deleteEntity(const Entity newEntity);
 
 		virtual void applyAlgorithms();
 
