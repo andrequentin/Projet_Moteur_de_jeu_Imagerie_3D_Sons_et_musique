@@ -115,6 +115,7 @@ int main() {
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
     engine.addComponentToEntity(cameraTranslateID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTranslateTransformation));
 
+    //Directional
 
     Gg::Entity light1ID{engine.getNewEntity()};
 
@@ -126,23 +127,45 @@ int main() {
     engine.addComponentToEntity(light1ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Transformation));
     engine.addComponentToEntity(light1ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Light));
 
-    light1Light->m_ambient = glm::vec3{1.f, 1.f, 1.f};
-    light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
+    light1Light->m_ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+    light1Light->m_diffuse = glm::vec3{0.0f, 0.2f, 0.8f};
     light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
 
-    light1Light->m_constant = 1.f;
-    light1Light->m_linear = 0.007f;
-    light1Light->m_quadratic = 0.0002f;
+    light1Light->m_direction = glm::vec3{0.3f, 0.f, -0.7f};
+    light1Light->m_lightType = Gg::Component::LightType::Directional;
 
-    light1Light->m_lightType = Gg::Component::LightType::Point;
+    //Point
 
-    light1Transformation->translate(glm::vec3{40.f, 40.f, 40.f});
+    Gg::Entity light2ID{engine.getNewEntity()};
+
+    std::shared_ptr<Gg::Component::SceneObject> light2Scene{std::make_shared<Gg::Component::SceneObject>()};
+    std::shared_ptr<Gg::Component::Transformation> light2Transformation{std::make_shared<Gg::Component::Transformation>()};
+    std::shared_ptr<Gg::Component::Light> light2Light{std::make_shared<Gg::Component::Light>()};
+
+    engine.addComponentToEntity(light2ID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Scene));
+    engine.addComponentToEntity(light2ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Transformation));
+    engine.addComponentToEntity(light2ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Light));
+
+    light2Light->m_ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+    light2Light->m_diffuse = glm::vec3{0.85f, 0.15f, 0.17f};
+    light2Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
+
+    light2Light->m_constant = 1.f;
+    light2Light->m_linear = 0.027f;
+    light2Light->m_quadratic = 0.0028f;
+
+    light2Transformation->translate(glm::vec3{100.f, 300.f, -10.f});
+
+    light2Light->m_lightType = Gg::Component::LightType::Point;
+
+
 
 
     gameScene->addChild(worldID);
     cameraTranslateScene->addChild(cameraID);
     gameScene->addChild(cameraTranslateID);
     gameScene->addChild(light1ID);
+    gameScene->addChild(light2ID);
 
 
     UpdateScene sceneUpdate{engine};
@@ -154,6 +177,7 @@ int main() {
 
     Lightning lightning{engine, program};
     lightning.addEntity(light1ID);
+    lightning.addEntity(light2ID);
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 5.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
@@ -194,7 +218,7 @@ int main() {
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.1f, 0.45f, 0.55f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         sceneDraw.applyAlgorithms();
 

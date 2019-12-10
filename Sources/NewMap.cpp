@@ -67,7 +67,7 @@ void treeBranch(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentMa
             (currentMap.getColor(x+i,y+j,z+k)[3]==0.0f)
             ){
 
-              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k), glm::vec4{0.25f,0.5f,0.0f,1.0f});
+              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k), glm::vec4{0.25f,0.5f,0.1f,1.0f});
           }
         }
       }
@@ -82,7 +82,7 @@ void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentM
 	unsigned int height =hmin+ engin()%(hmax-hmin);
   unsigned int depth{static_cast<unsigned int>(engin()%(height/2))};
   for (unsigned int i {0};(i+z) < currentMap.getWorldDimensions()[2] && i<=height ;i++){
-     currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.0f,1.0f});
+     currentMap.setColor(currentMap.getVoxelID(x,y,z+i), glm::vec4{0.5f,0.28f,0.005f,1.0f});
      for(unsigned int j{0};j<8;j++){
        if(engin()%8 ==j && i>2){
            treeBranch(x,y,z+i,currentMap,engin,depth,j);
@@ -99,7 +99,7 @@ void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentM
             ((x+i) < currentMap.getWorldDimensions()[0]) &&
             ((y+j) < currentMap.getWorldDimensions()[1]) &&
             ((z+k) < currentMap.getWorldDimensions()[2])  ){
-              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.25f,0.5f,0.0f,1.0f});
+              currentMap.setColor(currentMap.getVoxelID(x+i,y+j,z+k+height), glm::vec4{0.25f,0.5f,0.1f,1.0f});
           }
         }
       }
@@ -160,9 +160,9 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 		for(unsigned int y{0};y < worldDimension[1]; y++){
 			for(unsigned int z{0};z<worldDimension[2] && z<=bruit[x][y]  ;z++){
 				if(z==bruit[x][y]){
-					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.24f,0.56f,0.0f ,1.f});
+					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.24f,0.56f,0.1f ,1.f});
 				}else{
-					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.56f,0.24f,0.0f, 1.f});
+					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.56f,0.24f,0.05f, 1.f});
 				}
 			}
 		 	if(t[x][y])	putTreeHere(x,y,bruit[x][y],currentMap,engin);

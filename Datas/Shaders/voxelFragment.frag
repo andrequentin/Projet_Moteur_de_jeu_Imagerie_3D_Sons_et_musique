@@ -41,7 +41,7 @@ vec3 computePointLight(const uint i) {
 
 	vec3 toLightPosition = normalize(Lights[i].position - toFragPosition);
     float diffuseCoef = max(dot(toFragNormal, toLightPosition), 0.0);
-    vec3 reflectedLightDirection = reflect(-toLightPosition, toFragNormal);
+    //vec3 reflectedLightDirection = reflect(-toLightPosition, toFragNormal);
 
     //float specularCoef = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
@@ -57,26 +57,38 @@ vec3 computePointLight(const uint i) {
     vec3 diffuse  = Lights[i].diffuse  * diffuseCoef * toFragColor;
     //vec3 specular = Lights[i].specular * spec * toFragColor;
 
-    //ambient  *= attenuation;
+    ambient  *= attenuation;
     diffuse  *= attenuation;
     //specular *= attenuation;
 
-    return (diffuse);
+    return (ambient + diffuse);
+
+}
+
+vec3 computeDirectionalLight(const uint i) {
+
+	vec3 toLightPosition = normalize(Lights[i].direction);
+    float diffuseCoef = max(dot(toFragNormal, toLightPosition), 0.0);
+    //vec3 reflectedLightDirection = reflect(-toLightPosition, toFragNormal);
+
+    //float specularCoef = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    vec3 ambient  = Lights[i].ambient  * toFragColor;
+    vec3 diffuse  = Lights[i].diffuse  * diffuseCoef * toFragColor;
+    //vec3 specular = Lights[i].specular * spec * toFragColor;
+
+    return (ambient + diffuse);
 
 }
 
 void main() {
 
-   /*vec3 Ia = LAmbient*LColor;
-   vec3 Id = LColor*max(dot(normalize(toFragNormal), normalize(LPosition - toFragPosition)), 0.0);
-
-   finalColor = vec4((Ia + Id)*toFragColor, 1.0);*/
-
-   vec3 result = vec3(0.0, 0.0, 0.0);
+    vec3 result = vec3(0.0, 0.0, 0.0);
 
 	for(int i = 0; i < int(LightNumber); i++) {
 
 		if(Lights[i].lightType == Point) { result += computePointLight(uint(i)); }
+		else { result += computeDirectionalLight(uint(i)); }
 	}
 
    finalColor = vec4(result, 1.0);

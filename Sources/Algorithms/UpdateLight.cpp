@@ -7,7 +7,7 @@ namespace Algorithm {
 UpdateLight::UpdateLight(const std::string componentToApply, const GLuint program, GulgEngine &gulgEngine): 
 	SpecializedAlgorithm{componentToApply, gulgEngine},
 	m_program{program},
-	m_currentLightNumber{0}{
+	m_currentLightNumber{0} {
 
 	m_signature = gulgEngine.getComponentSignature("Light");
 	m_signature += gulgEngine.getComponentSignature("SceneObject");
@@ -44,9 +44,9 @@ void UpdateLight::apply() {
 
 			positionID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].position"}.c_str());
 
-			glm::vec3 position{currentSceneObject->m_globalTransformations[0][3], 
-						   	   currentSceneObject->m_globalTransformations[1][3], 
-							   currentSceneObject->m_globalTransformations[2][3]};
+			glm::vec3 position{currentSceneObject->m_globalTransformations[3][0], 
+						   	   currentSceneObject->m_globalTransformations[3][1], 
+							   currentSceneObject->m_globalTransformations[3][2]};
 
 
 			glUniform3fv(positionID, 1, &position[0]);
@@ -55,7 +55,7 @@ void UpdateLight::apply() {
 		    glUniform1f(linearID, currentLight->m_linear);
 		    glUniform1f(quadraticID, currentLight->m_quadratic);
 
-		    glUniform1f(lightTypeID, 0);
+		    glUniform1ui(lightTypeID, 0);
 
 		}
 
@@ -64,7 +64,7 @@ void UpdateLight::apply() {
 			directionID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].direction"}.c_str());
 			glUniform3fv(directionID, 1, &(currentLight->m_direction[0]));
 
-			glUniform1f(lightTypeID, 1);
+			glUniform1ui(lightTypeID, 1);
 
 		}
 
