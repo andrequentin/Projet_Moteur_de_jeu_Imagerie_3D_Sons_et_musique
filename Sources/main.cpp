@@ -12,9 +12,11 @@
 #include "Components/Mesh.hpp"
 #include "Components/Transformation.hpp"
 #include "Components/SceneObject.hpp"
+#include "Components/Light.hpp"
 
 #include "Systems/UpdateScene.hpp"
 #include "Systems/DrawScene.hpp"
+#include "Systems/Lightning.hpp"
 
 #include "NewMap.hpp"
 
@@ -114,11 +116,33 @@ int main() {
     engine.addComponentToEntity(cameraTranslateID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTranslateTransformation));
 
 
+    Gg::Entity light1ID{engine.getNewEntity()};
+
+    std::shared_ptr<Gg::Component::SceneObject> light1Scene{std::make_shared<Gg::Component::SceneObject>()};
+    std::shared_ptr<Gg::Component::Transformation> light1Transformation{std::make_shared<Gg::Component::Transformation>()};
+    std::shared_ptr<Gg::Component::Light> light1Light{std::make_shared<Gg::Component::Light>()};
+
+    engine.addComponentToEntity(light1ID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Scene));
+    engine.addComponentToEntity(light1ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Transformation));
+    engine.addComponentToEntity(light1ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Light));
+
+    light1Light->m_ambient = glm::vec3{1.f, 1.f, 1.f};
+    light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
+    light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
+
+    light1Light->m_constant = 1.f;
+    light1Light->m_linear = 0.007f;
+    light1Light->m_quadratic = 0.0002f;
+
+    light1Light->m_lightType = Gg::Component::LightType::Point;
+
+    light1Transformation->translate(glm::vec3{40.f, 40.f, 40.f});
 
 
     gameScene->addChild(worldID);
     cameraTranslateScene->addChild(cameraID);
     gameScene->addChild(cameraTranslateID);
+    gameScene->addChild(light1ID);
 
 
     UpdateScene sceneUpdate{engine};
@@ -128,7 +152,8 @@ int main() {
     sceneDraw.addEntity(worldID);
     sceneDraw.setCameraEntity(cameraID);
 
-
+    Lightning lightning{engine, program};
+    lightning.addEntity(light1ID);
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 5.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
@@ -163,6 +188,8 @@ int main() {
 
         sceneUpdate.applyAlgorithms();
         sceneDraw.setProjection(projection);
+
+        lightning.applyAlgorithms();
 
         //Draw
 

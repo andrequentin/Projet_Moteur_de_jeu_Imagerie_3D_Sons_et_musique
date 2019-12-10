@@ -7,10 +7,7 @@ namespace Algorithm {
 UpdateLight::UpdateLight(const std::string componentToApply, const GLuint program, GulgEngine &gulgEngine): 
 	SpecializedAlgorithm{componentToApply, gulgEngine},
 	m_program{program},
-	m_currentLightNumber{0},
-	m_currentPositionID{-1}, 
-	m_currentColorID{-1}, 
-	m_currentAmbientID{-1} {
+	m_currentLightNumber{0}{
 
 	m_signature = gulgEngine.getComponentSignature("Light");
 	m_signature += gulgEngine.getComponentSignature("SceneObject");
@@ -22,11 +19,11 @@ void UpdateLight::apply() {
 
 	m_currentLightNumber = 0;
 
-	for(Gg::Entity currentEntity: m_entitiesToApply) { 
+	GLint positionID, directionID, ambientID, diffuseID, specularID, constantID, linearID, quadraticID, lightTypeID;
 
-		m_currentPositionID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].position"}.c_str());
-		m_currentColorID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].color"}.c_str());
-		m_currentAmbientID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].ambient"}.c_str());
+    //Position is given by SceneObject component
+
+	for(Gg::Entity currentEntity: m_entitiesToApply) { 
 
 		std::shared_ptr<Gg::Component::SceneObject> currentSceneObject{ 
 			std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(currentEntity, "SceneObject"))
@@ -36,13 +33,48 @@ void UpdateLight::apply() {
 			std::static_pointer_cast<Gg::Component::Light>(m_gulgEngine.getComponent(currentEntity, "Light"))
 		};
 
-		glm::vec3 position{currentSceneObject->m_globalTransformations[0][3], 
-						   currentSceneObject->m_globalTransformations[1][3], 
-						   currentSceneObject->m_globalTransformations[2][3]};
+		lightTypeID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].lightType"}.c_str());
 
-		glUniform3fv(m_currentPositionID, 1, &position[0]);
-	    glUniform3fv(m_currentColorID, 1, &(currentLight->m_color[0]));
-	    glUniform1f(m_currentAmbientID, currentLight->m_ambient);
+
+		if(currentLight->m_lightType == Gg::Component::LightType::Point) {
+
+			constantID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].constant"}.c_str());
+			linearID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].linear"}.c_str());
+			quadraticID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].quadratic"}.c_str());
+
+			positionID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].position"}.c_str());
+
+			glm::vec3 position{currentSceneObject->m_globalTransformations[0][3], 
+						   	   currentSceneObject->m_globalTransformations[1][3], 
+							   currentSceneObject->m_globalTransformations[2][3]};
+
+
+			glUniform3fv(positionID, 1, &position[0]);
+
+		    glUniform1f(constantID, currentLight->m_constant);
+		    glUniform1f(linearID, currentLight->m_linear);
+		    glUniform1f(quadraticID, currentLight->m_quadratic);
+
+		    glUniform1f(lightTypeID, 0);
+
+		}
+
+		else {
+
+			directionID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].direction"}.c_str());
+			glUniform3fv(directionID, 1, &(currentLight->m_direction[0]));
+
+			glUniform1f(lightTypeID, 1);
+
+		}
+
+		ambientID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].ambient"}.c_str());
+		diffuseID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].diffuse"}.c_str());
+		specularID = glGetUniformLocation(m_program, std::string{"Lights[" + std::to_string(m_currentLightNumber) + "].specular"}.c_str());
+
+		glUniform3fv(ambientID, 1, &(currentLight->m_ambient[0]));
+		glUniform3fv(diffuseID, 1, &(currentLight->m_diffuse[0]));
+		glUniform3fv(specularID, 1, &(currentLight->m_specular[0]));
 
 		m_currentLightNumber++;
 	}

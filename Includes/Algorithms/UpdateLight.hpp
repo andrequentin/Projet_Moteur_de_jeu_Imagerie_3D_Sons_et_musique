@@ -30,8 +30,6 @@ class UpdateLight: public SpecializedAlgorithm {
 
 		const GLuint m_program;
 		unsigned int m_currentLightNumber;
-
-		GLint m_currentPositionID, m_currentColorID, m_currentAmbientID;
 };
 
 }}
