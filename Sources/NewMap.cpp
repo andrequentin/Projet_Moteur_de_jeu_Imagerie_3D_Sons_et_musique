@@ -253,8 +253,8 @@ std::array<unsigned int, 6> getTrianglesOfOrientedFace(const glm::vec3 &orientat
 	if(orientation[1] == -1.f) { triangle[0] = 0; triangle[1] = 1; triangle[2] = 3;
 								 triangle[3] = 1; triangle[4] = 2; triangle[5] = 3; }
 
-	if(orientation[2] == 1.f) {  triangle[0] = 3; triangle[1] = 7; triangle[2] = 2;
-								 triangle[3] = 7; triangle[4] = 6; triangle[5] = 2; }
+	if(orientation[2] == 1.f) {  triangle[0] = 7; triangle[1] = 4; triangle[2] = 6;
+								 triangle[3] = 4; triangle[4] = 6; triangle[5] = 2; }
 
 	if(orientation[2] == -1.f) { triangle[0] = 0; triangle[1] = 1; triangle[2] = 4;
 								 triangle[3] = 1; triangle[4] = 5; triangle[5] = 4; }
@@ -335,23 +335,25 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 }
 
 
-void Square(Gg::Component::Mesh &mesh){
-  mesh.m_vertexPosition.resize(4);
-    mesh.m_vertexPosition[0] = glm::vec3{0.f, 0.f, 0.f};
-    mesh.m_vertexPosition[1] = glm::vec3{0.f, 1.f, 0.f};
-    mesh.m_vertexPosition[2] = glm::vec3{1.f, 0.f, 0.f};
-    mesh.m_vertexPosition[3] = glm::vec3{1.f, 1.f, 0.f};
-         for(unsigned int i{0}; i < 4; i++) {
-              mesh.m_vertexNormal.emplace_back(glm::vec3{1.f, 0.f, 0.f});
-         }
-         mesh.m_vertexIndice.emplace_back(0);
-    mesh.m_vertexIndice.emplace_back(1);
-    mesh.m_vertexIndice.emplace_back(2);
-    mesh.m_vertexIndice.emplace_back(1);
-    mesh.m_vertexIndice.emplace_back(3);
-    mesh.m_vertexIndice.emplace_back(2);
+void Square(std::shared_ptr<Gg::Component::Mesh> mesh){
 
-         mesh.reshape();
+  mesh->m_vertexPosition.resize(4);
+    mesh->m_vertexPosition[0] = glm::vec3{0.f, 0.f, 0.f};
+    mesh->m_vertexPosition[1] = glm::vec3{0.f, 1.f, 0.f};
+    mesh->m_vertexPosition[2] = glm::vec3{1.f, 0.f, 0.f};
+    mesh->m_vertexPosition[3] = glm::vec3{1.f, 1.f, 0.f};
+     for(unsigned int i{0}; i < 4; i++) {
+        mesh->m_vertexNormal.emplace_back(glm::vec3{0.f, 0.f, 1.f});
+        mesh->m_vertexColor.emplace_back(glm::vec3{0.f, 1.f, 1.f});
+    }
+         mesh->m_vertexIndice.emplace_back(0);
+    mesh->m_vertexIndice.emplace_back(1);
+    mesh->m_vertexIndice.emplace_back(2);
+    mesh->m_vertexIndice.emplace_back(1);
+    mesh->m_vertexIndice.emplace_back(3);
+    mesh->m_vertexIndice.emplace_back(2);
+
+    mesh->reshape();
 }
 
 

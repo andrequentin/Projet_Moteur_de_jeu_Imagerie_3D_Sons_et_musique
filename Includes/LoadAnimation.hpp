@@ -9,7 +9,7 @@
 #include "GulgEngine/GulgDeclarations.hpp"
 
 
-bool loadAnimation(const Gg::Entity &entity, const std::string path);
+bool loadAnimation(Gg::GulgEngine &engine, const Gg::Entity entity, const std::string path);
 
 
 #endif

@@ -28,12 +28,16 @@ struct Light {
     uint lightType;
 };
 
-in vec3 toFragPosition;
-in vec3 toFragNormal;
-in vec3 toFragColor;
+uniform mat4 ModelMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
 
 uniform Light Lights[32];
 uniform uint LightNumber;
+
+in vec3 toFragPosition;
+in vec3 toFragNormal;
+in vec3 toFragColor;
 
 out vec4 finalColor;
 

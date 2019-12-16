@@ -10,12 +10,12 @@ TODO
 
 # Graphisme
 
-- Modéle de phong (a continuer/refaire -> séparer en différents types de lumieres ?)
 - Ombres
 
 # Physique
 
 - Gravité sur certains objets
+- Collisions
 
 # GamePlay
 
@@ -27,10 +27,9 @@ TODO
 
 # Génération procédurale
 https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
-- Terrain plus enclavé
+- Terrain plus enclavé ?
 - Ajouter structures (maison)
-- Ajouter annemis
-- Ajuster génération selon difficulté (nombre)
+- Ajouter ennemis
 
 # IA
 
@@ -48,11 +47,10 @@ https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
 
 # Bugs à corriger
 
-- Axes inversés ? (lumière en z = -10 qu lieu de z = 10);
-
 # Bonus, à faire si on a du temps
 
 - Ajout dans le systeme Lightning pas convainquant
+- Ajuster génération selon difficulté (nombre)
 
 # Bonus, à faire plus tard
 

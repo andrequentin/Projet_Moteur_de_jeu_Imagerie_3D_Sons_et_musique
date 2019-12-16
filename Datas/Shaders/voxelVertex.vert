@@ -1,6 +1,9 @@
 #version 150
 #extension GL_ARB_explicit_attrib_location : enable
 
+const uint Point       = 0u;
+const uint Directional = 1u;
+
 struct Light {
 
     //Directional light
@@ -17,7 +20,7 @@ struct Light {
 
     //Both
 
-	vec3 ambient;
+  vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 
@@ -33,7 +36,7 @@ uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
 uniform Light Lights[32];
-uniform int LightsNumber;
+uniform uint LightNumber;
 
 out vec3 toFragPosition;
 out vec3 toFragNormal;

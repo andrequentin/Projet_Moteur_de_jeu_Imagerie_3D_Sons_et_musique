@@ -20,7 +20,7 @@ std::vector<glm::vec3> getFaceFromOrientation(const glm::vec3 &position, const g
 
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh);
 
-void Square(Gg::Component::Mesh &mesh);
+void Square(std::shared_ptr<Gg::Component::Mesh> mesh);
 
 void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program);
 

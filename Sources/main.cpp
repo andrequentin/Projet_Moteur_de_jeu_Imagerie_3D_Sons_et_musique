@@ -93,37 +93,31 @@ int main() {
     Gg::Entity gameID{engine.getNewEntity()},
                worldID{engine.getNewEntity()},
                cameraID{engine.getNewEntity()},
-               playerRotateID{engine.getNewEntity()},
-               playerTranslateID{engine.getNewEntity()};
+               playerID{engine.getNewEntity()};
 
     newMap(engine,worldID,program);
 
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
-    std::shared_ptr<Gg::Component::SceneObject> playerRotateScene{std::make_shared<Gg::Component::SceneObject>()};
-    std::shared_ptr<Gg::Component::SceneObject> playerTranslateScene{std::make_shared<Gg::Component::SceneObject>()};
+    std::shared_ptr<Gg::Component::SceneObject> playerScene{std::make_shared<Gg::Component::SceneObject>()};
 
     std::shared_ptr<Gg::Component::Transformation> gameTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
-    std::shared_ptr<Gg::Component::Transformation> playerRotateTransformation{std::make_shared<Gg::Component::Transformation>()};
-    std::shared_ptr<Gg::Component::Transformation> playerTranslateTransformation{std::make_shared<Gg::Component::Transformation>()};
-    std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
+    std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
 
 
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
     engine.addComponentToEntity(cameraID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraScene));
-    engine.addComponentToEntity(playerRotateID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerRotateScene));
-    engine.addComponentToEntity(playerTranslateID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTranslateScene));
-
+    engine.addComponentToEntity(playerID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerScene));
+   
     engine.addComponentToEntity(gameID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameTransformation));
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
-    engine.addComponentToEntity(playerRotateID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerRotateTransformation));
-    engine.addComponentToEntity(playerTranslateID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTranslateTransformation));
-
+    engine.addComponentToEntity(playerID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTransformation));
+  
     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Square(*playerMesh);
-    engine.addComponentToEntity(playerRotateID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    Square(playerMesh);
+    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
 
     //Directional
 
@@ -172,9 +166,8 @@ int main() {
 
 
     gameScene->addChild(worldID);
-    gameScene->addChild(playerTranslateID);
-    playerTranslateScene->addChild(playerRotateID);
-    playerRotateScene->addChild(cameraID);
+    gameScene->addChild(playerID);
+    playerScene->addChild(cameraID);
 
 
     gameScene->addChild(light1ID);
@@ -186,7 +179,7 @@ int main() {
 
     DrawScene sceneDraw{engine};
     sceneDraw.addEntity(worldID);
-    sceneDraw.addEntity(playerRotateID);
+    sceneDraw.addEntity(playerID);
     sceneDraw.setCameraEntity(cameraID);
 
     Lightning lightning{engine, program};
@@ -194,8 +187,11 @@ int main() {
     lightning.addEntity(light2ID);
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
-    cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
+    //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
 
+    cameraTransformation->translate(glm::vec3{0.f, 0.f, -10.f});
+
+    sceneDraw.setProjection(projection);
 
     while (!haveToStop) {
 
@@ -204,27 +200,25 @@ int main() {
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
         
-        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
-        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { playerRotateTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
+        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{0.f, -0.3f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{0.f, 0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, -0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.3f, 0.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{0.f, 0.f, -0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, 0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, -0.3f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{0.3f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTranslateTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
 
         //Update
 
         sceneUpdate.applyAlgorithms();
-        sceneDraw.setProjection(projection);
-
         lightning.applyAlgorithms();
 
         //Draw
