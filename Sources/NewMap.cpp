@@ -335,6 +335,24 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 }
 
 
+void Square(Gg::Component::Mesh &mesh){
+  mesh.m_vertexPosition.resize(4);
+    mesh.m_vertexPosition[0] = glm::vec3{0.f, 0.f, 0.f};
+    mesh.m_vertexPosition[1] = glm::vec3{0.f, 1.f, 0.f};
+    mesh.m_vertexPosition[2] = glm::vec3{1.f, 0.f, 0.f};
+    mesh.m_vertexPosition[3] = glm::vec3{1.f, 1.f, 0.f};
+         for(unsigned int i{0}; i < 4; i++) {
+              mesh.m_vertexNormal.emplace_back(glm::vec3{1.f, 0.f, 0.f});
+         }
+         mesh.m_vertexIndice.emplace_back(0);
+    mesh.m_vertexIndice.emplace_back(1);
+    mesh.m_vertexIndice.emplace_back(2);
+    mesh.m_vertexIndice.emplace_back(1);
+    mesh.m_vertexIndice.emplace_back(3);
+    mesh.m_vertexIndice.emplace_back(2);
+
+         mesh.reshape();
+}
 
 
 void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){

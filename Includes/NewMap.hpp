@@ -10,7 +10,7 @@
 #include "Components/SceneObject.hpp"
 #include "Components/VoxelMap.hpp"
 
-void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency); 
+void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency);
 
 std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations(const unsigned int voxelMapSize);
 
@@ -19,6 +19,8 @@ std::vector<std::pair<unsigned int, glm::vec3>> selectVisibleFaces(const VoxelMa
 std::vector<glm::vec3> getFaceFromOrientation(const glm::vec3 &position, const glm::vec3 &orientation);
 
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh);
+
+void Square(Gg::Component::Mesh &mesh);
 
 void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program);
 

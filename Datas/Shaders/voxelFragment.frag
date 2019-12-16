@@ -14,16 +14,16 @@ struct Light {
     //Point light
 
     vec3 position;
-    
+
     float constant;
     float linear;
-    float quadratic; 
+    float quadratic;
 
     //Both
-    
+
 	vec3 ambient;
     vec3 diffuse;
-    vec3 specular; 
+    vec3 specular;
 
     uint lightType;
 };
@@ -48,8 +48,8 @@ vec3 computePointLight(const uint i) {
     // Point attenuation
     float distance = length(Lights[i].position - toFragPosition);
 
-    float attenuation = 1.0 / (Lights[i].constant 
-    						 + Lights[i].linear * distance  
+    float attenuation = 1.0 / (Lights[i].constant
+    						 + Lights[i].linear * distance
   			    			 + Lights[i].quadratic * (distance * distance));
 
     // combine results

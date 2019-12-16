@@ -3,9 +3,25 @@
 
 struct Light {
 
+    //Directional light
+
+    vec3 direction;
+
+    //Point light
+
     vec3 position;
-    vec3 color;
-    float ambient;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    //Both
+
+	vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    uint lightType;
 };
 
 layout(location = 0) in vec3 vertex;
