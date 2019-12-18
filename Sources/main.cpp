@@ -110,11 +110,11 @@ int main() {
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
     engine.addComponentToEntity(cameraID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraScene));
     engine.addComponentToEntity(playerID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerScene));
-   
+
     engine.addComponentToEntity(gameID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameTransformation));
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
     engine.addComponentToEntity(playerID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTransformation));
-  
+
     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
     Square(playerMesh);
     engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
@@ -199,7 +199,7 @@ int main() {
 
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
-        
+
         if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f}); }
         if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f}); }
@@ -207,14 +207,14 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
         if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, -0.3f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.3f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, -0.3f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.3f, 0.f} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, 0.3f}); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, -0.3f}); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, 0.3f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, -0.3f} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.3f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f}); }
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
 
         //Update
 
