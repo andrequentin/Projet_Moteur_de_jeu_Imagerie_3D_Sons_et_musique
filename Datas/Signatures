@@ -3,3 +3,5 @@ Transformations
 SceneObject
 VoxelMap
 Light
+Collider
+WorldCollider

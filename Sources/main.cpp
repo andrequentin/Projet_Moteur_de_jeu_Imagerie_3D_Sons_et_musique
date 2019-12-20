@@ -19,6 +19,7 @@
 #include "Systems/Lightning.hpp"
 
 #include "NewMap.hpp"
+#include "Components/Collider.hpp"
 
 bool initOpenGL(GLFWwindow **window) {
 
