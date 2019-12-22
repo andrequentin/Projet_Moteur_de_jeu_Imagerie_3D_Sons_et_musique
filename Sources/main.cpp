@@ -15,6 +15,7 @@
 #include "Components/Light.hpp"
 
 #include "Systems/UpdateScene.hpp"
+#include "Systems/Collisions.hpp"
 #include "Systems/DrawScene.hpp"
 #include "Systems/Lightning.hpp"
 
@@ -106,6 +107,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
 
+    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
 
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
@@ -115,6 +117,9 @@ int main() {
     engine.addComponentToEntity(gameID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameTransformation));
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
     engine.addComponentToEntity(playerID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTransformation));
+
+    engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
+
 
     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
     Square(playerMesh);
@@ -183,6 +188,9 @@ int main() {
     sceneDraw.addEntity(playerID);
     sceneDraw.setCameraEntity(cameraID);
 
+    Collisions collisions{engine,worldID};
+    collisions.addEntity(playerID);
+
     Lightning lightning{engine, program};
     lightning.addEntity(light1ID);
     lightning.addEntity(light2ID);
@@ -217,9 +225,10 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
 
+      //  if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {  collisions.applyAlgorithms(); }
         //Update
-
-        sceneUpdate.applyAlgorithms();
+        collisions.applyAlgorithms();
+          sceneUpdate.applyAlgorithms();
         lightning.applyAlgorithms();
 
         //Draw

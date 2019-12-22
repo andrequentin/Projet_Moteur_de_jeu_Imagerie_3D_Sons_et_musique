@@ -5,22 +5,28 @@
 
 #include "Components/Component.hpp"
 
-class Collider: public Gg::Component::AbstractComponent{
+namespace Gg {
 
-public:
+  namespace Component {
+    class Collider: public Gg::Component::AbstractComponent{
 
-  Collider(const glm::vec3 c1,const glm::vec3 c2, const float r);
+    public:
 
-  Collider(const Collider &col);
+      Collider();
 
-  virtual std::shared_ptr<AbstractComponent> clone() const{
+      Collider(const glm::vec3 c1,const glm::vec3 c2, const float r);
 
-    return std::static_pointer_cast<Gg::Component::AbstractComponent>(std::make_shared<Collider>(*this));
+      Collider(const Collider &col);
+
+      virtual std::shared_ptr<AbstractComponent> clone() const{
+
+        return std::static_pointer_cast<Gg::Component::AbstractComponent>(std::make_shared<Collider>(*this));
+      }
+
+
+      glm::vec3 c1,c2;
+      float r;
+    };
   }
-
-
-  glm::vec3 c1,c2;
-  float r;
-};
-
+}
 #endif

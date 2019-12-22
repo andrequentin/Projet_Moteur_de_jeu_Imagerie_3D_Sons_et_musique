@@ -1,13 +1,12 @@
 #ifndef UPDATE_COLLISIONS_ALGORITHM_HPP
 #define UPDATE_COLLISIONS_ALGORITHM_HPP
 
-
 #include "Algorithms/Algorithm.hpp"
 
 #include "Components/Transformation.hpp"
 #include "Components/SceneObject.hpp"
 #include "Components/Collider.hpp"
-#include "Components/WorldCollider.hpp"
+#include "Components/VoxelMap.hpp"
 
 namespace Gg {
 
