@@ -2,11 +2,15 @@
 #define UPDATE_COLLISIONS_ALGORITHM_HPP
 
 #include "Algorithms/Algorithm.hpp"
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
 
 #include "Components/Transformation.hpp"
 #include "Components/SceneObject.hpp"
 #include "Components/Collider.hpp"
 #include "Components/VoxelMap.hpp"
+#include "Components/Mesh.hpp"
+
 
 namespace Gg {
 

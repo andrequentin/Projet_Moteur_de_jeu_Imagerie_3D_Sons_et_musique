@@ -137,7 +137,7 @@ int main() {
     engine.addComponentToEntity(light1ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Transformation));
     engine.addComponentToEntity(light1ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Light));
 
-    light1Light->m_ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+    light1Light->m_ambient = glm::vec3{0.8f, 0.8f, 0.8f};
     light1Light->m_diffuse = glm::vec3{0.0f, 0.2f, 0.8f};
     light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
 
@@ -197,8 +197,8 @@ int main() {
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
-
     cameraTransformation->translate(glm::vec3{0.f, 0.f, -10.f});
+    // playerTransformation->translate(glm::vec3{0.f, 0.f, -10.f} * cameraTransformation->m_rotation);
 
     sceneDraw.setProjection(projection);
 
