@@ -335,23 +335,33 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 }
 
 
-void Square(std::shared_ptr<Gg::Component::Mesh> mesh){
+void Cube(std::shared_ptr<Gg::Component::Mesh> mesh){
 
-  mesh->m_vertexPosition.resize(4);
-    mesh->m_vertexPosition[0] = glm::vec3{-0.5f, -0.5f, 0.f};
-    mesh->m_vertexPosition[1] = glm::vec3{-0.5f, 0.5f, 0.f};
-    mesh->m_vertexPosition[2] = glm::vec3{0.5f, -0.5f, 0.f};
-    mesh->m_vertexPosition[3] = glm::vec3{0.5f, 0.5f, 0.f};
-     for(unsigned int i{0}; i < 4; i++) {
+  mesh->m_vertexPosition.resize(8);
+    mesh->m_vertexPosition[0] = glm::vec3{-0.5f, -0.5f, -0.5f};
+    mesh->m_vertexPosition[1] = glm::vec3{0.5f, -0.5f, -0.5f};
+    mesh->m_vertexPosition[2] = glm::vec3{0.5f, 0.5f, -0.5f};
+    mesh->m_vertexPosition[3] = glm::vec3{-0.5f, 0.5f, -0.5f};
+    mesh->m_vertexPosition[4] = glm::vec3{-0.5f, -0.5f, 0.5f};
+    mesh->m_vertexPosition[5] = glm::vec3{0.5f, -0.5f, 0.5f};
+    mesh->m_vertexPosition[6] = glm::vec3{0.5f, 0.5f, 0.5f};
+    mesh->m_vertexPosition[7] = glm::vec3{-0.5f, 0.5f, 0.5f};
+     for(unsigned int i{0}; i < 8; i++) {
         mesh->m_vertexNormal.emplace_back(glm::vec3{0.f, 0.f, 1.f});
         mesh->m_vertexColor.emplace_back(glm::vec3{0.f, 1.f, 1.f});
     }
-         mesh->m_vertexIndice.emplace_back(0);
-    mesh->m_vertexIndice.emplace_back(1);
-    mesh->m_vertexIndice.emplace_back(2);
-    mesh->m_vertexIndice.emplace_back(1);
-    mesh->m_vertexIndice.emplace_back(3);
-    mesh->m_vertexIndice.emplace_back(2);
+    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(3);
+    mesh->m_vertexIndice.emplace_back(3);    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(2);
+    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(2);
+    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(6);
+    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(6);
+    mesh->m_vertexIndice.emplace_back(6);    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(7);
+    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(7);
+    mesh->m_vertexIndice.emplace_back(7);    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(3);
+    mesh->m_vertexIndice.emplace_back(3);    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(7);
+    mesh->m_vertexIndice.emplace_back(7);    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(6);
+    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(0);
+    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(1);
 
     mesh->reshape();
 }

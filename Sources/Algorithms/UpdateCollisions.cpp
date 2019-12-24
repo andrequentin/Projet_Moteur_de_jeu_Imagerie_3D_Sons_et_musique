@@ -10,7 +10,7 @@ namespace Gg {
 
     	m_signature = gulgEngine.getComponentSignature("SceneObject");
       m_signature += gulgEngine.getComponentSignature("Collider");
-      std::cout<< "ouii"<<std::endl;
+      m_signature += gulgEngine.getComponentSignature("Forces");
 
     }
 
@@ -28,7 +28,6 @@ namespace Gg {
         glm::vec3 ePosition{
           eT[3][0],eT[3][1],eT[3][2]
         };
-         ePosition *= -1.f;
          std::shared_ptr<Gg::Component::Collider> eCollider {
            std::static_pointer_cast<Gg::Component::Collider>(m_gulgEngine.getComponent(currentEntity, "Collider"))
          };
@@ -37,8 +36,8 @@ namespace Gg {
          //"bounding box" du caps Collider
          // bbmin(min((c1.x-r),(c2.x-r)),min((c1.y-r),(c2.y-r)),min((c1.z-r),(c2.z-r)))
          // bbmax(max((c1.x+r),(c2.x+r)),max((c1.y+r),(c2.y+r)),max((c1.z+r),(c2.z+r)))
-         glm::vec3 c1{eT * glm::vec4{eCollider->c1,1}  };
-         glm::vec3 c2{eT * glm::vec4{eCollider->c2,1}  };
+         glm::vec3 c1{ePosition + eCollider->c1  };
+         glm::vec3 c2{ePosition + eCollider->c2  };
          c1 *= -1;
          c2 *= -1;
          glm::vec3 bbmin{
@@ -51,13 +50,20 @@ namespace Gg {
            std::max(c1[1] + eCollider->r,c2[1] + eCollider->r),
            std::max(c1[2] + eCollider->r,c2[2] + eCollider->r)
          };
+         bbmin+=1.f;
+         bbmax+=1.f;
+         //TO DO
+         //Tester pour les autres entités
+
+         //tester avec le world
          //récupérer voxel voisins (bbmin -> bbmax)
          std::array<unsigned int, 3> wD = vM->getWorldDimensions();
+         // std::cout<< "bbmin "<<to_string(bbmin)<<", bbmax"<<to_string(bbmax)<<std::endl;
 
          std::vector<int> voxelToCheck;
-         for(float i{std::floor(std::max(bbmin[0],0.f))};i <= std::ceil(std::min(bbmax[0],static_cast<float>(wD.at(0)-1)));i+=1.f){
-           for(float j{std::floor(std::max(bbmin[1],0.f))};j <= std::ceil(std::min(bbmax[1],static_cast<float>(wD.at(1)-1)));j+=1.f){
-             for(float k{std::floor(std::max(bbmin[2],0.f))};k <= std::ceil(std::min(bbmax[2],static_cast<float>(wD.at(2)-1)));k+=1.f){
+         for(float i{std::floor(std::max(bbmin[0],0.f))};i < std::ceil(std::min(bbmax[0],static_cast<float>(wD.at(0)-1)));i+=1.f){
+           for(float j{std::floor(std::max(bbmin[1],0.f))};j < std::ceil(std::min(bbmax[1],static_cast<float>(wD.at(1)-1)));j+=1.f){
+             for(float k{std::floor(std::max(bbmin[2],0.f))};k < std::ceil(std::min(bbmax[2],static_cast<float>(wD.at(2)-1)));k+=1.f){
                if(std::find(voxelToCheck.begin(),voxelToCheck.end(), vM->getVoxelID(i,j,k)) == voxelToCheck.end()
                && vM->getColor(i,j,k)[3] > 0.f
              ){
@@ -66,24 +72,27 @@ namespace Gg {
              }
            }
          }
-         //Tester pour chaque voxel
-          std::cout<<"checking "<<voxelToCheck.size()<< " voxels"<<std::endl;
-         for(unsigned int i{0};i<voxelToCheck.size();i++){
-            std::cout<<to_string(vM->getVoxelPosition(voxelToCheck[i]))<<std::endl;
+         //Tester pour chaque voxel voisins
+          std::cout<<"colliding  "<<voxelToCheck.size()<< " voxels of the world"<<std::endl;
+        std::shared_ptr<Gg::Component::Forces> eForces {
+          std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
+        };
+        glm::vec3 brE {ePosition};
+        glm::vec3 vfs{0.f};
+        for(unsigned int i{0};i<voxelToCheck.size();i++){
+            // std::cout<<to_string(vM->getVoxelPosition(voxelToCheck[i]))<<std::endl;
+            glm::vec3 brV = -1.f *  (vM->getVoxelPosition(voxelToCheck[i])+0.5f);
+            // std::cout<<to_string(brV)<<std::endl;
+            glm::vec3 df {brV-brE};
+            vfs+=df;
 
 
-         }
+          }
+          if(voxelToCheck.size()>0 && glm::dot(vfs,eForces->forces)>0 ){
+              eForces->forces = -1.f * glm::normalize(vfs)*glm::length(eForces->forces) ;
+          }
 
 
-         //Tester pour les autres entités
-
-        // if(ePosition[0]>=0.f && ePosition[1]>=0.f && ePosition[2]>=0.f && ePosition[0]<= wD.at(0) && ePosition[1]<= wD.at(1)&& ePosition[2]<= wD.at(2))
-        // {
-        //   if(vM->getColor( std::floor(ePosition[0]),std::floor(ePosition[1]),std::floor(ePosition[2]))[3] > 0.0f){
-        //     std::cout<<"Collision between world & entity at position : "<< to_string(ePosition)<<std::endl;
-        //     std::static_pointer_cast<Gg::Component::Transformation>(m_gulgEngine.getComponent(currentEntity, "Transformations"))->translate(glm::vec3{0.0f,0.0f,-.3f});
-        //   }
-        // }
       }
     }
   }

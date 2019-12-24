@@ -16,6 +16,7 @@
 
 #include "Systems/UpdateScene.hpp"
 #include "Systems/Collisions.hpp"
+#include "Systems/Physics.hpp"
 #include "Systems/DrawScene.hpp"
 #include "Systems/Lightning.hpp"
 
@@ -108,6 +109,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
 
     std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
+    std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
 
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
@@ -119,10 +121,11 @@ int main() {
     engine.addComponentToEntity(playerID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTransformation));
 
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
+    engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
 
     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Square(playerMesh);
+    Cube(playerMesh);
     engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
 
     //Directional
@@ -188,6 +191,9 @@ int main() {
     sceneDraw.addEntity(playerID);
     sceneDraw.setCameraEntity(cameraID);
 
+    Physics physics{engine};
+    physics.addEntity(playerID);
+
     Collisions collisions{engine,worldID};
     collisions.addEntity(playerID);
 
@@ -216,19 +222,20 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
         if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, -0.3f, 0.f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.3f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, -0.05f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.05f, 0.f} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, 0.3f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.f, 0.f, -0.3f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, 0.05f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, -0.05f} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerTransformation->translate(glm::vec3{-0.3f, 0.f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.05f, 0.f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerForces->addForce(glm::vec3{-0.05f, 0.f, 0.f} * cameraTransformation->m_rotation); }
 
       //  if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {  collisions.applyAlgorithms(); }
         //Update
         collisions.applyAlgorithms();
-          sceneUpdate.applyAlgorithms();
+        physics.applyAlgorithms();
+        sceneUpdate.applyAlgorithms();
         lightning.applyAlgorithms();
 
         //Draw

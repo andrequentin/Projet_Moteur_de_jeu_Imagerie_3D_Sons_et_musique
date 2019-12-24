@@ -8,6 +8,7 @@
 #include "Components/Transformation.hpp"
 #include "Components/SceneObject.hpp"
 #include "Components/Collider.hpp"
+#include "Components/Forces.hpp"
 #include "Components/VoxelMap.hpp"
 #include "Components/Mesh.hpp"
 

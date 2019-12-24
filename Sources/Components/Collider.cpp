@@ -3,8 +3,8 @@ namespace Gg {
 
   namespace Component {
     Collider::Collider():
-      c1{glm::vec3{0.f,0.f,0.f}},
-      c2{glm::vec3{0.f,0.f,0.f}},
+      c1{glm::vec3{0.5f,0.5f,0.5f}},
+      c2{glm::vec3{0.5f,0.5f,0.5f}},
       r{0.5f}
     {}
     Collider::Collider(const glm::vec3 c1,const glm::vec3 c2, const float r):
