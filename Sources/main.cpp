@@ -124,9 +124,7 @@ int main() {
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
 
-    std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Cube(playerMesh);
-    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
 
     //Directional
 
