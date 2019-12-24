@@ -56,3 +56,4 @@ https://hal.inria.fr/inria-00598384/file/Flow-noise_temps_reel.pdf
 
 - A vérifier: lors de l'ajout d'une entité, vérification de compatibilité avec tous les algorithmes ?
 - Que mettre dans l'espace de nom Gg et ne pas mettre dedans
+- Séparer Détection et Résolution de collisions

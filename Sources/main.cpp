@@ -204,7 +204,7 @@ int main() {
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
     cameraTransformation->translate(glm::vec3{0.f, 0.f, -10.f});
-    // playerTransformation->translate(glm::vec3{0.f, 0.f, -10.f} * cameraTransformation->m_rotation);
+     playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
 
     sceneDraw.setProjection(projection);
 

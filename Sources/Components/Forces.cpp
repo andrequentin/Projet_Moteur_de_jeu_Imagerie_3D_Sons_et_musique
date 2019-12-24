@@ -6,7 +6,7 @@ namespace Gg {
     velocity{glm::vec3{0.0f}},
     forces{glm::vec3{0.0f}},
     mass{1.f},
-    gravity_f{0.f}
+    gravity_f{0.05f}
     {}
     Forces::Forces(const glm::vec3 f,float gf,float m) :
       velocity{glm::vec3{0.0f}},
@@ -24,7 +24,6 @@ namespace Gg {
 
     void Forces::addForce(glm::vec3 f){
       forces +=f;
-      std::cout<<"forces added"<<std::endl;
     }
 
   }

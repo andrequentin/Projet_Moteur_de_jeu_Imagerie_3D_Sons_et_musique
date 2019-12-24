@@ -78,18 +78,16 @@ namespace Gg {
           std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
         };
         glm::vec3 brE {ePosition};
-        glm::vec3 vfs{0.f};
+
         for(unsigned int i{0};i<voxelToCheck.size();i++){
             // std::cout<<to_string(vM->getVoxelPosition(voxelToCheck[i]))<<std::endl;
             glm::vec3 brV = -1.f *  (vM->getVoxelPosition(voxelToCheck[i])+0.5f);
             // std::cout<<to_string(brV)<<std::endl;
             glm::vec3 df {brV-brE};
-            vfs+=df;
+            if(glm::dot(df,eForces->forces)>0){
+              eForces->forces-=eForces->forces*1.1f;
+            }
 
-
-          }
-          if(voxelToCheck.size()>0 && glm::dot(vfs,eForces->forces)>0 ){
-              eForces->forces = -1.f * glm::normalize(vfs)*glm::length(eForces->forces) ;
           }
 
 
