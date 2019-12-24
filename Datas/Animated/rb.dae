@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.81.16 commit date:2019-11-20, commit time:14:27, hash:26bd5ebd42e3</authoring_tool>
     </contributor>
-    <created>2019-12-24T15:52:40</created>
-    <modified>2019-12-24T15:52:40</modified>
+    <created>2019-12-24T16:07:43</created>
+    <modified>2019-12-24T16:07:43</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -186,14 +186,14 @@
     </effect>
     <effect id="PlainTexture_005-effect">
       <profile_COMMON>
-        <newparam sid="rambo_jambe_gauche_png_001-surface">
+        <newparam sid="rambo_jambe_gauche_png-surface">
           <surface type="2D">
-            <init_from>rambo_jambe_gauche_png_001</init_from>
+            <init_from>rambo_jambe_gauche_png</init_from>
           </surface>
         </newparam>
-        <newparam sid="rambo_jambe_gauche_png_001-sampler">
+        <newparam sid="rambo_jambe_gauche_png-sampler">
           <sampler2D>
-            <source>rambo_jambe_gauche_png_001-surface</source>
+            <source>rambo_jambe_gauche_png-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -202,7 +202,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="rambo_jambe_gauche_png_001-sampler" texcoord="UVMap"/>
+              <texture texture="rambo_jambe_gauche_png-sampler" texcoord="UVMap"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -224,6 +224,9 @@
     </image>
     <image id="rambo_jambe_droite_png" name="rambo_jambe_droite_png">
       <init_from>rambo_jambe_droite.png</init_from>
+    </image>
+    <image id="rambo_jambe_gauche_png" name="rambo_jambe_gauche_png">
+      <init_from>rambo_jambe_gauche.png</init_from>
     </image>
   </library_images>
   <library_materials>
