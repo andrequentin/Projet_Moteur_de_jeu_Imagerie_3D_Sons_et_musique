@@ -4,12 +4,14 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+#include "GulgEngine/GulgDeclarations.hpp"
+
 #include "GulgEngine/EntityCreator.hpp"
 #include "GulgEngine/EntitySignatureKeeper.hpp"
 #include "GulgEngine/SignatureLoader.hpp"
 #include "GulgEngine/ComponentKeeper.hpp"
-#include "GulgEngine/GulgDeclarations.hpp"
 #include "GulgEngine/ProgramKeeper.hpp"
+#include "GulgEngine/TextureKeeper.hpp"
 
 #include "Components/Component.hpp"
 
@@ -38,6 +40,9 @@ class GulgEngine {
 		bool loadProgram(const std::string vertexPath, const std::string fragmentPath, const std::string name);
 		GLuint getProgram(const std::string name) const;
 
+		bool loadTexture(const std::string path, const std::string name);
+		GLuint getTexture(const std::string name) const;
+
 		Entity cloneEntity(const Entity entityToClone);
 
 	private:
@@ -49,6 +54,7 @@ class GulgEngine {
 		ComponentKeeper m_componentKeeper;
 		SignatureLoader m_signatureLoader;
 		ProgramKeeper m_programKeeper;
+		TextureKeeper m_textureKeeper;
 
 		bool m_signaturesAreLoaded;
                               

@@ -37,6 +37,8 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
+uniform sampler2D ObjectTexture;
+
 uniform Light Lights[32];
 uniform uint LightNumber;
 
@@ -48,7 +50,7 @@ out vec3 toFragColor;
 
 void main() {
 
-  toFragPosition = vec3(0.0, 0.0, 0.0);
+  /*toFragPosition = vec3(0.0, 0.0, 0.0);
   toFragNormal = vec3(0.0, 0.0, 0.0);
 
   for(int i = 0; i < 3; i++) {
@@ -59,5 +61,11 @@ void main() {
 
   gl_Position = ProjectionMatrix*ViewMatrix*ModelMatrix*vec4(toFragPosition, 1.0);
 
-  toFragColor = color;
+  toFragColor = color;*/
+
+  gl_Position = ProjectionMatrix*ViewMatrix*ModelMatrix*vec4(vertex, 1.0);
+
+   toFragPosition = vec3(ModelMatrix*vec4(vertex, 1.0));
+   toFragNormal = normal;
+   toFragColor = color;
 }
