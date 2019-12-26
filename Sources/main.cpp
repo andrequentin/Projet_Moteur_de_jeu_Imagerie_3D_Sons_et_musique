@@ -20,6 +20,7 @@
 #include "Systems/DrawScene.hpp"
 #include "Systems/Lightning.hpp"
 
+#include "LoadAnimation.hpp"
 #include "NewMap.hpp"
 #include "Components/Collider.hpp"
 
@@ -123,8 +124,10 @@ int main() {
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
-
-    loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
+     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
+    Cube(playerMesh);
+         engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    //loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
 
     //Directional
 
@@ -206,10 +209,10 @@ int main() {
 
     sceneDraw.setProjection(projection);
 
+    float P_acc = 0.1f;
     while (!haveToStop) {
 
         //Event
-
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
 
@@ -220,14 +223,14 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
         if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, -0.05f, 0.f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.05f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, -P_acc, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, P_acc, 0.f} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, 0.05f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, -0.05f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, P_acc} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, -P_acc} * cameraTransformation->m_rotation); }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.05f, 0.f, 0.f} * cameraTransformation->m_rotation); }
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerForces->addForce(glm::vec3{-0.05f, 0.f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerForces->addForce(glm::vec3{P_acc, 0.f, 0.f} * cameraTransformation->m_rotation); }
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerForces->addForce(glm::vec3{-P_acc, 0.f, 0.f} * cameraTransformation->m_rotation); }
 
       //  if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {  collisions.applyAlgorithms(); }
         //Update
