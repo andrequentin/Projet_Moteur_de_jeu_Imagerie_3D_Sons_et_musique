@@ -20,14 +20,15 @@ namespace Gg {
           std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
         };
 
-        glm::vec3 acceleration = eForces->forces  ;
+        glm::vec3 acceleration = eForces->forces;
         acceleration /= eForces->mass;
-        // acceleration *= -1.f;
         eForces->velocity = eForces->velocity + acceleration;
+        if(glm::length(eForces->velocity )>1.f){
+          eForces->velocity =glm::normalize(eForces->velocity );
+        }
         std::static_pointer_cast<Gg::Component::Transformation>(m_gulgEngine.getComponent(currentEntity, "Transformations"))->translate(eForces->velocity);
 
-        eForces->velocity -= eForces->velocity/3.f;
-        eForces->forces = glm::vec3(0.0f,0.0f,1.f*eForces->gravity_f);
+        eForces->forces = glm::vec3(0.f,0.f,eForces->gravity_f);
       }
       //Acceleration = Forces / Mass
       //Velocity = Velocity + acceleration * time

@@ -6,7 +6,7 @@ namespace Gg {
     velocity{glm::vec3{0.0f}},
     forces{glm::vec3{0.0f}},
     mass{1.f},
-    gravity_f{0.05f}
+    gravity_f{0.02f}
     {}
     Forces::Forces(const glm::vec3 f,float gf,float m) :
       velocity{glm::vec3{0.0f}},
