@@ -91,6 +91,17 @@ bool GulgEngine::loadProgram(const std::string vertexPath, const std::string fra
 
 GLuint GulgEngine::getProgram(const std::string name) const { return m_programKeeper.getProgram(name); }
 
+
+
+bool GulgEngine::loadTexture(const std::string path, const std::string name) {
+
+	return m_textureKeeper.loadTexture(path, name);
+}
+
+GLuint GulgEngine::getTexture(const std::string name) const { return m_textureKeeper.getTexture(name); }
+
+
+
 Entity GulgEngine::cloneEntity(const Entity entityToClone) {
 
 	Entity newEntity{getNewEntity()};

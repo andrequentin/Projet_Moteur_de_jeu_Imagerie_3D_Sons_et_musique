@@ -50,9 +50,10 @@ struct Bone {
 
 struct AnimatedMesh: public Mesh {
 
-	AnimatedMesh(GLuint program):
+	AnimatedMesh(GLuint program, GLuint texture):
 		Mesh{program},
-		m_bonesTransformationsID{glGetUniformLocation(m_program, "BonesTransformations")} {
+		m_bonesTransformationsID{glGetUniformLocation(m_program, "BonesTransformations")},
+		m_textureID{texture} {
 
 			glGenVertexArrays(1, &m_vertexArrayID);
 			glGenBuffers(1, &m_vertexPositionID);
@@ -66,7 +67,8 @@ struct AnimatedMesh: public Mesh {
 	AnimatedMesh(const AnimatedMesh &mesh):
 		Mesh{mesh.m_program},
 		m_vertexBones{mesh.m_vertexBones},
-		m_vertexWeight{mesh.m_vertexWeight} {
+		m_vertexWeight{mesh.m_vertexWeight},
+		m_textureID{mesh.m_textureID} {
 
 		glGenBuffers(1, &m_vertexBonesID);
 		glGenBuffers(1, &m_vertexWeightID);
@@ -136,7 +138,9 @@ struct AnimatedMesh: public Mesh {
 		unsigned int nbBones{m_bones.bonesNumber()};
 		bonesTransfo.resize(nbBones);
 		m_bones.giveTransformations(bonesTransfo);
-
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_textureID);
 
 		glBindVertexArray(m_vertexArrayID);
 		glUseProgram(m_program);
@@ -152,7 +156,7 @@ struct AnimatedMesh: public Mesh {
 
 	GLint m_bonesTransformationsID;
 
-	GLuint m_vertexBonesID, m_vertexWeightID;
+	GLuint m_textureID, m_vertexBonesID, m_vertexWeightID;
         
     std::vector<glm::ivec3> m_vertexBones, m_vertexWeight;
     Bone m_bones;  

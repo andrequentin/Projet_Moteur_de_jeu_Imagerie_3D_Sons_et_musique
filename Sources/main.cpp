@@ -22,6 +22,7 @@
 
 #include "LoadAnimation.hpp"
 #include "NewMap.hpp"
+#include "LoadAnimation.hpp"
 #include "Components/Collider.hpp"
 
 bool initOpenGL(GLFWwindow **window) {
@@ -66,6 +67,7 @@ bool initOpenGL(GLFWwindow **window) {
 
 int main() {
 
+
     GLFWwindow* window;
 
     if(!initOpenGL(&window)) {
@@ -86,6 +88,18 @@ int main() {
     bool haveToStop{false};
 
     if(!engine.loadProgram("Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag", "MainProgram")) {
+
+        std::cout << "Error with shaders load." << std::endl;
+        return -1;
+    }
+
+    if(!engine.loadProgram("Datas/Shaders/animationVertex.vert", "Datas/Shaders/animationFragment.frag", "AnimationProgram")) {
+
+        std::cout << "Error with shaders load." << std::endl;
+        return -1;
+    }
+
+    if(!engine.loadTexture("Datas/Animated/rambo.png", "RamboTexture")) {
 
         std::cout << "Error with shaders load." << std::endl;
         return -1;
@@ -124,10 +138,18 @@ int main() {
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
+<<<<<<< HEAD
+
+    loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
+    playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
+    playerTransformation->scale(2);
+
+=======
      std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
     Cube(playerMesh);
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     //loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
+>>>>>>> 09c3c55ac405687f9c7a4a66bd354fd4dc13d33b
 
     //Directional
 
@@ -141,11 +163,11 @@ int main() {
     engine.addComponentToEntity(light1ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Transformation));
     engine.addComponentToEntity(light1ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Light));
 
-    light1Light->m_ambient = glm::vec3{0.8f, 0.8f, 0.8f};
-    light1Light->m_diffuse = glm::vec3{0.0f, 0.2f, 0.8f};
+    light1Light->m_ambient = glm::vec3{0.1f, 0.1f, 0.1f};
+    light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
     light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
 
-    light1Light->m_direction = glm::vec3{0.3f, 0.f, -0.7f};
+    light1Light->m_direction = glm::vec3{0.f, 0.f, -1.f};
     light1Light->m_lightType = Gg::Component::LightType::Directional;
 
     //Point
@@ -168,7 +190,7 @@ int main() {
     light2Light->m_linear = 0.027f;
     light2Light->m_quadratic = 0.0028f;
 
-    light2Transformation->translate(glm::vec3{100.f, 300.f, -10.f});
+    light2Transformation->translate(glm::vec3{100.f, 300.f, -100.f});
 
     light2Light->m_lightType = Gg::Component::LightType::Point;
 
@@ -200,11 +222,11 @@ int main() {
 
     Lightning lightning{engine, program};
     lightning.addEntity(light1ID);
-    lightning.addEntity(light2ID);
+    //lightning.addEntity(light2ID);
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
-    cameraTransformation->translate(glm::vec3{0.f, 0.f, -10.f});
+    cameraTransformation->translate(glm::vec3{0.f, 0.f, -50.f});
      playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
 
     sceneDraw.setProjection(projection);
@@ -232,10 +254,9 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { playerForces->addForce(glm::vec3{P_acc, 0.f, 0.f} * cameraTransformation->m_rotation); }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { playerForces->addForce(glm::vec3{-P_acc, 0.f, 0.f} * cameraTransformation->m_rotation); }
 
-      //  if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {  collisions.applyAlgorithms(); }
         //Update
-        collisions.applyAlgorithms();
-        physics.applyAlgorithms();
+        //collisions.applyAlgorithms();
+        //physics.applyAlgorithms();
         sceneUpdate.applyAlgorithms();
         lightning.applyAlgorithms();
 

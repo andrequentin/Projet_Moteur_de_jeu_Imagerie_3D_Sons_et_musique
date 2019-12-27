@@ -3,6 +3,18 @@
 
 #include <map>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+#include <vector>
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+#include <GLFW/glfw3.h>
+
+#include "lodepng.h"
 
 namespace Gg {
 
@@ -10,16 +22,15 @@ class TextureKeeper {
 
 	public:
 
-		/*TextureKeeper();
+		TextureKeeper();
 
-		bool loadTexture(const std::string name, const std::string path);
-		bool isLoadedTexture(const std::string name);
-		sf::Texture *getTexture(const std::string name);
+		bool loadTexture(const std::string path, const std::string name);
+		bool isLoadedTexture(const std::string name) const;
+		GLuint getTexture(const std::string name) const;
 
 	private:
                               
-		std::map<std::string, sf::Texture> m_textures;*/
-
+		std::map<std::string, GLuint> m_textures;
 };
 
 }
