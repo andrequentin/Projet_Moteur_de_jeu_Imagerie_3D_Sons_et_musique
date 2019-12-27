@@ -72,8 +72,8 @@ namespace Gg {
              }
            }
          }
-         //Tester pour chaque voxel voisins
-         std::cout<<"colliding  "<<voxelToCheck.size()<< " voxels of the world"<<std::endl;
+         // Tester pour chaque voxel voisins
+         // std::cout<<"colliding  "<<voxelToCheck.size()<< " voxels of the world"<<std::endl;
         std::shared_ptr<Gg::Component::Forces> eForces {
           std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
         };
@@ -86,26 +86,28 @@ namespace Gg {
             glm::vec3 df {brE-brV};
 
             if(glm::dot(df,(eForces->velocity+eForces->forces))<0.f){
-
               if(std::abs(df[0])>std::abs(df[1]) && std::abs(df[0]) > std::abs(df[2])){
                 //reponse +df[0]
-                if(collisional_response[0] == 0.f){
+                if(std::abs(collisional_response[0]) < std::abs(eForces->velocity[0]+eForces->forces[0])){
                   collisional_response[0] +=(eForces->velocity[0]+eForces->forces[0]);
                 }
               }else if(std::abs(df[1])>std::abs(df[0]) && std::abs(df[1]) > std::abs(df[2])){
                 //reponse +df[1]
-                if(collisional_response[1] == 0.f){
+                if(std::abs(collisional_response[1]) < std::abs(eForces->velocity[1]+eForces->forces[1])){
                   collisional_response[1] +=(eForces->velocity[1]+eForces->forces[1]);
                 }
               } else if(std::abs(df[2])>std::abs(df[1]) && std::abs(df[2]) > std::abs(df[0])){
                 //reponse +df[2]
-                if(collisional_response[2] == 0.f){
+                if(std::abs(collisional_response[2]) < std::abs(eForces->velocity[2]+eForces->forces[2])){
                   collisional_response[2] +=(eForces->velocity[2]+eForces->forces[2]);
                 }
               }
             }
           }
-          std::cout<<to_string(-collisional_response)<<std::endl;
+          // if(glm::length(collisional_response)!=0.f) {
+          //   collisional_response = glm::normalize (collisional_response);
+          // }
+          // std::cout<<to_string(-collisional_response)<<std::endl;
             eForces->addForce(-collisional_response*1.1f);
           // eForces->velocity += collisional_response * glm::length(eForces->velocity);
 

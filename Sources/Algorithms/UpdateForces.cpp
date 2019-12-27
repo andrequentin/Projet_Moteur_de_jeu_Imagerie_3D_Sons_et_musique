@@ -24,7 +24,7 @@ namespace Gg {
         acceleration /= eForces->mass;
         eForces->velocity = eForces->velocity + acceleration;
         if(glm::length(eForces->velocity )>1.f){
-          eForces->velocity =glm::normalize(eForces->velocity );
+          eForces->velocity =1.f*glm::normalize(eForces->velocity );
         }
         std::static_pointer_cast<Gg::Component::Transformation>(m_gulgEngine.getComponent(currentEntity, "Transformations"))->translate(eForces->velocity);
 
