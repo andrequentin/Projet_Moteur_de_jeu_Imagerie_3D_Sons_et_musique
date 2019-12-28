@@ -26,9 +26,11 @@ class UpdateCollisions: public AbstractAlgorithm {
 
 		void apply();
 
+		std::vector<std::pair<Gg::Entity,std::vector<int>>> entity_world_collisions;
+		std::vector<std::pair<Gg::Entity,Gg::Entity>> entity_entity_collisions;
+
 	private:
     Gg::Entity &world;
-
 };
 
 }}

@@ -16,7 +16,7 @@ class AbstractAlgorithm {
 	public:
 
 		AbstractAlgorithm(GulgEngine &gulgEngine);
-		virtual ~AbstractAlgorithm(); 
+		virtual ~AbstractAlgorithm();
 
 		void addEntity(const Entity newEntity);
 		void deleteEntity(const Entity entity);

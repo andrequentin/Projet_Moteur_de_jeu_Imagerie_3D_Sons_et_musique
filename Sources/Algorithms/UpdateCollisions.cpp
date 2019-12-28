@@ -17,13 +17,17 @@ namespace Gg {
     UpdateCollisions::~UpdateCollisions() {}
 
     void UpdateCollisions::apply() {
+
+      entity_world_collisions.clear();
+      entity_entity_collisions.clear();
       //Get world Collider
       glm::mat4 wT{std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(world, "SceneObject"))->m_globalTransformations};
       std::shared_ptr<VoxelMap> vM{
         std::static_pointer_cast<VoxelMap>(m_gulgEngine.getComponent(world, "VoxelMap"))
       };
       //For each entity :
-    	for(Gg::Entity currentEntity: m_entitiesToApply) {
+    	for(unsigned int i =0; i < m_entitiesToApply.size();i++) {
+        Gg::Entity currentEntity {m_entitiesToApply[i]};
         glm::mat4 eT{std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(currentEntity, "SceneObject"))->m_globalTransformations};
         glm::vec3 ePosition{
           eT[3][0],eT[3][1],eT[3][2]
@@ -63,7 +67,6 @@ namespace Gg {
          //tester avec le world
          //récupérer voxel voisins (bbmin -> bbmax)
          std::array<unsigned int, 3> wD = vM->getWorldDimensions();
-         // std::cout<< "bbmin "<<to_string(bbmin)<<", bbmax"<<to_string(bbmax)<<std::endl;
 
          std::vector<int> voxelToCheck;
          for(float i{std::floor(std::max(bbmin[0],0.f))};i < std::ceil(std::min(bbmax[0],static_cast<float>(wD.at(0)-1)));i+=1.f){
@@ -77,50 +80,10 @@ namespace Gg {
              }
            }
          }
-         // Tester pour chaque voxel voisins
+         if(voxelToCheck.size()>0){
+           entity_world_collisions.push_back(std::pair<Gg::Entity,std::vector<int>>(currentEntity,voxelToCheck));
+         }
          // std::cout<<"colliding  "<<voxelToCheck.size()<< " voxels of the world"<<std::endl;
-
-         if(voxelToCheck.size()>0)   eForces->velocity/=1.1f;
-
-        glm::vec3 brE {ePosition + 0.5f};
-        glm::vec3 collisional_response{0.f,0.f,0.f};
-
-        for(unsigned int i{0};i<voxelToCheck.size();i++){
-            glm::vec3 brV = -1.f *  (vM->getVoxelPosition(voxelToCheck[i])-0.5f);
-
-            glm::vec3 df {brE-brV};
-
-            if(glm::dot(df,(eForces->velocity+eForces->forces))<0.f){
-              if(std::abs(df[0])>std::abs(df[1]) && std::abs(df[0]) > std::abs(df[2])){
-                //reponse +df[0]
-                if(std::abs(collisional_response[0]) == 0.f){
-                  collisional_response[0] +=(eForces->velocity[0]+eForces->forces[0]);
-                  // collisional_response[0] -= df[0];
-                }
-              }else if(std::abs(df[1])>std::abs(df[0]) && std::abs(df[1]) > std::abs(df[2])){
-                //reponse +df[1]
-                if(std::abs(collisional_response[1]) == 0.f){
-                  collisional_response[1] +=(eForces->velocity[1]+eForces->forces[1]);
-                  // collisional_response[1] -= df[1];
-
-                }
-              } else if(std::abs(df[2])>std::abs(df[1]) && std::abs(df[2]) > std::abs(df[0])){
-                //reponse +df[2]
-                if(std::abs(collisional_response[2]) == 0.f){
-                  collisional_response[2] +=(eForces->velocity[2]+eForces->forces[2]);
-                  // collisional_response[2] -= df[2];
-
-                }
-              }
-            }
-          }
-          // if(glm::length(collisional_response)!=0.f) {
-          //   collisional_response = glm::normalize (collisional_response);
-          // }
-          // std::cout<<to_string(-collisional_response)<<std::endl;
-            eForces->addForce(-collisional_response );
-          // eForces->velocity += collisional_response * glm::length(eForces->velocity);
-
       }
     }
   }
