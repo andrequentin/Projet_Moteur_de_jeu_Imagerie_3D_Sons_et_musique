@@ -65,7 +65,7 @@ namespace Gg {
             eForces->addForce(-collisional_response );
       }
       //For each entity :
-    	for(std::pair<Gg::Entity,Gg::Entity> ccollidingEntity: collisions->entity_entity_collisions) {
+    	for(std::pair<Gg::Entity,Gg::Entity> collidingEntity: collisions->entity_entity_collisions) {
 
       }
     }
