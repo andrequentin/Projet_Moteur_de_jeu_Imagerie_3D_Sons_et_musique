@@ -123,7 +123,8 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
 
-    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
+    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>
+      (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},1.f)};
     std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
 
 
@@ -144,7 +145,7 @@ int main() {
     // playerTransformation->scale(2);
 
      std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Cube(playerMesh);
+    Cube(playerMesh,1.f);
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
 

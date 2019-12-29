@@ -35,31 +35,44 @@ namespace Gg {
          std::vector<int> voxelToCheck {currentEntity.second};
 
 
-         eForces->velocity/=1.1f;
-         glm::vec3 brE {ePosition + 0.5f};
+         glm::vec3 brE {ePosition + eCollider->r};
+         // brE-=eForces->forces;
          glm::vec3 collisional_response{0.f,0.f,0.f};
+
          for(unsigned int i{0};i<voxelToCheck.size();i++){
-            glm::vec3 brV = -1.f *  (vM->getVoxelPosition(voxelToCheck[i])-0.5f);
+            glm::vec3 posV = vM->getVoxelPosition(voxelToCheck[i]);
+            glm::vec3 brV = -1.f *  (posV-0.5f);
             glm::vec3 df {brE-brV};
+            if(std::abs(df[0])> std::abs(df[1]) && std::abs(df[0])> std::abs(df[2]) ){
+              df[2]=0.f;
+              df[1]=0.f;
+            }else if(std::abs(df[1])> std::abs(df[0]) && std::abs(df[1])> std::abs(df[2])){
+              df[2]=0.f;
+              df[0]=0.f;
+            } else{
+              df[0]=0.f;
+              df[1]=0.f;
+            }
+            df = glm::normalize(df);
+            glm::vec3 v{posV -df};
+            // std::cout<<to_string(df)
+            // <<to_string(eForces->velocity+eForces->forces)
+            // <<std::endl;
 
-            if(glm::dot(df,(eForces->velocity+eForces->forces))<0.f){
-              if(std::abs(df[0])>std::abs(df[1]) && std::abs(df[0]) > std::abs(df[2])){
-                if(std::abs(collisional_response[0]) == 0.f){
-                  collisional_response[0] +=(eForces->velocity[0]+eForces->forces[0]);
-                }
-              }else if(std::abs(df[1])>std::abs(df[0]) && std::abs(df[1]) > std::abs(df[2])){
-                if(std::abs(collisional_response[1]) == 0.f){
-                  collisional_response[1] +=(eForces->velocity[1]+eForces->forces[1]);
-
-                }
-              } else if(std::abs(df[2])>std::abs(df[1]) && std::abs(df[2]) > std::abs(df[0])){
-                if(std::abs(collisional_response[2]) == 0.f){
-                  collisional_response[2] +=(eForces->velocity[2]+eForces->forces[2]);
-
+            if( glm::dot(df,(eForces->velocity+eForces->forces))<0.f
+                && v[0]>=0.f && v[1]>=0.f && v[2]>=0.f
+                && v[0] < vM->getWorldDimensions()[0] && v[1] < vM->getWorldDimensions()[1]&& v[2] < vM->getWorldDimensions()[2]
+                && vM->getColor(v[0],v[1],v[2])[3]<0.2f){
+              for(unsigned int i{0};i<3;i++){
+                if(std::abs(df[i])>0.f  && std::abs(collisional_response[i]) == 0.f  ){
+                    collisional_response[i] +=(eForces->velocity[i]+eForces->forces[i]);
+                    i=3;
+                  }
                 }
               }
             }
-          }
+
+          eForces->velocity/=1.1f;
 
           // std::cout<<to_string(-collisional_response)<<std::endl;
             eForces->addForce(-collisional_response );

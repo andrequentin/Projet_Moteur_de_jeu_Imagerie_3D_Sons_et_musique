@@ -35,6 +35,8 @@ namespace Gg {
         std::shared_ptr<Gg::Component::Collider> eCollider {
           std::static_pointer_cast<Gg::Component::Collider>(m_gulgEngine.getComponent(currentEntity, "Collider"))
         };
+        ePosition -= 0.5f;
+
         std::shared_ptr<Gg::Component::Forces> eForces {
           std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
         };
@@ -46,8 +48,10 @@ namespace Gg {
         glm::vec3 c2{ePosition + eCollider->c2  };
         c1 *= -1;
         c2 *= -1;
-        c1[2] -= (eForces->forces[2] + eForces->velocity[2]);
-        c2[2] -= (eForces->forces[2] + eForces->velocity[2]);
+        c1 -= (eForces->forces + eForces->velocity);
+        c2 -= (eForces->forces + eForces->velocity);
+        // c1[2] -= (eForces->forces[2] + eForces->velocity[2]);
+        // c2[2] -= (eForces->forces[2] + eForces->velocity[2]);
 
         glm::vec3 bbmin{
           std::min(c1[0] - eCollider->r,c2[0] - eCollider->r),
@@ -59,8 +63,9 @@ namespace Gg {
           std::max(c1[1] + eCollider->r,c2[1] + eCollider->r),
           std::max(c1[2] + eCollider->r,c2[2] + eCollider->r)
         };
-        bbmin+=1.f;
-        bbmax+=1.f;
+        // bbmin+=eCollider->r/2;
+        // bbmax+=eCollider->r/2;
+         std::cout<<to_string(ePosition)<<to_string(bbmin)<<","<<to_string(bbmax)<<std::endl;
         //TO DO
         //Tester pour les autres entités
 
@@ -79,6 +84,7 @@ namespace Gg {
             }
           }
         }
+        std::cout<<"collidin with" <<voxelToCheck.size() <<" voxels"<<std::endl;
         if(voxelToCheck.size()>0){
           entity_world_collisions.push_back(std::pair<Gg::Entity,std::vector<int>>(currentEntity,voxelToCheck));
         }

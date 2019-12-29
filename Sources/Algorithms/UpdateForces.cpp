@@ -22,11 +22,11 @@ namespace Gg {
 
         glm::vec3 acceleration = eForces->forces;
         acceleration /= eForces->mass;
-        eForces->velocity = eForces->velocity + acceleration;
+        eForces->velocity +=  acceleration;
 
         std::static_pointer_cast<Gg::Component::Transformation>(m_gulgEngine.getComponent(currentEntity, "Transformations"))->translate(eForces->velocity);
-        if(glm::length(eForces->velocity )>1.f){
-          eForces->velocity =1.f*glm::normalize(eForces->velocity );
+        if(glm::length(eForces->velocity )>3.f){
+          eForces->velocity =glm::normalize(eForces->velocity )*3.f;
         }
         eForces->forces = glm::vec3(0.f,0.f,eForces->gravity_f);
       }
