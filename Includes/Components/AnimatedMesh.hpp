@@ -66,9 +66,9 @@ struct AnimatedMesh: public Mesh {
 
 	AnimatedMesh(const AnimatedMesh &mesh):
 		Mesh{mesh.m_program},
+		m_textureID{mesh.m_textureID},
 		m_vertexBones{mesh.m_vertexBones},
-		m_vertexWeight{mesh.m_vertexWeight},
-		m_textureID{mesh.m_textureID} {
+		m_vertexWeight{mesh.m_vertexWeight} {
 
 		glGenBuffers(1, &m_vertexBonesID);
 		glGenBuffers(1, &m_vertexWeightID);
@@ -158,7 +158,8 @@ struct AnimatedMesh: public Mesh {
 
 	GLuint m_textureID, m_vertexBonesID, m_vertexWeightID;
         
-    std::vector<glm::ivec3> m_vertexBones, m_vertexWeight;
+    std::vector<glm::ivec3> m_vertexBones;
+    std::vector<glm::vec3> m_vertexWeight;
     Bone m_bones;  
 };
 

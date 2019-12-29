@@ -68,7 +68,6 @@ vec3 computePointLight(const uint i, const vec3 textureColor) {
     //specular *= attenuation;
 
     return (ambient + diffuse);
-
 }
 
 vec3 computeDirectionalLight(const uint i, const vec3 textureColor) {
@@ -84,21 +83,20 @@ vec3 computeDirectionalLight(const uint i, const vec3 textureColor) {
     //vec3 specular = Lights[i].specular * spec * textureColor;
 
     return (ambient + diffuse);
-
 }
 
 void main() {
 
     vec3 result = vec3(0.0, 0.0, 0.0);
-    vec3 fragColor = texture(ObjectTexture, toFragColor.xy).xyz;
+    //vec3 fragColor = texture(ObjectTexture, toFragColor.xy).xyz;
 
-	/*for(int i = 0; i < int(LightNumber); i++) {
+	for(int i = 0; i < int(LightNumber); i++) {
 
-		if(Lights[i].lightType == Point) { result += computePointLight(uint(i), fragColor); }
-		else { result += computeDirectionalLight(uint(i), fragColor); }
+		if(Lights[i].lightType == Point) { result += computePointLight(uint(i), toFragColor); }
+		else { result += computeDirectionalLight(uint(i), toFragColor); }
 
-        finalColor = vec4(result, 1.0);
-	}*/
-
-   finalColor = vec4(fragColor, 1.0);
+        
+	}
+    
+    finalColor = vec4(toFragColor, 1.0);
 }
