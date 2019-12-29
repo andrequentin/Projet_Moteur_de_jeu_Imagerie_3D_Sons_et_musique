@@ -4,6 +4,7 @@
 #include "Systems/System.hpp"
 
 #include "Algorithms/UpdateCollisions.hpp"
+#include "Algorithms/CollisionsResolution.hpp"
 
 class Collisions: public Gg::Systems::System {
 

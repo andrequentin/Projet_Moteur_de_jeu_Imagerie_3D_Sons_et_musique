@@ -1,5 +1,5 @@
-#ifndef UPDATE_COLLISIONS_ALGORITHM_HPP
-#define UPDATE_COLLISIONS_ALGORITHM_HPP
+#ifndef COLLISIONS_RESOLUTION_ALGORITHM_HPP
+#define COLLISIONS_RESOLUTION_ALGORITHM_HPP
 
 #include "Algorithms/Algorithm.hpp"
 #include <iostream>
@@ -11,26 +11,26 @@
 #include "Components/Forces.hpp"
 #include "Components/VoxelMap.hpp"
 #include "Components/Mesh.hpp"
+#include "Algorithms/UpdateCollisions.hpp"
 
 
 namespace Gg {
 
 namespace Algorithm {
 
-class UpdateCollisions: public AbstractAlgorithm {
+class CollisionsResolution: public AbstractAlgorithm {
 
 	public:
 
-		UpdateCollisions(GulgEngine &gulgEngine, Gg::Entity &w );
-		virtual ~UpdateCollisions();
+		CollisionsResolution(GulgEngine &gulgEngine, Gg::Entity &w,Gg::Algorithm::UpdateCollisions* c );
+		virtual ~CollisionsResolution();
 
 		void apply();
 
-		std::vector<std::pair<Gg::Entity,std::vector<int>>> entity_world_collisions;
-		std::vector<std::pair<Gg::Entity,Gg::Entity>> entity_entity_collisions;
-
 	private:
-    Gg::Entity &world;
+		Gg::Entity &world;
+    Gg::Algorithm::UpdateCollisions* collisions;
+
 };
 
 }}
