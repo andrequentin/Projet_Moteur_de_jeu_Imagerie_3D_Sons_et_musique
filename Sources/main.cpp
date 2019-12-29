@@ -13,6 +13,7 @@
 #include "Components/Transformation.hpp"
 #include "Components/SceneObject.hpp"
 #include "Components/Light.hpp"
+#include "Components/Collider.hpp"
 
 #include "Systems/UpdateScene.hpp"
 #include "Systems/Collisions.hpp"
@@ -22,8 +23,7 @@
 
 #include "LoadAnimation.hpp"
 #include "NewMap.hpp"
-#include "LoadAnimation.hpp"
-#include "Components/Collider.hpp"
+
 
 bool initOpenGL(GLFWwindow **window) {
 
@@ -139,6 +139,14 @@ int main() {
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
+    loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
+    playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
+    playerTransformation->scale(2);
+
+    // std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
+    //Cube(playerMesh);
+     //    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    //loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
 
     // loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
     // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});

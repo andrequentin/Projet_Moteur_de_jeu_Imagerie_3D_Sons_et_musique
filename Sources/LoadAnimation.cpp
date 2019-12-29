@@ -38,7 +38,7 @@ bool loadVertex(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, tinyxml2::XML
 bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
 									 tinyxml2::XMLElement *normalDataNode,
 									 tinyxml2::XMLElement *textureDataNode,
-									 std::vector<tinyxml2::XMLElement*> triangleDataNodes) {
+									 tinyxml2::XMLElement *triangleDataNode) {
 
 
 	//Normals
@@ -83,25 +83,111 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 
 	//Triangle & co
 
-	for(tinyxml2::XMLElement *currentDatas: triangleDataNodes) {
+	const char *datasTriangleRAW{triangleDataNode->GetText()};
 
-		const char *datasTriangleRAW{currentDatas->GetText()};
-		if(datasTriangleRAW == nullptr) {
+	if(datasTriangleRAW == nullptr) {
+		std::cout << "Error with triangle datas." << std::endl;
+		return false;
+	}
 
-			std::cout << "Error with triangle datas." << std::endl;
-			return false;
+	std::string datasTriangle{datasTriangleRAW};
+
+	std::vector<std::string> splitedTriangleDatas{splitDatas(datasTriangle, ' ')};
+
+	for(size_t i{0}; i < splitedTriangleDatas.size(); i += 3) { 
+
+		mesh->m_vertexIndice.emplace_back(std::stof(splitedTriangleDatas[i]));
+		mesh->m_vertexNormal.emplace_back(normals[std::stoi(splitedTriangleDatas[i + 1])]);
+		//mesh->m_vertexColor.emplace_back(textureCoords[std::stoi(splitedTriangleDatas[i + 2])]);
+		mesh->m_vertexColor.emplace_back(glm::vec3{0.21, 0.21, 0.21});
+	}
+
+	return true;
+}
+
+bool loadWeights(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
+									 tinyxml2::XMLElement *weightDataNode,
+									 tinyxml2::XMLElement *bonePerVerticeNode,
+									 tinyxml2::XMLElement *bonesAndWeightDatasNode) {
+
+
+	//Weight
+
+	const char *datasWeightRAW{weightDataNode->GetText()};
+	if(datasWeightRAW == nullptr) {
+
+		std::cout << "Error with weight datas." << std::endl;
+		return false;
+	}
+
+	std::string datasWeight{datasWeightRAW};
+
+	std::vector<std::string> splitedWeightDatas{splitDatas(datasWeight, ' ')};
+	std::vector<float> weight;
+	weight.resize(splitedWeightDatas.size());
+
+	for(size_t i{0}; i < splitedWeightDatas.size(); i++) { weight[i] = std::stof(splitedWeightDatas[i]); } 
+
+	//Nb Bone per vertice
+
+	const char *datasNbBonesRAW{bonePerVerticeNode->GetText()};
+	if(datasNbBonesRAW == nullptr) {
+
+		std::cout << "Error with weight datas." << std::endl;
+		return false;
+	}
+
+	std::string datasNbBones{datasNbBonesRAW};
+
+	std::vector<std::string> splitedNbBonesDatas{splitDatas(datasNbBones, ' ')};
+	std::vector<float> nbBones;
+	nbBones.resize(splitedNbBonesDatas.size());
+
+	for(size_t i{0}; i < splitedNbBonesDatas.size(); i++) { nbBones[i] = std::stoi(splitedNbBonesDatas[i]); } 
+
+	//Bones and weight
+
+	const char *datasBonesAndWeightRAW{bonesAndWeightDatasNode->GetText()};
+	if(datasBonesAndWeightRAW == nullptr) {
+
+		std::cout << "Error with weight datas." << std::endl;
+		return false;
+	}
+
+	std::string datasBonesAndWeight{datasBonesAndWeightRAW};
+
+	std::vector<std::string> splitedBonesAndWeightDatas{splitDatas(datasBonesAndWeight, ' ')};
+	std::vector<int> bonesAndWeight;
+	bonesAndWeight.resize(splitedBonesAndWeightDatas.size());
+
+	for(size_t i{0}; i < splitedBonesAndWeightDatas.size(); i++) { bonesAndWeight[i] = std::stoi(splitedBonesAndWeightDatas[i]); }
+
+
+	//Combining for final result
+	int currentOffset{0};
+	unsigned int currentNbBones{0}, vertexNbBones{0};
+
+
+	for(unsigned int currentVertex{0}; currentVertex < nbBones.size(); currentVertex++) {
+
+		vertexNbBones = nbBones[currentVertex];
+		currentNbBones = 0;
+
+		for(unsigned int currentBone{0}; currentBone < vertexNbBones || currentNbBones >= 3; currentBone++) {
+
+			mesh->m_vertexBones[currentVertex][currentNbBones] = bonesAndWeight[currentOffset];
+			mesh->m_vertexWeight[currentVertex][currentNbBones] = weight[bonesAndWeight[currentOffset + 1]];
+
+			currentOffset += 2;
+			currentNbBones++;
 		}
 
-		std::string datasTriangle{datasTriangleRAW};
+		//if not 3 bones, complete the vec3
 
-		std::vector<std::string> splitedTriangleDatas{splitDatas(datasTriangle, ' ')};
+		for(unsigned int i{currentNbBones}; i < 3; i++) {
 
-
-		for(size_t i{0}; i < splitedTriangleDatas.size(); i += 3) { 
-
-			mesh->m_vertexIndice.emplace_back(std::stof(splitedTriangleDatas[i]));
-			mesh->m_vertexNormal.emplace_back(normals[std::stoi(splitedTriangleDatas[i + 1])]);
-			mesh->m_vertexColor.emplace_back(textureCoords[std::stoi(splitedTriangleDatas[i + 2])]);
+			mesh->m_vertexBones[currentVertex][i] = -1;
+			mesh->m_vertexWeight[currentVertex][i] = 0.f;
 		}
 	}
 
@@ -152,18 +238,20 @@ bool loadMesh(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, tinyxml2::XMLDo
 						 *vertexNode{nullptr},
 						 *normalNode{nullptr},
 						 *textureNode{nullptr},
-						 *triangleNode{nullptr};
+						 *triangleNode{nullptr};;
 	
 	while(currentNode != nullptr) {
 
-		if(currentNode->Attribute("id", "rambo_head-mesh-positions")) { vertexNode = currentNode; }
-		if(currentNode->Attribute("id", "rambo_head-mesh-normals")) { normalNode = currentNode; }
-		if(currentNode->Attribute("id", "rambo_head-mesh-map-0")) { textureNode = currentNode; }
+		if(currentNode->Attribute("id", "rambo_239-mesh-positions")) { vertexNode = currentNode; }
+		if(currentNode->Attribute("id", "rambo_239-mesh-normals")) { normalNode = currentNode; }
+		if(currentNode->Attribute("id", "rambo_239-mesh-map-0")) { textureNode = currentNode; }
 
 		currentNode = currentNode->NextSiblingElement("source");
 	}
 
-	if(vertexNode == nullptr || normalNode == nullptr || textureNode == nullptr) {
+	triangleNode = meshNode->FirstChildElement("triangles");
+
+	if(vertexNode == nullptr || normalNode == nullptr || textureNode == nullptr || triangleNode == nullptr) {
 
 		std::cout << "Problem with data structures" << std::endl;
 		return false;
@@ -171,28 +259,72 @@ bool loadMesh(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, tinyxml2::XMLDo
 
 	tinyxml2::XMLElement *vertexDataNode{vertexNode->FirstChildElement("float_array")},
 						 *normalDataNode{normalNode->FirstChildElement("float_array")},
-						 *textureDataNode{textureNode->FirstChildElement("float_array")};;
-
-	std::vector<tinyxml2::XMLElement*> trianglesDataNodes;
-
-	currentNode = meshNode->FirstChildElement("triangles");
-
-	while(currentNode != nullptr) {
-
-		trianglesDataNodes.emplace_back(currentNode->FirstChildElement("p"));
-		currentNode = currentNode->NextSiblingElement("triangles");
-	}
-
+						 *textureDataNode{textureNode->FirstChildElement("float_array")},
+						 *triangleDataNode{triangleNode->FirstChildElement("p")};
 
 	if(!loadVertex(mesh, vertexDataNode)) {
 
-		std::cout << "Problem with datas." << std::endl;
+		std::cout << "Problem with vertex datas." << std::endl;
 		return false;
 	}
 
-	if(!loadTriangleNormalTextureCoords(mesh, normalDataNode, textureDataNode, trianglesDataNodes)) {
+	if(!loadTriangleNormalTextureCoords(mesh, normalDataNode, textureDataNode, triangleDataNode)) {
 
-		std::cout << "Problem with datas." << std::endl;
+		std::cout << "Problem with triangles datas." << std::endl;
+		return false;
+	}
+
+	// Bones and weight
+
+	tinyxml2::XMLElement *libControllersNode{root->FirstChildElement("library_controllers")};
+	if(libControllersNode == nullptr) {
+
+		std::cout << "Can't find element \"library_controllers\"." << std::endl;
+		return false;
+	}
+
+	tinyxml2::XMLElement *controllerNode{libControllersNode->FirstChildElement("controller")};
+	if(controllerNode == nullptr) {
+
+		std::cout << "Can't find element \"controller\"." << std::endl;
+		return false;
+	}
+
+	tinyxml2::XMLElement *skinNode{controllerNode->FirstChildElement("skin")};
+	if(skinNode == nullptr) {
+
+		std::cout << "Can't find element \"skin\"." << std::endl;
+	
+		return false;
+	}
+
+	currentNode = skinNode->FirstChildElement("source");
+
+	tinyxml2::XMLElement *weightNode{nullptr},
+						 *boneAndWeightNode{nullptr};
+	
+	while(currentNode != nullptr) {
+
+		if(currentNode->Attribute("id", "Armature_rambo-skin-weights")) { weightNode = currentNode; }
+
+		currentNode = currentNode->NextSiblingElement("source");
+	}
+
+	boneAndWeightNode = skinNode->FirstChildElement("vertex_weights");
+
+	if(weightNode == nullptr || boneAndWeightNode == nullptr) {
+
+		std::cout << "Problem with data structures" << std::endl;
+		return false;
+	}
+
+	tinyxml2::XMLElement *weightDataNode{weightNode->FirstChildElement("float_array")},
+						 *bonePerVerticeNode{boneAndWeightNode->FirstChildElement("vcount")},
+						 *bonesAndWeightDatasNode{boneAndWeightNode->FirstChildElement("v")};
+
+	if(!loadWeights(mesh, weightDataNode, bonePerVerticeNode, bonesAndWeightDatasNode)) {
+
+		std::cout << "Problem with weight datas." << std::endl;
 		return false;
 	}
 
@@ -210,15 +342,19 @@ bool loadAnimation(Gg::GulgEngine &engine, const Gg::Entity entity, const std::s
 		return false;
 	}
 
-	std::shared_ptr<Gg::Component::AnimatedMesh> mesh{std::make_shared<Gg::Component::AnimatedMesh>(engine.getProgram("AnimationProgram"), engine.getTexture("RamboTexture"))};
-    engine.addComponentToEntity(entity, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(mesh));
 
+	std::shared_ptr<Gg::Component::AnimatedMesh> mesh{std::make_shared<Gg::Component::AnimatedMesh>(engine.getProgram("AnimationProgram"), engine.getTexture("RamboTexture"))};
+    
 	if(!loadMesh(mesh, file)) {
 		std::cout << "Error with file \"" << path << "\"." << std::endl;
 		return false;
 	}
 
-	mesh->reshape();
+	else {
+
+		engine.addComponentToEntity(entity, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(mesh));
+		mesh->reshape();
+	}
 
 	return true; 
 }
