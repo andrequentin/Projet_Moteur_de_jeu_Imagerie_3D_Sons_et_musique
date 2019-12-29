@@ -139,7 +139,6 @@ int main() {
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
-<<<<<<< HEAD
     loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
     playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
     playerTransformation->scale(2);
@@ -148,7 +147,6 @@ int main() {
     //Cube(playerMesh);
      //    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     //loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
-=======
 
     // loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
     // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
@@ -158,7 +156,6 @@ int main() {
     Cube(playerMesh,1.f);
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
->>>>>>> e0147f8980efb9af7ff4a71862e93ab2c7b612f4
 
     //Directional
 

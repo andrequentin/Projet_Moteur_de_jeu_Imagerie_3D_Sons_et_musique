@@ -16,7 +16,7 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 									 tinyxml2::XMLElement *normalDataNode,
 									 tinyxml2::XMLElement *triangleDataNode);
 
-bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
+bool loadWeights(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
 									 tinyxml2::XMLElement *weightDataNode,
 									 tinyxml2::XMLElement *bonePerVerticeNode,
 									 tinyxml2::XMLElement *bonesAndWeightDatasNode);

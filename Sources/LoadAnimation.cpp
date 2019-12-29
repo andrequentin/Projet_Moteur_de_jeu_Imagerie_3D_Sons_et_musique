@@ -105,7 +105,7 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 	return true;
 }
 
-bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
+bool loadWeights(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, 
 									 tinyxml2::XMLElement *weightDataNode,
 									 tinyxml2::XMLElement *bonePerVerticeNode,
 									 tinyxml2::XMLElement *bonesAndWeightDatasNode) {
@@ -120,9 +120,9 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 		return false;
 	}
 
-	std::string datasWeightRAW{datasWeightRAW};
+	std::string datasWeight{datasWeightRAW};
 
-	std::vector<std::string> splitedWeightDatas{splitDatas(datasNormal, ' ')};
+	std::vector<std::string> splitedWeightDatas{splitDatas(datasWeight, ' ')};
 	std::vector<float> weight;
 	weight.resize(splitedWeightDatas.size());
 
@@ -137,9 +137,9 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 		return false;
 	}
 
-	std::string datasNbBonesRAW{datasNbBonesRAW};
+	std::string datasNbBones{datasNbBonesRAW};
 
-	std::vector<std::string> splitedNbBonesDatas{splitDatas(datasNormal, ' ')};
+	std::vector<std::string> splitedNbBonesDatas{splitDatas(datasNbBones, ' ')};
 	std::vector<float> nbBones;
 	nbBones.resize(splitedNbBonesDatas.size());
 
@@ -154,9 +154,9 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 		return false;
 	}
 
-	std::string datasBonesAndWeightRAW{datasBonesAndWeightRAW};
+	std::string datasBonesAndWeight{datasBonesAndWeightRAW};
 
-	std::vector<std::string> splitedBonesAndWeightDatas{splitDatas(datasNormal, ' ')};
+	std::vector<std::string> splitedBonesAndWeightDatas{splitDatas(datasBonesAndWeight, ' ')};
 	std::vector<int> bonesAndWeight;
 	bonesAndWeight.resize(splitedBonesAndWeightDatas.size());
 
@@ -165,13 +165,12 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 
 	//Combining for final result
 	int currentOffset{0};
-	unsigned int currentNbBones{0};
-	int vertexNbBones{0}
+	unsigned int currentNbBones{0}, vertexNbBones{0};
 
 
-	for(unsigned int currentVertex{0}; currentVertex < nbBones; currentVertex++) {
+	for(unsigned int currentVertex{0}; currentVertex < nbBones.size(); currentVertex++) {
 
-		vertexNbBones = nbBones[i];
+		vertexNbBones = nbBones[currentVertex];
 		currentNbBones = 0;
 
 		for(unsigned int currentBone{0}; currentBone < vertexNbBones || currentNbBones >= 3; currentBone++) {
@@ -191,6 +190,8 @@ bool loadTriangleNormalTextureCoords(std::shared_ptr<Gg::Component::AnimatedMesh
 			mesh->m_vertexWeight[currentVertex][i] = 0.f;
 		}
 	}
+
+	return true;
 }
 
 bool loadMesh(std::shared_ptr<Gg::Component::AnimatedMesh> mesh, tinyxml2::XMLDocument &document) {
