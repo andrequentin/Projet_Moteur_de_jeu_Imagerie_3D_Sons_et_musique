@@ -139,9 +139,9 @@ int main() {
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
 
-    loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
-    playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
-    playerTransformation->scale(2);
+    // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
+    // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
+    // playerTransformation->scale(2);
 
     // std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
     //Cube(playerMesh);

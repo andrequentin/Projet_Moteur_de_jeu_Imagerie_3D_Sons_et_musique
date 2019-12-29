@@ -65,7 +65,7 @@ namespace Gg {
         };
         // bbmin+=eCollider->r/2;
         // bbmax+=eCollider->r/2;
-         std::cout<<to_string(ePosition)<<to_string(bbmin)<<","<<to_string(bbmax)<<std::endl;
+         // std::cout<<to_string(ePosition)<<to_string(bbmin)<<","<<to_string(bbmax)<<std::endl;
         //TO DO
         //Tester pour les autres entités
 
@@ -84,7 +84,7 @@ namespace Gg {
             }
           }
         }
-        std::cout<<"collidin with" <<voxelToCheck.size() <<" voxels"<<std::endl;
+        // std::cout<<"collidin with" <<voxelToCheck.size() <<" voxels"<<std::endl;
         if(voxelToCheck.size()>0){
           entity_world_collisions.push_back(std::pair<Gg::Entity,std::vector<int>>(currentEntity,voxelToCheck));
         }
