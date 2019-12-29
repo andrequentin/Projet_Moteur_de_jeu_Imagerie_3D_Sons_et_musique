@@ -34,6 +34,7 @@ namespace Gg {
          };
          std::vector<int> voxelToCheck {currentEntity.second};
 
+         ePosition -= 0.5f;
 
          glm::vec3 brE {ePosition + eCollider->r};
          // brE-=eForces->forces;

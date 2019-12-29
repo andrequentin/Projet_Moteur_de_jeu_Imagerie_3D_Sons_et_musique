@@ -100,6 +100,7 @@ namespace Gg {
             std::shared_ptr<Gg::Component::Collider> eCollider2 {
               std::static_pointer_cast<Gg::Component::Collider>(m_gulgEngine.getComponent(currentEntity2, "Collider"))
             };
+            ePosition2 -= 0.5f;
             glm::vec3 c12{ePosition2 + eCollider2->c1  };
             glm::vec3 c22{ePosition2 + eCollider2->c2  };
             c12 *= -1;
@@ -115,8 +116,7 @@ namespace Gg {
               std::max(c12[1] + eCollider2->r,c22[1] + eCollider2->r),
               std::max(c12[2] + eCollider2->r,c22[2] + eCollider2->r)
             };
-            bbmin2+=1.f;
-            bbmax2+=1.f;
+
 
             if( (bbmin.x <= bbmax2.x && bbmax.x >= bbmin2.x) &&
                 (bbmin.y <= bbmax2.y && bbmax.y >= bbmin2.y) &&
