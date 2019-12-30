@@ -23,6 +23,7 @@ namespace Gg {
       std::shared_ptr<VoxelMap> vM{
         std::static_pointer_cast<VoxelMap>(m_gulgEngine.getComponent(world, "VoxelMap"))
       };
+       std::vector<std::vector<unsigned int>> vxsToRs;
       //For each entity :
     	for(unsigned int i{0};i<collisions->entity_world_collisions.size();i++) {
         std::pair<Gg::Entity,std::vector<int>> currentEntity = collisions->entity_world_collisions[i];
@@ -42,7 +43,7 @@ namespace Gg {
          if(voxelToCheck.size()>0 && m_gulgEngine.entityHasComponent(currentEntity.first,"Explosive")
          && std::static_pointer_cast<Gg::Component::Explosive>(m_gulgEngine.getComponent(currentEntity.first, "Explosive"))->eTrigger == ON_COLLISION ){
            std::cout<<"Boom : "<<currentEntity.first<<to_string(ePosition)<<std::endl;
-           vM->explode(-1.f*ePosition[0],-1.f*ePosition[1],-1.f*ePosition[2],std::static_pointer_cast<Gg::Component::Explosive>(m_gulgEngine.getComponent(currentEntity.first, "Explosive"))->explosivePower);
+            vxsToRs.push_back(vM->explode(-1.f*ePosition[0],-1.f*ePosition[1],-1.f*ePosition[2],std::static_pointer_cast<Gg::Component::Explosive>(m_gulgEngine.getComponent(currentEntity.first, "Explosive"))->explosivePower));
            collisions->toDelete.push_back(currentEntity.first);
            explode=true;
 
@@ -101,7 +102,9 @@ namespace Gg {
       }
       if(explode)   {
         std::cout<<"exploded"<<std::endl;
-         worldMapToMesh(*vM, *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
+        // decoloring(vxsToRs , *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
+        worldMapToMesh(*vM , *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
+
          std::cout<<"remeshed"<<std::endl;
 
           std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh"))->reshape();

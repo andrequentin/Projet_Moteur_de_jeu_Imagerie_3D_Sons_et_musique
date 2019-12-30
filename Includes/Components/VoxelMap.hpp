@@ -37,7 +37,7 @@ class VoxelMap: public Gg::Component::AbstractComponent{
 
 		std::array<unsigned int, 3> getWorldDimensions() const;
 
-		void explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower);
+		std::vector<unsigned int> explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower);
 
 	private:
 

@@ -279,6 +279,19 @@ glm::vec3 getPositionOfPoint(const VoxelMap &map, const unsigned int voxelID, co
 	return centerPosition;
 }
 
+// void decoloring(std::vector<std::vector<unsigned int>> v, Gg::Component::Mesh &mesh){
+//   for(unsigned int i{0};i<v.size();i++){
+//     for(unsigned int j{0};j<v[i].size();j++){
+//       for(unsigned k{0};k<4*6;k++){
+//         if(v[i][j]*4*6+k < mesh.m_vertexColor.size()){
+//         mesh.m_vertexColor[v[i][j]*4*6+k]= glm::vec3(0.f,0.f,0.f);
+//       }else{
+//         std::cout<<mesh.m_vertexColor.size()<<"<"<<v[i][j]*4*6+k<<", "<<v[i][j]<<std::endl;
+//       }
+//       }
+//     }
+//   }
+// }
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 
 	mesh.m_vertexPosition.clear();
@@ -299,6 +312,9 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 	mesh.m_vertexColor.resize(allFaces.size()*4);
 	mesh.m_vertexIndice.resize(allFaces.size()*6);
 
+  std::cout<<allFaces.size()<<std::endl;
+  std::cout<<worldDimensions[0]*worldDimensions[1]*worldDimensions[2]<<std::endl;
+  std::cout<<mesh.m_vertexColor.size()<<std::endl;
 	glm::vec3 currentNormal;
 
 	for(unsigned int i{0}; i < allFaces.size(); i++) {

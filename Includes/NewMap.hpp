@@ -18,10 +18,13 @@ std::vector<std::pair<unsigned int, glm::vec3>> selectVisibleFaces(const VoxelMa
 
 std::vector<glm::vec3> getFaceFromOrientation(const glm::vec3 &position, const glm::vec3 &orientation);
 
+void decoloring(std::vector<std::vector<unsigned int>> v, Gg::Component::Mesh &mesh);
+
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh);
 
 void Cube(std::shared_ptr<Gg::Component::Mesh> mesh , float size);
 
 void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program);
+
 
 #endif

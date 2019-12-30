@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic
+CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic -O3
 LDFLAGS  = -L ./Libraries/GLFW/ -L ./Libraries/GLEW/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl
 
 SRCFILE = Sources
@@ -51,6 +51,6 @@ $(OBJFILE)/%.o: $(SRCFILE)/%.cpp
 	@-$(CXX) $(CXXFLAGS) -c $< -o $@ -I $(INCFILE)
 	@printf "%-20b" "$(LGREENCOLOR)[SUCCES]  |$(ENDCOLOR)\\n"
 
-clean: 
+clean:
 	@rm -rf $(OBJFILE)
 	@rm -f  $(EXEFILE)/$(EXENAME)
