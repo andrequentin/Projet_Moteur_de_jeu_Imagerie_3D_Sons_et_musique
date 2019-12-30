@@ -5,8 +5,8 @@ namespace Gg {
 
   namespace Algorithm {
 
-    UpdateCollisions::UpdateCollisions(Gg::GulgEngine &gulgEngine,Gg::Entity &w):
-    	AbstractAlgorithm{gulgEngine},world{w} {
+    UpdateCollisions::UpdateCollisions(Gg::GulgEngine &gulgEngine,Gg::Entity &w, Collisions* c):
+    	AbstractAlgorithm{gulgEngine},world{w},collisions{c} {
 
     	m_signature = gulgEngine.getComponentSignature("SceneObject");
       m_signature += gulgEngine.getComponentSignature("Collider");
@@ -18,8 +18,8 @@ namespace Gg {
 
     void UpdateCollisions::apply() {
 
-      entity_world_collisions.clear();
-      entity_entity_collisions.clear();
+      collisions->entity_world_collisions.clear();
+      collisions->entity_entity_collisions.clear();
       //Get world Collider
       glm::mat4 wT{std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(world, "SceneObject"))->m_globalTransformations};
       std::shared_ptr<VoxelMap> vM{
@@ -86,7 +86,7 @@ namespace Gg {
         }
         // std::cout<<"collidin with" <<voxelToCheck.size() <<" voxels"<<std::endl;
         if(voxelToCheck.size()>0){
-          entity_world_collisions.push_back(std::pair<Gg::Entity,std::vector<int>>(currentEntity,voxelToCheck));
+          collisions->entity_world_collisions.push_back(std::pair<Gg::Entity,std::vector<int>>(currentEntity,voxelToCheck));
         }
          // std::cout<<"colliding  "<<voxelToCheck.size()<< " voxels of the world"<<std::endl;
 
@@ -121,7 +121,7 @@ namespace Gg {
             if( (bbmin.x <= bbmax2.x && bbmax.x >= bbmin2.x) &&
                 (bbmin.y <= bbmax2.y && bbmax.y >= bbmin2.y) &&
                 (bbmin.z <= bbmax2.z && bbmax.z >= bbmin2.z) ){
-                  entity_entity_collisions.push_back(std::pair<Gg::Entity,Gg::Entity>(currentEntity,currentEntity2));
+                  collisions->entity_entity_collisions.push_back(std::pair<Gg::Entity,Gg::Entity>(currentEntity,currentEntity2));
             }
 
           }

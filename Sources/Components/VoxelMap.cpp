@@ -78,3 +78,15 @@ glm::vec3 VoxelMap::getVoxelPosition(const unsigned int voxelID) const {
 }
 
 std::array<unsigned int, 3> VoxelMap::getWorldDimensions() const { return std::array<unsigned int, 3>{m_sizeX, m_sizeY, m_sizeZ}; }
+
+void VoxelMap::explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower){
+	for( int i{-explosivePower};i<explosivePower;i++){
+		for( int j{-explosivePower};j<explosivePower;j++){
+			for( int k{-explosivePower};k<=explosivePower;k++){
+				if((static_cast<int>(x)+i) < static_cast<int>(m_sizeX) && (static_cast<int>(x)+i)>=0 && (static_cast<int>(y)+j) < static_cast<int>(m_sizeY) && (static_cast<int>(y)+j)>=0 && (static_cast<int>(z)+k) < static_cast<int>(m_sizeZ) && (static_cast<int>(z)+k)>=0){
+					setColor(x+i,y+j,z+k,glm::vec4{0.f,0.f,0.f,0.f });
+				}
+			}
+		}
+	}
+}

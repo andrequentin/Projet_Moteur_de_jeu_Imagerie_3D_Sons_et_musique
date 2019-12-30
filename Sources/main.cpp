@@ -14,6 +14,7 @@
 #include "Components/SceneObject.hpp"
 #include "Components/Light.hpp"
 #include "Components/Collider.hpp"
+#include "Components/Explosive.hpp"
 
 #include "Systems/UpdateScene.hpp"
 #include "Systems/Collisions.hpp"
@@ -238,6 +239,9 @@ int main() {
     sceneDraw.setProjection(projection);
 
     float P_acc = 0.1f;
+    int gOldState = GLFW_RELEASE;
+    int gNewState = GLFW_RELEASE;
+
     while (!haveToStop) {
         //Event
         glfwPollEvents();
@@ -258,6 +262,36 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
+        gOldState = gNewState;
+        gNewState = glfwGetKey(window, GLFW_KEY_G) ;
+        if(gOldState == GLFW_PRESS && gNewState == GLFW_RELEASE ) {
+          Gg::Entity newG{engine.getNewEntity()};
+          std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
+          std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
+          std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>
+            (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
+          std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>()};
+          std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
+          Cube(newGMesh,0.5f);
+          std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>()};
+
+          newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
+          glm::vec3 f {(glm::vec3{0.f, 0.f, 10.f} * cameraTransformation->m_rotation)};
+          f[2] += -10.f;
+          newGForces->addForce(playerForces->velocity + f);
+          engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
+          engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
+          engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
+          engine.addComponentToEntity(newG, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGForces));
+          engine.addComponentToEntity(newG, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGMesh));
+          engine.addComponentToEntity(newG, "Explosive", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGExp));
+          gameScene->addChild(newG);
+          sceneDraw.addEntity(newG);
+          physics.addEntity(newG);
+          collisions.addEntity(newG);
+          sceneUpdate.applyAlgorithms();
+        }
+
 
         //Update
         collisions.applyAlgorithms();
@@ -265,13 +299,22 @@ int main() {
         sceneUpdate.applyAlgorithms();
         lightning.applyAlgorithms();
 
+
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         sceneDraw.applyAlgorithms();
-
+        for(Gg::Entity toD : collisions.toDelete){
+          collisions.deleteEntity(toD);
+          physics.deleteEntity(toD);
+          sceneUpdate.deleteEntity(toD);
+          sceneDraw.deleteEntity(toD);
+          engine.deleteEntity(toD);
+          gameScene->deleteChild(toD);
+        }
+        collisions.toDelete.clear();
         glfwSwapBuffers(window);
     }
 

@@ -1,10 +1,10 @@
 #include "Systems/Collisions.hpp"
-
+#include "Algorithms/UpdateCollisions.hpp"
+#include "Algorithms/CollisionsResolution.hpp"
 Collisions::Collisions(Gg::GulgEngine &gulgEngine,Gg::Entity &w): System{gulgEngine},world{w} {
 
-	m_algorithms.emplace_back(std::make_unique<Gg::Algorithm::UpdateCollisions>(gulgEngine,w));
-	m_algorithms.emplace_back(std::make_unique<Gg::Algorithm::CollisionsResolution>(gulgEngine,w,
-		dynamic_cast<Gg::Algorithm::UpdateCollisions*>(m_algorithms[0].get())));
+	m_algorithms.emplace_back(std::make_unique<Gg::Algorithm::UpdateCollisions>(gulgEngine,w,this));
+	m_algorithms.emplace_back(std::make_unique<Gg::Algorithm::CollisionsResolution>(gulgEngine,w,this));
 
 }
 

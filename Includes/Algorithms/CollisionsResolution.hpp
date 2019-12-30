@@ -2,16 +2,13 @@
 #define COLLISIONS_RESOLUTION_ALGORITHM_HPP
 
 #include "Algorithms/Algorithm.hpp"
-#include <iostream>
-#include <glm/gtx/string_cast.hpp>
-
-#include "Components/Transformation.hpp"
+#include "Systems/Collisions.hpp"
+#include "NewMap.hpp"
 #include "Components/SceneObject.hpp"
 #include "Components/Collider.hpp"
 #include "Components/Forces.hpp"
 #include "Components/VoxelMap.hpp"
-#include "Components/Mesh.hpp"
-#include "Algorithms/UpdateCollisions.hpp"
+#include "Components/Explosive.hpp"
 
 
 namespace Gg {
@@ -22,15 +19,13 @@ class CollisionsResolution: public AbstractAlgorithm {
 
 	public:
 
-		CollisionsResolution(GulgEngine &gulgEngine, Gg::Entity &w,Gg::Algorithm::UpdateCollisions* c );
+		CollisionsResolution(GulgEngine &gulgEngine, Gg::Entity &w, Collisions* c );
 		virtual ~CollisionsResolution();
-
 		void apply();
 
 	private:
 		Gg::Entity &world;
-    Gg::Algorithm::UpdateCollisions* collisions;
-
+     Collisions* collisions;
 };
 
 }}

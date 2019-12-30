@@ -20,9 +20,9 @@ class VoxelMap: public Gg::Component::AbstractComponent{
 
 		VoxelMap(const VoxelMap &map);
 
-		virtual std::shared_ptr<AbstractComponent> clone() const{ 
+		virtual std::shared_ptr<AbstractComponent> clone() const{
 
-			return std::static_pointer_cast<Gg::Component::AbstractComponent>(std::make_shared<VoxelMap>(*this)); 
+			return std::static_pointer_cast<Gg::Component::AbstractComponent>(std::make_shared<VoxelMap>(*this));
 		}
 
 		glm::vec4 getColor(const unsigned int x, const unsigned int y, const unsigned int z) const;
@@ -36,6 +36,8 @@ class VoxelMap: public Gg::Component::AbstractComponent{
 		glm::vec3 getVoxelPosition(const unsigned int voxelID) const;
 
 		std::array<unsigned int, 3> getWorldDimensions() const;
+
+		void explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower);
 
 	private:
 
