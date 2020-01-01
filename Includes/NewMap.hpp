@@ -18,7 +18,7 @@ std::vector<std::pair<unsigned int, glm::vec3>> selectVisibleFaces(const VoxelMa
 
 std::vector<glm::vec3> getFaceFromOrientation(const glm::vec3 &position, const glm::vec3 &orientation);
 
-void decoloring(std::vector<std::vector<unsigned int>> v, Gg::Component::Mesh &mesh);
+void localRemeshing(std::vector<std::vector<unsigned int>> v,VoxelMap &map, Gg::Component::Mesh &mesh);
 
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh);
 

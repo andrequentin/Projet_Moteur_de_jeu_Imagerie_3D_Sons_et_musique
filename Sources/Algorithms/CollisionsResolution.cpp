@@ -42,16 +42,9 @@ namespace Gg {
          ePosition -= 0.5f;
          if(voxelToCheck.size()>0 && m_gulgEngine.entityHasComponent(currentEntity.first,"Explosive")
          && std::static_pointer_cast<Gg::Component::Explosive>(m_gulgEngine.getComponent(currentEntity.first, "Explosive"))->eTrigger == ON_COLLISION ){
-           std::cout<<"Boom : "<<currentEntity.first<<to_string(ePosition)<<std::endl;
             vxsToRs.push_back(vM->explode(-1.f*ePosition[0],-1.f*ePosition[1],-1.f*ePosition[2],std::static_pointer_cast<Gg::Component::Explosive>(m_gulgEngine.getComponent(currentEntity.first, "Explosive"))->explosivePower));
            collisions->toDelete.push_back(currentEntity.first);
            explode=true;
-
-           // for(unsigned int j{0};j<collisions->entity_entity_collisions.size();j++){
-           //   if(collisions->entity_entity_collisions[j].first == currentEntity.first || collisions->entity_entity_collisions[j].second==currentEntity.first){
-           //     collisions->entity_entity_collisions.erase(collisions->entity_entity_collisions.begin()+j);j--;
-           //   }
-           // }
          }else{
 
            glm::vec3 brE {ePosition + eCollider->r};
@@ -93,7 +86,6 @@ namespace Gg {
 
             eForces->velocity/=1.1f;
 
-            // std::cout<<to_string(-collisional_response)<<std::endl;
             eForces->addForce(-collisional_response );
           }
       }
@@ -101,15 +93,8 @@ namespace Gg {
     	for(std::pair<Gg::Entity,Gg::Entity> collidingEntity: collisions->entity_entity_collisions) {
       }
       if(explode)   {
-        std::cout<<"exploded"<<std::endl;
-        // decoloring(vxsToRs , *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
-        worldMapToMesh(*vM , *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
-
-         std::cout<<"remeshed"<<std::endl;
-
-          std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh"))->reshape();
-          std::cout<<"reshaped"<<std::endl;
-
+        localRemeshing(vxsToRs,*vM , *std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh")));
+        std::static_pointer_cast<Gg::Component::Mesh>(m_gulgEngine.getComponent(world, "MainMesh"))->reshape();
        }
 
 

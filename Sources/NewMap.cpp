@@ -188,7 +188,23 @@ std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations(const unsi
 
 	return result;
 }
+std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations(std::vector<unsigned int> v) {
 
+	std::vector<std::pair<unsigned int, glm::vec3>> result;
+	result.reserve(v.size()*6);
+
+	for(unsigned int j{0}; j < v.size(); j++) {
+    unsigned int i = v[j];
+		result.emplace_back(std::make_pair(i, glm::vec3{1.f, 0.f, 0.f}));
+		result.emplace_back(std::make_pair(i, glm::vec3{-1.f, 0.f, 0.f}));
+		result.emplace_back(std::make_pair(i, glm::vec3{0.f, 1.f, 0.f}));
+		result.emplace_back(std::make_pair(i, glm::vec3{0.f, -1.f, 0.f}));
+		result.emplace_back(std::make_pair(i, glm::vec3{0.f, 0.f, 1.f}));
+		result.emplace_back(std::make_pair(i, glm::vec3{0.f, 0.f, -1.f}));
+	}
+
+	return result;
+}
 std::vector<std::pair<unsigned int, glm::vec3>> selectVisibleFaces(const VoxelMap &map, const std::vector<std::pair<unsigned int, glm::vec3>> &facesToSelect) {
 
 	std::vector<std::pair<unsigned int, glm::vec3>> result;
@@ -279,19 +295,66 @@ glm::vec3 getPositionOfPoint(const VoxelMap &map, const unsigned int voxelID, co
 	return centerPosition;
 }
 
-// void decoloring(std::vector<std::vector<unsigned int>> v, Gg::Component::Mesh &mesh){
-//   for(unsigned int i{0};i<v.size();i++){
-//     for(unsigned int j{0};j<v[i].size();j++){
-//       for(unsigned k{0};k<4*6;k++){
-//         if(v[i][j]*4*6+k < mesh.m_vertexColor.size()){
-//         mesh.m_vertexColor[v[i][j]*4*6+k]= glm::vec3(0.f,0.f,0.f);
-//       }else{
-//         std::cout<<mesh.m_vertexColor.size()<<"<"<<v[i][j]*4*6+k<<", "<<v[i][j]<<std::endl;
-//       }
-//       }
-//     }
-//   }
-// }
+void localRemeshing(std::vector<std::vector<unsigned int>> v,VoxelMap &map, Gg::Component::Mesh &mesh){
+  for(unsigned int x{0};x<v.size();x++){
+    for(unsigned int y{0};y<v[x].size();y++){
+      unsigned int idV = v[x][y];
+      for(unsigned int i{0};i<map.idVoxel_vertexInds[idV].size();i++){
+        unsigned int ind =  map.idVoxel_vertexInds[idV][i];
+        //Hiding old vertex
+        mesh.m_vertexPosition[ind*4]=glm::vec3{0.f,0.f,0.f};
+        mesh.m_vertexPosition[ind*4+1]=glm::vec3{0.f,0.f,0.f};
+        mesh.m_vertexPosition[ind*4+2]=glm::vec3{0.f,0.f,0.f};
+        mesh.m_vertexPosition[ind*4+3]=glm::vec3{0.f,0.f,0.f};
+      }
+      map.idVoxel_vertexInds[idV].clear();
+    }
+    std::vector<std::pair<unsigned int, glm::vec3>> allFaces{voxelsAndOrientations(v[x])};
+
+    allFaces = selectVisibleFaces(map, allFaces);
+    unsigned int s_t= mesh.m_vertexPosition.size()/4;
+    mesh.m_vertexPosition.resize(mesh.m_vertexPosition.size() + allFaces.size()*4);
+    mesh.m_vertexNormal.resize(mesh.m_vertexNormal.size() + allFaces.size()*4);
+    mesh.m_vertexColor.resize(mesh.m_vertexColor.size() + allFaces.size()*4);
+    mesh.m_vertexIndice.resize(mesh.m_vertexIndice.size() + allFaces.size()*6);
+    std::array<unsigned int, 4> pointsToAdd;
+    glm::vec3 currentNormal;
+
+    for(unsigned int ii{0};ii<allFaces.size();ii++){
+      unsigned int i = ii+s_t;
+      map.idVoxel_vertexInds[allFaces[ii].first].push_back(i);
+  		pointsToAdd = getPointsOfOrientedFace(allFaces[ii].second);
+
+  		mesh.m_vertexPosition[i*4] = getPositionOfPoint(map, allFaces[ii].first, pointsToAdd[0]);
+  		mesh.m_vertexPosition[i*4 + 1] = getPositionOfPoint(map, allFaces[ii].first, pointsToAdd[1]);
+  		mesh.m_vertexPosition[i*4 + 2] = getPositionOfPoint(map, allFaces[ii].first, pointsToAdd[2]);
+  		mesh.m_vertexPosition[i*4 + 3] = getPositionOfPoint(map, allFaces[ii].first, pointsToAdd[3]);
+
+  		mesh.m_vertexColor[i*4] = map.getColor(allFaces[ii].first);
+  		mesh.m_vertexColor[i*4 + 1] = map.getColor(allFaces[ii].first);
+  		mesh.m_vertexColor[i*4 + 2] = map.getColor(allFaces[ii].first);
+  		mesh.m_vertexColor[i*4 + 3] = map.getColor(allFaces[ii].first);
+
+  		currentNormal = glm::triangleNormal(mesh.m_vertexPosition[i*4],
+  											mesh.m_vertexPosition[i*4 + 1],
+  											mesh.m_vertexPosition[i*4 + 2]);
+
+  		mesh.m_vertexNormal[i*4] = currentNormal;
+  		mesh.m_vertexNormal[i*4 + 1] = currentNormal;
+  		mesh.m_vertexNormal[i*4 + 2] = currentNormal;
+  		mesh.m_vertexNormal[i*4 + 3] = currentNormal;
+
+  		mesh.m_vertexIndice[i*6] = i*4;
+  		mesh.m_vertexIndice[i*6 + 1] = i*4 + 1;
+  		mesh.m_vertexIndice[i*6 + 2] = i*4 + 2;
+
+  		mesh.m_vertexIndice[i*6 + 3] = i*4;
+  		mesh.m_vertexIndice[i*6 + 4] = i*4 + 2;
+  		mesh.m_vertexIndice[i*6 + 5] = i*4 + 3;
+    }
+
+  }
+}
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 
 	mesh.m_vertexPosition.clear();
@@ -308,17 +371,20 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 	std::array<unsigned int, 4> pointsToAdd;
 
 	mesh.m_vertexPosition.resize(allFaces.size()*4);
-    mesh.m_vertexNormal.resize(allFaces.size()*4);
+  mesh.m_vertexNormal.resize(allFaces.size()*4);
 	mesh.m_vertexColor.resize(allFaces.size()*4);
 	mesh.m_vertexIndice.resize(allFaces.size()*6);
 
-  std::cout<<allFaces.size()<<std::endl;
-  std::cout<<worldDimensions[0]*worldDimensions[1]*worldDimensions[2]<<std::endl;
-  std::cout<<mesh.m_vertexColor.size()<<std::endl;
+  // std::cout<<allFaces.size()<<std::endl;
+  // std::cout<<worldDimensions[0]*worldDimensions[1]*worldDimensions[2]<<std::endl;
+  // std::cout<<mesh.m_vertexColor.size()<<std::endl;
 	glm::vec3 currentNormal;
 
+  map.idVoxel_vertexInds.clear();
+  map.idVoxel_vertexInds.resize(worldDimensions[0]*worldDimensions[1]*worldDimensions[2]);
 	for(unsigned int i{0}; i < allFaces.size(); i++) {
 
+    map.idVoxel_vertexInds[allFaces[i].first].push_back(i);
 		pointsToAdd = getPointsOfOrientedFace(allFaces[i].second);
 
 		mesh.m_vertexPosition[i*4] = getPositionOfPoint(map, allFaces[i].first, pointsToAdd[0]);

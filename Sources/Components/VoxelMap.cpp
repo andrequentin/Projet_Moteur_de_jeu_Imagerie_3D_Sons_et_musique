@@ -4,7 +4,7 @@ VoxelMap::VoxelMap(const unsigned int x, const unsigned int y, const unsigned in
 	m_sizeX{x}, m_sizeY{y}, m_sizeZ{z} {
 
 	m_voxels.resize(m_sizeX*m_sizeY*m_sizeZ);
-
+	idVoxel_vertexInds.resize(m_sizeX*m_sizeY*m_sizeZ);
 	for(glm::vec4 &currentVoxel: m_voxels) {
 
 		currentVoxel = glm::vec4 {0.0f, 0.0f, 0.0f, 0.0f};
@@ -81,13 +81,14 @@ std::array<unsigned int, 3> VoxelMap::getWorldDimensions() const { return std::a
 
 std::vector<unsigned int> VoxelMap::explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower){
 	std::vector<unsigned int> v;
-	for( int i{-explosivePower};i<explosivePower;i++){
-		for( int j{-explosivePower};j<explosivePower;j++){
-			for( int k{-explosivePower};k<=explosivePower;k++){
-				if((static_cast<int>(x)+i) < static_cast<int>(m_sizeX) && (static_cast<int>(x)+i)>=0 && (static_cast<int>(y)+j) < static_cast<int>(m_sizeY) && (static_cast<int>(y)+j)>=0 && (static_cast<int>(z)+k) < static_cast<int>(m_sizeZ) && (static_cast<int>(z)+k)>=0
-			&& std::pow(explosivePower,2)>=((i*i)+(j*j)+(k*k))){
+	for( int i{-explosivePower - 1};i<explosivePower + 1;i++){
+		for( int j{-explosivePower - 1};j<explosivePower + 1;j++){
+			for( int k{-explosivePower - 1 };k<=explosivePower + 1	;k++){
+				if((static_cast<int>(x)+i) < static_cast<int>(m_sizeX) && (static_cast<int>(x)+i)>=0 && (static_cast<int>(y)+j) < static_cast<int>(m_sizeY) && (static_cast<int>(y)+j)>=0 && (static_cast<int>(z)+k) < static_cast<int>(m_sizeZ) && (static_cast<int>(z)+k)>=0){
+				if(std::pow(explosivePower,2)>=((i*i)+(j*j)+(k*k))){
 					setColor(x+i,y+j,z+k,glm::vec4{0.f,0.f,0.f,0.f });
-					v.push_back(getVoxelID(x+i,y+j,z+k));
+				}
+				v.push_back(getVoxelID(x+i,y+j,z+k));
 				}
 			}
 		}

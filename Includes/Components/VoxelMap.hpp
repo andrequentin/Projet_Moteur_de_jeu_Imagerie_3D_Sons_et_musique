@@ -39,11 +39,14 @@ class VoxelMap: public Gg::Component::AbstractComponent{
 
 		std::vector<unsigned int> explode(unsigned int x,unsigned int y, unsigned int z,int explosivePower);
 
+		std::vector< std::vector<unsigned int>> idVoxel_vertexInds;
+
 	private:
 
 		std::vector<glm::vec4> m_voxels;
 
 		const unsigned int m_sizeX, m_sizeY, m_sizeZ;
+
 };
 
 #endif
