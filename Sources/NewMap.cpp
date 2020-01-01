@@ -295,6 +295,21 @@ glm::vec3 getPositionOfPoint(const VoxelMap &map, const unsigned int voxelID, co
 	return centerPosition;
 }
 
+glm::vec3 getPositionOfPoint( const unsigned int point) {
+
+	glm::vec3 centerPosition;
+
+	if(point == 0) { centerPosition = glm::vec3{-1.f, -1.f, -1.f}; }
+	if(point == 1) { centerPosition = glm::vec3{1.f, -1.f, -1.f}; }
+	if(point == 2) { centerPosition = glm::vec3{1.f, -1.f, 1.f}; }
+	if(point == 3) { centerPosition = glm::vec3{-1.f, -1.f, 1.f}; }
+	if(point == 4) { centerPosition = glm::vec3{-1.f, 1.f, -1.f}; }
+	if(point == 5) { centerPosition = glm::vec3{1.f, 1.f, -1.f}; }
+	if(point == 6) { centerPosition = glm::vec3{1.f, 1.f, 1.f}; }
+	if(point == 7) { centerPosition = glm::vec3{-1.f, 1.f, 1.f}; }
+
+	return centerPosition;
+}
 void localRemeshing(std::vector<std::vector<unsigned int>> v,VoxelMap &map, Gg::Component::Mesh &mesh){
   for(unsigned int x{0};x<v.size();x++){
     for(unsigned int y{0};y<v[x].size();y++){
@@ -417,33 +432,42 @@ void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh) {
 }
 
 
-void Cube(std::shared_ptr<Gg::Component::Mesh> mesh,float size){
+void Cube(std::shared_ptr<Gg::Component::Mesh> mesh,float size,glm::vec3 color){
+  std::vector<std::pair<unsigned int, glm::vec3>> allFaces{voxelsAndOrientations(1)};
+  std::array<unsigned int, 4> pointsToAdd;
 
-  mesh->m_vertexPosition.resize(8);
-    mesh->m_vertexPosition[0] = glm::vec3{-size, -size, -size};
-    mesh->m_vertexPosition[1] = glm::vec3{size, -size, -size};
-    mesh->m_vertexPosition[2] = glm::vec3{size, size, -size};
-    mesh->m_vertexPosition[3] = glm::vec3{-size, size, -size};
-    mesh->m_vertexPosition[4] = glm::vec3{-size, -size, size};
-    mesh->m_vertexPosition[5] = glm::vec3{size, -size, size};
-    mesh->m_vertexPosition[6] = glm::vec3{size, size, size};
-    mesh->m_vertexPosition[7] = glm::vec3{-size, size, size};
-     for(unsigned int i{0}; i < 8; i++) {
-        mesh->m_vertexNormal.emplace_back(glm::vec3{0.f, 0.f, 1.f});
-        mesh->m_vertexColor.emplace_back(glm::vec3{0.f, 1.f, 1.f});
-    }
-    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(3);
-    mesh->m_vertexIndice.emplace_back(3);    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(2);
-    mesh->m_vertexIndice.emplace_back(1);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(2);
-    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(6);
-    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(6);
-    mesh->m_vertexIndice.emplace_back(6);    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(7);
-    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(7);
-    mesh->m_vertexIndice.emplace_back(7);    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(3);
-    mesh->m_vertexIndice.emplace_back(3);    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(7);
-    mesh->m_vertexIndice.emplace_back(7);    mesh->m_vertexIndice.emplace_back(2);    mesh->m_vertexIndice.emplace_back(6);
-    mesh->m_vertexIndice.emplace_back(4);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(0);
-    mesh->m_vertexIndice.emplace_back(0);    mesh->m_vertexIndice.emplace_back(5);    mesh->m_vertexIndice.emplace_back(1);
+	mesh->m_vertexPosition.resize(allFaces.size()*4);
+  mesh->m_vertexNormal.resize(allFaces.size()*4);
+	mesh->m_vertexColor.resize(allFaces.size()*4);
+	mesh->m_vertexIndice.resize(allFaces.size()*6);
+
+	glm::vec3 currentNormal;
+  for(unsigned int i{0}; i < allFaces.size(); i++) {
+    pointsToAdd = getPointsOfOrientedFace(allFaces[i].second);
+    mesh->m_vertexPosition[i*4] = size * getPositionOfPoint(pointsToAdd[0]);
+    mesh->m_vertexPosition[i*4 + 1] = size * getPositionOfPoint(pointsToAdd[1]);
+    mesh->m_vertexPosition[i*4 + 2] = size * getPositionOfPoint(pointsToAdd[2]);
+    mesh->m_vertexPosition[i*4 + 3] = size * getPositionOfPoint(pointsToAdd[3]);
+    mesh->m_vertexColor[i*4] = color;
+		mesh->m_vertexColor[i*4 + 1] = color;
+		mesh->m_vertexColor[i*4 + 2] = color;
+		mesh->m_vertexColor[i*4 + 3] = color;
+    currentNormal = glm::triangleNormal(mesh->m_vertexPosition[i*4],
+                      mesh->m_vertexPosition[i*4 + 1],
+                      mesh->m_vertexPosition[i*4 + 2]);
+    mesh->m_vertexNormal[i*4] = currentNormal;
+    mesh->m_vertexNormal[i*4 + 1] = currentNormal;
+    mesh->m_vertexNormal[i*4 + 2] = currentNormal;
+    mesh->m_vertexNormal[i*4 + 3] = currentNormal;
+
+    mesh->m_vertexIndice[i*6] = i*4;
+    mesh->m_vertexIndice[i*6 + 1] = i*4 + 1;
+    mesh->m_vertexIndice[i*6 + 2] = i*4 + 2;
+
+    mesh->m_vertexIndice[i*6 + 3] = i*4;
+    mesh->m_vertexIndice[i*6 + 4] = i*4 + 2;
+    mesh->m_vertexIndice[i*6 + 5] = i*4 + 3;
+  }
 
     mesh->reshape();
 }

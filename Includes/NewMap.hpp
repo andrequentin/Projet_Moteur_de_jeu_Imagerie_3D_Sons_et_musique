@@ -22,7 +22,7 @@ void localRemeshing(std::vector<std::vector<unsigned int>> v,VoxelMap &map, Gg::
 
 void worldMapToMesh(VoxelMap &map, Gg::Component::Mesh &mesh);
 
-void Cube(std::shared_ptr<Gg::Component::Mesh> mesh , float size);
+void Cube(std::shared_ptr<Gg::Component::Mesh> mesh , float size,glm::vec3 color);
 
 void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program);
 

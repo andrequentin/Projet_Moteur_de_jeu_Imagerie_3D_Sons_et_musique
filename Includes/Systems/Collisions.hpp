@@ -17,6 +17,7 @@ class Collisions: public Gg::Systems::System {
 		std::vector<std::pair<Gg::Entity,std::vector<int>>> entity_world_collisions;
 		std::vector<std::pair<Gg::Entity,Gg::Entity>> entity_entity_collisions;
 		std::vector<Gg::Entity> toDelete;
+		std::vector<Gg::Entity> toAdd;
 
 };
 

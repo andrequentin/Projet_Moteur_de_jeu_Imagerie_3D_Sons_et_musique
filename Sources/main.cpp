@@ -154,7 +154,7 @@ int main() {
     // playerTransformation->scale(2);
 
      std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Cube(playerMesh,1.f);
+    Cube(playerMesh,1.f,glm::vec3{0.f,0.3f,1.0f});
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
 
@@ -272,12 +272,12 @@ int main() {
             (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
           std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>()};
           std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
-          Cube(newGMesh,0.5f);
+          Cube(newGMesh,0.5f,glm::vec3{1.f,0.f,0.f});
           std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>()};
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
           glm::vec3 f {(glm::vec3{0.f, 0.f, 10.f} * cameraTransformation->m_rotation)};
-          f[2] += -10.f;
+          f[2] += -5.f;
           newGForces->addForce(playerForces->velocity + f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
@@ -315,6 +315,17 @@ int main() {
           gameScene->deleteChild(toD);
         }
         collisions.toDelete.clear();
+
+        for(Gg::Entity toD : collisions.toAdd){
+          collisions.addEntity(toD);
+          physics.addEntity(toD);
+          sceneUpdate.addEntity(toD);
+          sceneDraw.addEntity(toD);
+          gameScene->addChild(toD);
+        }
+        if(collisions.toAdd.size()>0)sceneUpdate.applyAlgorithms();
+        collisions.toAdd.clear();
+
         glfwSwapBuffers(window);
     }
 
