@@ -27,7 +27,25 @@
 #include "LoadAnimation.hpp"
 #include "NewMap.hpp"
 
+glm::vec3  QuaternionToEuler(glm::quat quaternion)
+{
+    double w,x,y,z;
+    double pi{3.14159265358979323846};
+    w = quaternion[0];
+    x = quaternion[1];
+    y = quaternion[2];
+    z = quaternion[3];
 
+    double sqw = w*w;
+    double sqx = x*x;
+    double sqy = y*y;
+    double sqz = z*z;
+
+    double ez =  (std::atan2(2.0 * (x*y + z*w),(sqx - sqy - sqz + sqw)) * (180.0f/pi));
+    double ey =  (std::atan2(2.0 * (y*z + x*w),(-sqx - sqy + sqz + sqw)) * (180.0f/pi));
+    double ex = (std::asin(-2.0 * (x*z - y*w)) * (180.0f/pi));
+    return glm::vec3{ex,ey,ez};
+}
 bool initOpenGL(GLFWwindow **window) {
 
     glfwInit();
@@ -247,17 +265,32 @@ int main() {
     int gNewState = GLFW_RELEASE;
     int rOldState = GLFW_RELEASE;
     int rNewState = GLFW_RELEASE;
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    double oxpos, oypos,xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    double sensi=0.1f;
     while (!haveToStop) {
         //Event
+        oxpos = xpos;
+        oypos = ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
+        if(oxpos != xpos || oypos != ypos){
+          cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,1.f,0.f});
+          cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi, glm::vec3{1.f,0.f,0.f});
+        }
 
-        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f}); }
-        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f}); }
-        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f}); }
+        // if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
+        // if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f});  }
+        // if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f});  }
+        // if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f});  }
+        if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f});  }
+        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f});    }
+        // std::cout<<to_string(QuaternionToEuler(cameraTransformation->m_rotation))<<std::endl;
 
         if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f,  0.f,-(2.f*P_acc)} ); }
         if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, P_acc} ); }
