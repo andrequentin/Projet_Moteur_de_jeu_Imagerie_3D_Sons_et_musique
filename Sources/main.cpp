@@ -7,6 +7,9 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include <FMOD/fmod_studio.hpp>
+#include <FMOD/fmod_errors.h>
+
 #include "GulgEngine/GulgEngine.hpp"
 
 #include "Components/Mesh.hpp"
@@ -96,6 +99,26 @@ int main() {
         glfwTerminate();
         return -1;
     }
+
+    FMOD_RESULT fmodResult;
+    FMOD::Studio::System* soundSystem = nullptr;
+
+    fmodResult = FMOD::Studio::System::create(&soundSystem);
+    if(fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API initialization: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    // Initialize FMOD Studio, which will also initialize FMOD Core
+    fmodResult = soundSystem->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API initialization: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+
 
     Gg::GulgEngine engine;
 
@@ -190,7 +213,7 @@ int main() {
     engine.addComponentToEntity(light1ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Transformation));
     engine.addComponentToEntity(light1ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light1Light));
 
-    light1Light->m_ambient = glm::vec3{0.1f, 0.1f, 0.1f};
+    light1Light->m_ambient = glm::vec3{0.75f, 0.75f, 0.75f};
     light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
     light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
 
@@ -199,7 +222,7 @@ int main() {
 
     //Point
 
-    Gg::Entity light2ID{engine.getNewEntity()};
+    /*Gg::Entity light2ID{engine.getNewEntity()};
 
     std::shared_ptr<Gg::Component::SceneObject> light2Scene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::Transformation> light2Transformation{std::make_shared<Gg::Component::Transformation>()};
@@ -219,7 +242,7 @@ int main() {
 
     light2Transformation->translate(glm::vec3{100.f, 300.f, -100.f});
 
-    light2Light->m_lightType = Gg::Component::LightType::Point;
+    light2Light->m_lightType = Gg::Component::LightType::Point;*/
 
 
 
@@ -230,7 +253,7 @@ int main() {
 
 
     gameScene->addChild(light1ID);
-    gameScene->addChild(light2ID);
+    //gameScene->addChild(light2ID);
 
 
     UpdateScene sceneUpdate{engine};
@@ -265,7 +288,7 @@ int main() {
     int gNewState = GLFW_RELEASE;
     int rOldState = GLFW_RELEASE;
     int rNewState = GLFW_RELEASE;
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
@@ -274,20 +297,20 @@ int main() {
         //Event
         oxpos = xpos;
         oypos = ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
+        //glfwGetCursorPos(window, &xpos, &ypos);
 
 
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
-        if(oxpos != xpos || oypos != ypos){
+        /*if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,1.f,0.f});
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi, glm::vec3{1.f,0.f,0.f});
-        }
+        }*/
 
-        // if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
-        // if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f});  }
-        // if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f});  }
-        // if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f});  }
+        if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
+        if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f});  }
+        if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f});  }
+        if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f});  }
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f});  }
         if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f});    }
         // std::cout<<to_string(QuaternionToEuler(cameraTransformation->m_rotation))<<std::endl;
@@ -372,7 +395,7 @@ int main() {
         //Draw
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.15f, 0.75f, 0.95f, 1.0f);
 
         sceneDraw.applyAlgorithms();
         for(Gg::Entity toD : time.toDelete){

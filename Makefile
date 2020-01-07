@@ -1,6 +1,7 @@
-CXX      = g++
-CXXFLAGS = -g -std=c++17 -Wextra -Wall -pedantic -O3
-LDFLAGS  = -L ./Libraries/GLFW/ -L ./Libraries/GLEW/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl
+FMODARCHI = x86_64
+CXX       = g++
+CXXFLAGS  = -g -std=c++17 -Wextra -Wall -pedantic -O3
+LDFLAGS   = -L ./Libraries/GLFW/ -L ./Libraries/GLEW/ -L ./Libraries/FMOD/$(FMODARCHI) -Wl,-rpath=./Libraries/FMOD/$(FMODARCHI)/ -lGLEW -lglfw3 -lGL -lX11 -lpthread -ldl -lfmodstudio
 
 SRCFILE = Sources
 INCFILE = Includes
