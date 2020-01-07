@@ -33,9 +33,9 @@ struct Transformation: public AbstractComponent {
 	    m_specificTransformation{trans.m_specificTransformation},
 	    m_rotation{trans.m_rotation} {}
 
-	virtual std::shared_ptr<AbstractComponent> clone() const { 
+	virtual std::shared_ptr<AbstractComponent> clone() const {
 
-		return std::static_pointer_cast<AbstractComponent>(std::make_shared<Transformation>(*this)); 
+		return std::static_pointer_cast<AbstractComponent>(std::make_shared<Transformation>(*this));
 	}
 
     void translate(const glm::vec3 &translation) { m_translation = glm::translate(m_translation, translation); }
@@ -50,7 +50,7 @@ struct Transformation: public AbstractComponent {
     glm::mat4 getTransformationMatrix() const { return m_translation * glm::toMat4(m_rotation) * m_scale * m_specificTransformation; }
 
 	glm::mat4 m_translation, m_scale, m_specificTransformation;
-    glm::quat m_rotation;       
+    glm::quat m_rotation;
 };
 
 }}

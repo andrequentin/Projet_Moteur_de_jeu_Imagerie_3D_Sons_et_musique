@@ -278,7 +278,7 @@ int main() {
 
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
-    cameraTransformation->translate(glm::vec3{0.f, 0.f, -50.f});
+    cameraTransformation->translate(glm::vec3{0.f, 0.f, -40.f});
      playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
 
     sceneDraw.setProjection(projection);
@@ -302,17 +302,24 @@ int main() {
 
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
+<<<<<<< HEAD
         /*if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,1.f,0.f});
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi, glm::vec3{1.f,0.f,0.f});
         }*/
+=======
+        if(oxpos != xpos || oypos != ypos){
+          cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi,  glm::vec3{1.f,0.f,0.f});
+          cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,0.f,1.f}*glm::conjugate(cameraTransformation->m_rotation));
+        }
+>>>>>>> 7488a60eaa35f9d6ef039640c62922c6f609025f
 
         if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
         if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f});  }
         if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{1.f, 0.f, 0.f});  }
         if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f});  }
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f});  }
-        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f});    }
+        if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f});}
         // std::cout<<to_string(QuaternionToEuler(cameraTransformation->m_rotation))<<std::endl;
 
         if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f,  0.f,-(2.f*P_acc)} ); }
