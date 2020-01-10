@@ -16,7 +16,19 @@ namespace Gg {
     }
     CollisionsResolution::~CollisionsResolution() {}
 
-
+    glm::vec3 getClosestPoint(glm::vec3 t, glm::vec3 bbmin,glm::vec3 bbmax){
+      glm::vec3 result{0.f};
+      for(unsigned int i {0};i<3;i++){
+        if(t[i]>bbmax[i]){
+          result[i]=bbmax[i];
+        }else if(t[i]<bbmin[i]){
+          result[i]=bbmin[i];
+        }else{
+          result[i]=t[i];
+        }
+      }
+      return result;
+    }
     void CollisionsResolution::apply() {
       bool explode{false};
       glm::mat4 wT{std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(world, "SceneObject"))->m_globalTransformations};
@@ -74,14 +86,30 @@ namespace Gg {
            }
 
          }else{
+           // std::cout<<voxelToCheck.size()<<std::endl;
+           glm::vec3 c1{ePosition + eCollider->c1  };
+           glm::vec3 c2{ePosition + eCollider->c2  };
+           // c1 -= (eForces->forces + eForces->velocity);
+           // c2 -= (eForces->forces + eForces->velocity);
+           glm::vec3 bbmin{
+             std::min(c1[0] - eCollider->r,c2[0] - eCollider->r),
+             std::min(c1[1] - eCollider->r,c2[1] - eCollider->r),
+             std::min(c1[2] - eCollider->r,c2[2] - eCollider->r)
+           };
+           glm::vec3 bbmax{
+             std::max(c1[0] + eCollider->r,c2[0] + eCollider->r),
+             std::max(c1[1] + eCollider->r,c2[1] + eCollider->r),
+             std::max(c1[2] + eCollider->r,c2[2] + eCollider->r)
+           };
 
-           glm::vec3 brE {ePosition + eCollider->r};
-           // brE-=eForces->forces;
            glm::vec3 collisional_response{0.f,0.f,0.f};
 
-           for(unsigned int i{0};i<voxelToCheck.size();i++){
-              glm::vec3 posV = vM->getVoxelPosition(voxelToCheck[i]);
-              glm::vec3 brV = -1.f *  (posV-0.5f);
+           for(unsigned int j{0};j<voxelToCheck.size();j++){
+              glm::vec3 posV = vM->getVoxelPosition(voxelToCheck[j]);
+              glm::vec3 brV = -1.f *  (posV+0.5f);
+              glm::vec3 brE {getClosestPoint(brV,bbmin,bbmax)};
+              // glm::vec3 brE{ePosition + eCollider->r};
+
               glm::vec3 df {brE-brV};
               if(std::abs(df[0])> std::abs(df[1]) && std::abs(df[0])> std::abs(df[2]) ){
                 df[2]=0.f;
@@ -95,26 +123,29 @@ namespace Gg {
               }
               df = glm::normalize(df);
               glm::vec3 v{posV -df};
-              // std::cout<<to_string(df)
-              // <<to_string(eForces->velocity+eForces->forces)
-              // <<std::endl;
 
-              if( glm::dot(df,(eForces->velocity+eForces->forces))<0.f
+
+              if( glm::dot(df,(eForces->velocity+eForces->forces))<=0.f
                   && v[0]>=0.f && v[1]>=0.f && v[2]>=0.f
                   && v[0] < vM->getWorldDimensions()[0] && v[1] < vM->getWorldDimensions()[1]&& v[2] < vM->getWorldDimensions()[2]
-                  && vM->getColor(v[0],v[1],v[2])[3]<0.2f){
-                for(unsigned int i{0};i<3;i++){
-                  if(std::abs(df[i])>0.f  && std::abs(collisional_response[i]) == 0.f  ){
-                      collisional_response[i] +=(eForces->velocity[i]+eForces->forces[i]);
-                      i=3;
+                  && vM->getColor(v[0],v[1],v[2])[3]<0.2f
+                ){
+                for(unsigned int k{0};k<3;k++){
+                  if(df[k]!=0.f ){
+                      collisional_response[k] = (eForces->velocity[k]+eForces->forces[k]);
+                      k=3;
                     }
                   }
                 }
-              }
+    
 
+              }
+              if(voxelToCheck.size()>0 && glm::length(collisional_response)==0.f){
+                collisional_response[2] = (eForces->velocity[2]+eForces->forces[2]);
+              }
+            eForces->addForce(-collisional_response );
             eForces->velocity/=1.1f;
 
-            eForces->addForce(-collisional_response );
           }
       }
       //For each entity :

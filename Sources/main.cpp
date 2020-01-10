@@ -185,7 +185,7 @@ int main() {
         eventDescription[i].getPath(path, 100, nullptr);
         std::cout << "Event: " << path << std::endl;
     }*/
-    
+
     /*FMOD::Studio::EventDescription* eventDescription = NULL;
     ERRCHECK( soundSystem->getEvent("event:/Vehicles/Ride-on Mower", &eventDescription) );
 
@@ -245,7 +245,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
 
     std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>
-      (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},1.f)};
+      (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
     std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
 
 
@@ -274,7 +274,7 @@ int main() {
     // playerTransformation->scale(2);
 
      std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Cube(playerMesh,1.f,glm::vec3{0.f,0.3f,1.0f});
+    Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
     // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
 
@@ -370,6 +370,7 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
+    eventInstance->setVolume(0.f);
 
     while (!haveToStop) {
         //Event
@@ -380,10 +381,6 @@ int main() {
 
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
-        if(oxpos != xpos || oypos != ypos){
-          cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,1.f,0.f});
-          cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi, glm::vec3{1.f,0.f,0.f});
-        }
 
         if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi,  glm::vec3{1.f,0.f,0.f});
@@ -411,7 +408,7 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 4); }
         if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 5); }
 
-        if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) { 
+        if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) {
 
             float currentVolume{0.f};
             eventInstance->getVolume(&currentVolume);
@@ -422,9 +419,9 @@ int main() {
 
             float currentVolume{0.f};
             eventInstance->getVolume(&currentVolume);
-            eventInstance->setVolume(currentVolume*0.8f); 
+            eventInstance->setVolume(currentVolume*0.8f);
         }
-       
+
 
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
@@ -460,7 +457,7 @@ int main() {
           time.addEntity(newG);
           sceneUpdate.applyAlgorithms();
         }
-        
+
 
         rOldState = rNewState;
         rNewState = glfwGetKey(window, GLFW_KEY_R) ;
@@ -559,7 +556,7 @@ int main() {
         time.toDelete.clear();
         collisions.toDelete.clear();
 
-        
+
     }
 
     glfwTerminate();
