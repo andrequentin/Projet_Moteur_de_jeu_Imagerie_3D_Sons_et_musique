@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{faa226d7-aa72-421a-ba9c-382048e04955}">
+		<property name="assetPath">
+			<value>Jojo3.flac</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>308.04000000000002</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e1cf7614-1317-4c04-bc3f-fa91707ce177}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="ParameterPreset" id="{66c776e6-55f8-4057-9a2d-5bf982899270}">
+		<property name="name">
+			<value>JojoSelection</value>
+		</property>
+		<relationship name="folder">
+			<destination>{1605f83d-a806-45bd-ad4a-aedcf59a4288}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{f4ea52ac-226a-46b9-8f44-f3e6418fdd72}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{f4ea52ac-226a-46b9-8f44-f3e6418fdd72}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="minimum">
+			<value>3</value>
+		</property>
+		<property name="maximum">
+			<value>6</value>
+		</property>
+		<property name="initialValue">
+			<value>3</value>
+		</property>
+	</object>
+</objects>

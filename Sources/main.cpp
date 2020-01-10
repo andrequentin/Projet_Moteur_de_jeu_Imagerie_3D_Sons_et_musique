@@ -101,7 +101,7 @@ int main() {
     }
 
     FMOD_RESULT fmodResult;
-    FMOD::Studio::System* soundSystem = nullptr;
+    FMOD::Studio::System* soundSystem{nullptr};
 
     fmodResult = FMOD::Studio::System::create(&soundSystem);
     if(fmodResult != FMOD_OK) {
@@ -117,6 +117,83 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API initialization: " << FMOD_ErrorString(fmodResult) << std::endl;
         return -1;
     }
+
+    FMOD::Studio::Bank* masterBank{nullptr};
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/JojoProjet/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    FMOD::Studio::Bank* masterStringBank{nullptr};
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/JojoProjet/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterStringBank);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    FMOD::Studio::EventDescription *eventDescription{nullptr};
+    int nbEvent{0};
+    fmodResult = soundSystem->getEvent("event:/JoJoMusic", &eventDescription);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    FMOD::Studio::EventInstance *eventInstance{nullptr};
+    fmodResult = eventDescription->createInstance(&eventInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+
+    fmodResult = eventInstance->setParameterByName("JojoSelection", 5);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API parameter: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    fmodResult = eventInstance->start();
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+
+    /*FMOD::Studio::EventDescription *eventDescription{nullptr};
+    int nbEvent{0};
+    fmodResult = masterBank->getEventList(&eventDescription, 10, &nbEvent);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    for(unsigned int i{0}; i < nbEvent; i++) {
+
+        char path[100];
+        eventDescription[i].getPath(path, 100, nullptr);
+        std::cout << "Event: " << path << std::endl;
+    }*/
+    
+    /*FMOD::Studio::EventDescription* eventDescription = NULL;
+    ERRCHECK( soundSystem->getEvent("event:/Vehicles/Ride-on Mower", &eventDescription) );
+
+    FMOD::Studio::EventInstance* eventInstance = NULL;
+    ERRCHECK( eventDescription->createInstance(&eventInstance) );
+
+    ERRCHECK( eventInstance->setParameterByName("RPM", 650.0f) );
+    ERRCHECK( eventInstance->start() );*/
 
 
 
@@ -288,31 +365,30 @@ int main() {
     int gNewState = GLFW_RELEASE;
     int rOldState = GLFW_RELEASE;
     int rNewState = GLFW_RELEASE;
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
+
     while (!haveToStop) {
         //Event
         oxpos = xpos;
         oypos = ypos;
-        //glfwGetCursorPos(window, &xpos, &ypos);
+        glfwGetCursorPos(window, &xpos, &ypos);
 
 
         glfwPollEvents();
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { haveToStop = true; }
-<<<<<<< HEAD
-        /*if(oxpos != xpos || oypos != ypos){
+        if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,1.f,0.f});
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi, glm::vec3{1.f,0.f,0.f});
-        }*/
-=======
+        }
+
         if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi,  glm::vec3{1.f,0.f,0.f});
           cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,0.f,1.f}*glm::conjugate(cameraTransformation->m_rotation));
         }
->>>>>>> 7488a60eaa35f9d6ef039640c62922c6f609025f
 
         if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
         if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 1.f, 0.f});  }
@@ -330,8 +406,30 @@ int main() {
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
+
+        if(glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 3); }
+        if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 4); }
+        if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 5); }
+
+        if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) { 
+
+            float currentVolume{0.f};
+            eventInstance->getVolume(&currentVolume);
+            eventInstance->setVolume(currentVolume*1.25f);
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS) {
+
+            float currentVolume{0.f};
+            eventInstance->getVolume(&currentVolume);
+            eventInstance->setVolume(currentVolume*0.8f); 
+        }
+       
+
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
+
+
         if(gOldState == GLFW_PRESS && gNewState == GLFW_RELEASE ) {
           Gg::Entity newG{engine.getNewEntity()};
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -362,6 +460,8 @@ int main() {
           time.addEntity(newG);
           sceneUpdate.applyAlgorithms();
         }
+        
+
         rOldState = rNewState;
         rNewState = glfwGetKey(window, GLFW_KEY_R) ;
         if(rOldState == GLFW_PRESS && rNewState == GLFW_RELEASE ) {
@@ -391,12 +491,19 @@ int main() {
           collisions.addEntity(newG);
           sceneUpdate.applyAlgorithms();
         }
+
+
+
+
+
         //Update
         collisions.applyAlgorithms();
         time.applyAlgorithms();
         physics.applyAlgorithms();
         sceneUpdate.applyAlgorithms();
         lightning.applyAlgorithms();
+
+        soundSystem->update();
 
 
         //Draw
@@ -405,6 +512,14 @@ int main() {
         glClearColor(0.15f, 0.75f, 0.95f, 1.0f);
 
         sceneDraw.applyAlgorithms();
+
+        glfwSwapBuffers(window);
+
+
+
+
+        //Entities to add/delete at the end of the current frame
+
         for(Gg::Entity toD : time.toDelete){
           collisions.deleteEntity(toD);
           physics.deleteEntity(toD);
@@ -444,7 +559,7 @@ int main() {
         time.toDelete.clear();
         collisions.toDelete.clear();
 
-        glfwSwapBuffers(window);
+        
     }
 
     glfwTerminate();
