@@ -54,15 +54,18 @@ FMOD::Studio::EventInstance *getSoundInstance(const std::string path,
     	return result;
     }
 
-    char *eventPath{nullptr};
+    char eventPath[1024];
 
     for(int i{0}; i < nbDescriptions; i++) {
 
-    	descriptions[i].getPath(eventPath, 1024, nullptr);
-    	if(std::string{eventPath} == path) { 
+    	fmodResult = descriptions[i].getPath(&eventPath[0], 1024, nullptr);
+    	fmodError(fmodResult, "event path");
+    	if(fmodResult != FMOD_OK) { return result; }
+
+    	else if (strcmp(eventPath, path.c_str()) != 0) { 
 
     		fmodResult = descriptions[i].createInstance(&result);
-    		fmodError(fmodResult, " event instance creation");
+    		fmodError(fmodResult, "event instance creation");
     	}
     }
 

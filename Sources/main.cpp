@@ -87,27 +87,90 @@ int main() {
     //LOADING SOUNDS
     /*---------*/
 
-    FMOD::Studio::System *soundSystem{nullptr}; 
-    FMOD::Studio::Bank *masterBank{nullptr}, *masterStringBank{nullptr};
-    FMOD::Studio::EventDescription *descriptions{nullptr};
-
-    loadSound(&soundSystem, &masterBank, &masterStringBank, &descriptions);
-
     FMOD_RESULT fmodResult;
+    FMOD::Studio::System* soundSystem{nullptr};
 
-    FMOD::Studio::EventInstance *explosioneventInstance{getSoundInstance("event:/grenade", descriptions, masterBank)};
-    FMOD::Studio::EventInstance *stepeventInstance{getSoundInstance("event:/pas", descriptions, masterBank)};
+    fmodResult = FMOD::Studio::System::create(&soundSystem);
+    if(fmodResult != FMOD_OK) {
 
-    fmodResult = stepeventInstance->setParameterByName("Matiere", 0);
-    fmodError(fmodResult, "event parameter \"Matiere\"");
+        std::cout << "Error " << fmodResult << " with FMOD studio API initialization: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    // Initialize FMOD Studio, which will also initialize FMOD Core
+    fmodResult = soundSystem->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API initialization: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    FMOD::Studio::Bank* masterBank{nullptr};
+
+
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/projet/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+    FMOD::Studio::Bank* masterStringBank{nullptr};
+
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/projet/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterStringBank);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+    FMOD::Studio::EventDescription *explosioneventDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/grenade", &explosioneventDescription);
+
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+    FMOD::Studio::EventInstance *explosioneventInstance{nullptr};
+    fmodResult = explosioneventDescription->createInstance(&explosioneventInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+
+
+
+    FMOD::Studio::EventDescription *stepeventDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/pas", &stepeventDescription);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+    FMOD::Studio::EventInstance *stepeventInstance{nullptr};
+    fmodResult = stepeventDescription->createInstance(&stepeventInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+
+     fmodResult = stepeventInstance->setParameterByName("Matiere", 0);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API parameter: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
 
     // fmodResult = explosioneventInstance->start();
 
-    /*if (fmodResult != FMOD_OK) {
+     if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
         return -1;
-    }*/
+    }
+
    
 
     /*---------*/
