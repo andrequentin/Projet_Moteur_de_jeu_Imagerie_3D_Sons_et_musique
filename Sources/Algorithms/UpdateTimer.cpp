@@ -74,6 +74,7 @@ namespace Gg {
             FMOD_VECTOR{ 0.f,-1.f,0.f},
             FMOD_VECTOR{0.f,0.f,-1.f}};
           explosioneventInstance->set3DAttributes(&att3D);
+          explosioneventInstance->setVolume(0.5f);
           explosioneventInstance->start();
           explosioneventInstance->release();
 

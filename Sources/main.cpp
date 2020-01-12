@@ -168,11 +168,11 @@ int main() {
 
      fmodResult = ambianceeventInstance->start();
 
-    //  if (fmodResult != FMOD_OK) {
-    //
-    //     std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
-    //     return -1;
-    // }
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
 
 
 
@@ -409,9 +409,9 @@ int main() {
           std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>(5,ON_COLLISION)};
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
-          glm::vec3 f {(glm::vec3{0.f, 0.f, 10.f} * cameraTransformation->m_rotation)};
-          f[2] += -5.f;
-          newGForces->addForce(playerForces->velocity + f);
+          glm::vec3 f {(glm::vec3{0.f, 0.f, 1.f} * cameraTransformation->m_rotation)};
+
+          newGForces->addForce(playerForces->velocity + f*8.f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
           engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
@@ -439,10 +439,12 @@ int main() {
         FMOD_3D_ATTRIBUTES att3D_;
         att3D_.position = FMOD_VECTOR{playerScene->m_globalTransformations[3][0],playerScene->m_globalTransformations[3][1],playerScene->m_globalTransformations[3][2]};//position
         att3D_.velocity = FMOD_VECTOR{ 0.f,  0.f, 0.f };
-        glm::vec3 f {cameraTransformation->m_rotation*glm::vec3{1.f,0.f,0.f}};   f=glm::normalize(f);  f*=-1;
+        glm::vec3 f {glm::vec3{0.f,0.f,1.f}*cameraTransformation->m_rotation};   f=glm::normalize(f);
+
         att3D_.forward = FMOD_VECTOR{ f[0],f[1],f[2]};
-        glm::vec3 u {cameraTransformation->m_rotation*glm::vec3{0.f,0.f,1.f}};  u=glm::normalize(u);
+        glm::vec3 u {glm::vec3{0.f,-1.f,0.f}*cameraTransformation->m_rotation};  u=glm::normalize(u);
         att3D_.up= FMOD_VECTOR{  u[0],u[1],u[2] };
+
 
         soundSystem->setListenerAttributes(0,&att3D_);
 
@@ -507,6 +509,7 @@ int main() {
 
 
     }
+    fmodResult = ambianceeventInstance->release();
 
     glfwTerminate();
 

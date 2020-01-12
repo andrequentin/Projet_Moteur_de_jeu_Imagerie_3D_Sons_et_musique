@@ -100,6 +100,7 @@ namespace Gg {
              FMOD_VECTOR{ 0.f,-1.f,0.f},
              FMOD_VECTOR{0.f,0.f,-1.f}};
            explosioneventInstance->set3DAttributes(&att3D);
+           explosioneventInstance->setVolume(0.5f);
            explosioneventInstance->start();
            explosioneventInstance->release();
 
@@ -189,7 +190,7 @@ namespace Gg {
                 FMOD_STUDIO_PLAYBACK_STATE s;
                 sS->stepeventInstance->getPlaybackState(&s);
                 if(s != FMOD_STUDIO_PLAYBACK_PLAYING )sS->stepeventInstance->start();
-                sS->stepeventInstance->setVolume(glm::length(eForces->velocity));
+                sS->stepeventInstance->setVolume(glm::length(eForces->velocity)/2);
               }
               eForces->addForce(-collisional_response );
               eForces->velocity/=1.1f;
