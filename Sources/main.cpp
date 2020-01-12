@@ -218,7 +218,7 @@ int main() {
 
     std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>
       (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
-      std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
+      std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.1f,1.f,0.3f) };
       std::shared_ptr<Gg::Component::StepSound> playerstepSound{std::make_shared<Gg::Component::StepSound>(stepeventInstance)};
 
 
@@ -388,7 +388,7 @@ int main() {
           std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
           std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>
             (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
-          std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.f,1.f)};
+          std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.f,1.f,2.f)};
           std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
           Cube(newGMesh,0.5f,glm::vec3{1.f,0.f,0.f});
           std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>(5,ON_COLLISION)};

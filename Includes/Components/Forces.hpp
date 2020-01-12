@@ -14,7 +14,7 @@ namespace Gg {
 
       Forces();
 
-      Forces(const glm::vec3 f,float gf,float m);
+      Forces(const glm::vec3 f,float gf,float m,float ms  );
 
       Forces(const Forces &fs);
 
@@ -33,6 +33,8 @@ namespace Gg {
       glm::vec3 forces;
       float mass;
       float gravity_f;
+      float maxspeed;
+
     };
   }
 }
