@@ -189,7 +189,7 @@ namespace Gg {
                 FMOD_STUDIO_PLAYBACK_STATE s;
                 sS->stepeventInstance->getPlaybackState(&s);
                 if(s != FMOD_STUDIO_PLAYBACK_PLAYING )sS->stepeventInstance->start();
-
+                sS->stepeventInstance->setVolume(glm::length(eForces->velocity));
               }
               eForces->addForce(-collisional_response );
               eForces->velocity/=1.1f;

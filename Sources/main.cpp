@@ -149,9 +149,24 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
 
+    FMOD::Studio::EventDescription *ambianceDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/Ambiances", &ambianceDescription);
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
 
 
-    // fmodResult = explosioneventInstance->start();
+    FMOD::Studio::EventInstance *ambianceeventInstance{nullptr};
+    fmodResult = ambianceDescription->createInstance(&ambianceeventInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+
+     fmodResult = ambianceeventInstance->start();
 
     //  if (fmodResult != FMOD_OK) {
     //
