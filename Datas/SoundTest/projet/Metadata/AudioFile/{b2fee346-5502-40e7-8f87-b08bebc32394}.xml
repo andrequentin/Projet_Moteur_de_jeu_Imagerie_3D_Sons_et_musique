@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{b2fee346-5502-40e7-8f87-b08bebc32394}">
+		<property name="assetPath">
+			<value>Pistes/3_PercussiveBass.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>22.285351473922901</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{89d28dcb-9e2e-44b4-a8da-1d8d56f70aa3}</destination>
+		</relationship>
+	</object>
+</objects>
