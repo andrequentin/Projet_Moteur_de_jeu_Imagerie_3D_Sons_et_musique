@@ -9,11 +9,11 @@ class Time: public Gg::Systems::System {
 
 	public:
 
-		Time(Gg::GulgEngine &gulgEngine,Gg::Entity &w,FMOD::Studio::EventInstance * s);
+		Time(Gg::GulgEngine &gulgEngine,Gg::Entity &w,FMOD::Studio::EventDescription * s);
 
 		virtual ~Time();
 		Gg::Entity &world;
-		FMOD::Studio::EventInstance *explosioneventInstance;
+		FMOD::Studio::EventDescription *explosioneventDescription;
 
 		std::vector<Gg::Entity> toDelete;
 		std::vector<Gg::Entity> toAdd;

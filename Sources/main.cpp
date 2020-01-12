@@ -127,13 +127,7 @@ int main() {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
-    FMOD::Studio::EventInstance *explosioneventInstance{nullptr};
-    fmodResult = explosioneventDescription->createInstance(&explosioneventInstance);
 
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
-    }
 
 
 
@@ -171,7 +165,7 @@ int main() {
         return -1;
     }
 
-   
+
 
     /*---------*/
     /*---------*/
@@ -290,10 +284,10 @@ int main() {
     Physics physics{engine};
     physics.addEntity(playerID);
 
-    Collisions collisions{engine,worldID,explosioneventInstance};
+    Collisions collisions{engine,worldID,explosioneventDescription};
     collisions.addEntity(playerID);
 
-    Time time{engine,worldID,explosioneventInstance};
+    Time time{engine,worldID,explosioneventDescription};
 
     Lightning lightning{engine, program};
     lightning.addEntity(light1ID);

@@ -85,13 +85,23 @@ namespace Gg {
 
              }
            }
+
+           FMOD_RESULT fmodResult;
+           FMOD::Studio::EventInstance *explosioneventInstance{nullptr};
+           fmodResult = collisions->explosioneventDescription->createInstance(&explosioneventInstance);
+
+            if (fmodResult != FMOD_OK) {
+
+               std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+           }
            FMOD_3D_ATTRIBUTES att3D{
              FMOD_VECTOR{ eT[3][0],eT[3][1],eT[3][2]},
              FMOD_VECTOR{0.f,0.f,0.f },
              FMOD_VECTOR{ 0.f,-1.f,0.f},
              FMOD_VECTOR{0.f,0.f,-1.f}};
-           collisions->explosioneventInstance->set3DAttributes(&att3D);
-           collisions->explosioneventInstance->start();
+           explosioneventInstance->set3DAttributes(&att3D);
+           explosioneventInstance->start();
+           explosioneventInstance->release();
 
          }else{
            // std::cout<<voxelToCheck.size()<<std::endl;

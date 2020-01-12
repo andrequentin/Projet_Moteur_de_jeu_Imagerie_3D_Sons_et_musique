@@ -1,7 +1,7 @@
 #include "LoadSound.hpp"
 
-bool loadSound(FMOD::Studio::System **soundSystem, 
-			   FMOD::Studio::Bank **masterBank, 
+bool loadSound(FMOD::Studio::System **soundSystem,
+			   FMOD::Studio::Bank **masterBank,
 			   FMOD::Studio::Bank **masterStringBank,
 			   FMOD::Studio::EventDescription** descriptions) {
 
@@ -34,7 +34,7 @@ bool loadSound(FMOD::Studio::System **soundSystem,
     return true;
 }
 
-FMOD::Studio::EventInstance *getSoundInstance(const std::string path, 
+FMOD::Studio::EventInstance *getSoundInstance(const std::string path,
 											  FMOD::Studio::EventDescription* descriptions,
 											  FMOD::Studio::Bank *masterBank) {
 
@@ -46,9 +46,9 @@ FMOD::Studio::EventInstance *getSoundInstance(const std::string path,
 	fmodResult = masterBank->getEventCount(&nbDescriptions);
     fmodError(fmodResult, "bank nb event description");
     if(fmodResult != FMOD_OK) { return result; }
-    
 
-    if(path.size() >= 1024) { 
+
+    if(path.size() >= 1024) {
 
     	std::cout << "Too long name for event." << std::endl;
     	return result;
@@ -60,13 +60,13 @@ FMOD::Studio::EventInstance *getSoundInstance(const std::string path,
 
     	fmodResult = descriptions[i].getPath(&eventPath[0], 1024, nullptr);
     	fmodError(fmodResult, "event path");
-    	if(fmodResult != FMOD_OK) { return result; }
-
-    	else if (strcmp(eventPath, path.c_str()) != 0) { 
-
-    		fmodResult = descriptions[i].createInstance(&result);
-    		fmodError(fmodResult, "event instance creation");
-    	}
+    	// if(fmodResult != FMOD_OK) { return result; }
+			//
+    	// else if (strcmp(eventPath, path.c_str()) != 0) {
+			//
+    	// 	fmodResult = descriptions[i].createInstance(&result);
+    	// 	fmodError(fmodResult, "event instance creation");
+    	// }
     }
 
     return result;
