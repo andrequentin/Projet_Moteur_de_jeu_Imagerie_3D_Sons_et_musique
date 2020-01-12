@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{9642c728-3fac-423e-b294-84355bf46eaa}">
+		<property name="assetPath">
+			<value>oazo/Voix_200111_6.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>8.1317687074829941</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{89d28dcb-9e2e-44b4-a8da-1d8d56f70aa3}</destination>
+		</relationship>
+	</object>
+</objects>
