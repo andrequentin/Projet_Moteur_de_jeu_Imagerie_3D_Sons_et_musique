@@ -19,6 +19,7 @@
 #include "Components/Collider.hpp"
 #include "Components/Explosive.hpp"
 #include "Components/Timer.hpp"
+#include "Components/StepSound.hpp"
 
 #include "Systems/UpdateScene.hpp"
 #include "Systems/Collisions.hpp"
@@ -139,31 +140,24 @@ int main() {
         return -1;
     }
 
+
     FMOD::Studio::EventInstance *stepeventInstance{nullptr};
     fmodResult = stepeventDescription->createInstance(&stepeventInstance);
 
      if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
     }
 
 
-     fmodResult = stepeventInstance->setParameterByName("Matiere", 0);
-
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API parameter: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
-    }
 
     // fmodResult = explosioneventInstance->start();
 
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
-    }
+    //  if (fmodResult != FMOD_OK) {
+    //
+    //     std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
+    //     return -1;
+    // }
 
 
 
@@ -224,7 +218,8 @@ int main() {
 
     std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>
       (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
-    std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
+      std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>()};
+      std::shared_ptr<Gg::Component::StepSound> playerstepSound{std::make_shared<Gg::Component::StepSound>(stepeventInstance)};
 
 
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
@@ -237,6 +232,7 @@ int main() {
 
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
+    engine.addComponentToEntity(playerID, "StepSound", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerstepSound));
 
     // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
     // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
@@ -284,7 +280,7 @@ int main() {
     Physics physics{engine};
     physics.addEntity(playerID);
 
-    Collisions collisions{engine,worldID,explosioneventDescription};
+    Collisions collisions{engine,worldID,explosioneventDescription,stepeventDescription};
     collisions.addEntity(playerID);
 
     Time time{engine,worldID,explosioneventDescription};
@@ -345,23 +341,6 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
-        // if(glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 3); }
-        // if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 4); }
-        // if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 5); }
-        //
-        // if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) {
-        //
-        //     float currentVolume{0.f};
-        //     eventInstance->getVolume(&currentVolume);
-        //     eventInstance->setVolume(currentVolume*1.25f);
-        // }
-        //
-        // if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS) {
-        //
-        //     float currentVolume{0.f};
-        //     eventInstance->getVolume(&currentVolume);
-        //     eventInstance->setVolume(currentVolume*0.8f);
-        // }
 
 
         gOldState = gNewState;

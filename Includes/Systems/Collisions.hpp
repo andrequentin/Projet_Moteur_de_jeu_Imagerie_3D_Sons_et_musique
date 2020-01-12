@@ -11,13 +11,14 @@ class Collisions: public Gg::Systems::System {
 
 	public:
 
-		Collisions(Gg::GulgEngine &gulgEngine,Gg::Entity &w,FMOD::Studio::EventDescription * s);
+		Collisions(Gg::GulgEngine &gulgEngine,Gg::Entity &w,FMOD::Studio::EventDescription * s,FMOD::Studio::EventDescription * ss);
 
 		virtual ~Collisions();
 
 
 		Gg::Entity &world;
 		FMOD::Studio::EventDescription *explosioneventDescription;
+		FMOD::Studio::EventDescription *stepeventDescription;
 
 		std::vector<std::pair<Gg::Entity,std::vector<int>>> entity_world_collisions;
 		std::vector<std::pair<Gg::Entity,Gg::Entity>> entity_entity_collisions;

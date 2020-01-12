@@ -9,6 +9,7 @@
 #include "Components/Forces.hpp"
 #include "Components/VoxelMap.hpp"
 #include "Components/Explosive.hpp"
+#include "Components/StepSound.hpp"
 
 
 namespace Gg {

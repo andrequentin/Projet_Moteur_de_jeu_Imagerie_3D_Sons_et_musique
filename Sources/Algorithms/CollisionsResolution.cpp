@@ -121,7 +121,7 @@ namespace Gg {
            };
 
            glm::vec3 collisional_response{0.f,0.f,0.f};
-
+           glm::vec3 vcolor{0.f,0.f,0.f};
            for(unsigned int j{0};j<voxelToCheck.size();j++){
               glm::vec3 posV = vM->getVoxelPosition(voxelToCheck[j]);
               glm::vec3 brV = -1.f *  (posV+0.5f);
@@ -155,14 +155,44 @@ namespace Gg {
                     }
                   }
                 }
-
-
+                if(df[2]==-1.f){
+                  vcolor = vM->getColor(voxelToCheck[j]);
+                }
               }
               if(voxelToCheck.size()>0 && glm::length(collisional_response)==0.f){
                 collisional_response[2] = (eForces->velocity[2]+eForces->forces[2]);
               }
-            eForces->addForce(-collisional_response );
-            eForces->velocity/=1.1f;
+              glm::vec soundTest {eForces->velocity+eForces->forces}; soundTest[2]=0.f;
+              if(collisional_response[2] != 0
+                && glm::length(soundTest) > 0.1f
+                && m_gulgEngine.entityHasComponent(currentEntity.first,"StepSound")
+              ){
+                std::shared_ptr<Gg::Component::StepSound> sS {
+                  std::static_pointer_cast<Gg::Component::StepSound>(m_gulgEngine.getComponent(currentEntity.first, "StepSound"))
+                };
+                FMOD_RESULT fmodResult;
+
+                if(vcolor[0]<0.4f){
+                  fmodResult = sS->stepeventInstance->setParameterByName("Matiere", 0);
+                }else{
+                  fmodResult = sS->stepeventInstance->setParameterByName("Matiere", 1);
+                }
+                if (fmodResult != FMOD_OK) {
+                   std::cout << "Error " << fmodResult << " with FMOD studio API parameter: " << FMOD_ErrorString(fmodResult) << std::endl;
+               }
+                FMOD_3D_ATTRIBUTES att3D{
+                  FMOD_VECTOR{ eT[3][0],eT[3][1],eT[3][2]},
+                  FMOD_VECTOR{0.f,0.f,0.f },
+                  FMOD_VECTOR{ 0.f,-1.f,0.f},
+                  FMOD_VECTOR{0.f,0.f,-1.f}};
+                sS->stepeventInstance->set3DAttributes(&att3D);
+                FMOD_STUDIO_PLAYBACK_STATE s;
+                sS->stepeventInstance->getPlaybackState(&s);
+                if(s != FMOD_STUDIO_PLAYBACK_PLAYING )sS->stepeventInstance->start();
+
+              }
+              eForces->addForce(-collisional_response );
+              eForces->velocity/=1.1f;
 
           }
       }
