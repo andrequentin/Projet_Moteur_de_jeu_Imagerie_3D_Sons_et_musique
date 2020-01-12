@@ -30,25 +30,7 @@
 #include "LoadAnimation.hpp"
 #include "NewMap.hpp"
 
-glm::vec3  QuaternionToEuler(glm::quat quaternion)
-{
-    double w,x,y,z;
-    double pi{3.14159265358979323846};
-    w = quaternion[0];
-    x = quaternion[1];
-    y = quaternion[2];
-    z = quaternion[3];
 
-    double sqw = w*w;
-    double sqx = x*x;
-    double sqy = y*y;
-    double sqz = z*z;
-
-    double ez =  (std::atan2(2.0 * (x*y + z*w),(sqx - sqy - sqz + sqw)) * (180.0f/pi));
-    double ey =  (std::atan2(2.0 * (y*z + x*w),(-sqx - sqy + sqz + sqw)) * (180.0f/pi));
-    double ex = (std::asin(-2.0 * (x*z - y*w)) * (180.0f/pi));
-    return glm::vec3{ex,ey,ez};
-}
 bool initOpenGL(GLFWwindow **window) {
 
     glfwInit();
@@ -100,6 +82,10 @@ int main() {
         return -1;
     }
 
+    /*---------*/
+    //LOADING SOUNDS
+    /*---------*/
+
     FMOD_RESULT fmodResult;
     FMOD::Studio::System* soundSystem{nullptr};
 
@@ -119,32 +105,47 @@ int main() {
     }
 
     FMOD::Studio::Bank* masterBank{nullptr};
-    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/JojoProjet/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank);
+
+
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/projet/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank);
     if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
     }
-
     FMOD::Studio::Bank* masterStringBank{nullptr};
-    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/JojoProjet/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterStringBank);
+
+    fmodResult = soundSystem->loadBankFile("Datas/SoundTest/projet/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterStringBank);
     if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API bank load: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
+    }
+    FMOD::Studio::EventDescription *explosioneventDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/grenade", &explosioneventDescription);
+
+    if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+    FMOD::Studio::EventInstance *explosioneventInstance{nullptr};
+    fmodResult = explosioneventDescription->createInstance(&explosioneventInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
 
-    FMOD::Studio::EventDescription *eventDescription{nullptr};
-    int nbEvent{0};
-    fmodResult = soundSystem->getEvent("event:/JoJoMusic", &eventDescription);
+
+
+    FMOD::Studio::EventDescription *stepeventDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/pas", &stepeventDescription);
     if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
         return -1;
     }
 
-    FMOD::Studio::EventInstance *eventInstance{nullptr};
-    fmodResult = eventDescription->createInstance(&eventInstance);
+    FMOD::Studio::EventInstance *stepeventInstance{nullptr};
+    fmodResult = stepeventDescription->createInstance(&stepeventInstance);
 
      if (fmodResult != FMOD_OK) {
 
@@ -153,7 +154,7 @@ int main() {
     }
 
 
-    fmodResult = eventInstance->setParameterByName("JojoSelection", 5);
+     fmodResult = stepeventInstance->setParameterByName("Matiere", 0);
 
      if (fmodResult != FMOD_OK) {
 
@@ -161,7 +162,7 @@ int main() {
         return -1;
     }
 
-    fmodResult = eventInstance->start();
+    // fmodResult = explosioneventInstance->start();
 
      if (fmodResult != FMOD_OK) {
 
@@ -170,33 +171,12 @@ int main() {
     }
 
 
-    /*FMOD::Studio::EventDescription *eventDescription{nullptr};
-    int nbEvent{0};
-    fmodResult = masterBank->getEventList(&eventDescription, 10, &nbEvent);
-    if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
-    }
-
-    for(unsigned int i{0}; i < nbEvent; i++) {
-
-        char path[100];
-        eventDescription[i].getPath(path, 100, nullptr);
-        std::cout << "Event: " << path << std::endl;
-    }*/
-
-    /*FMOD::Studio::EventDescription* eventDescription = NULL;
-    ERRCHECK( soundSystem->getEvent("event:/Vehicles/Ride-on Mower", &eventDescription) );
-
-    FMOD::Studio::EventInstance* eventInstance = NULL;
-    ERRCHECK( eventDescription->createInstance(&eventInstance) );
-
-    ERRCHECK( eventInstance->setParameterByName("RPM", 650.0f) );
-    ERRCHECK( eventInstance->start() );*/
+    /*---------*/
+    /*---------*/
 
 
 
+    // LOAD ENGINE
     Gg::GulgEngine engine;
 
     if(!engine.loadSignatures("Datas/Signatures")) {
@@ -207,6 +187,8 @@ int main() {
 
 
     bool haveToStop{false};
+    /* ----- */
+    // LOAD SHADERS
 
     if(!engine.loadProgram("Datas/Shaders/voxelVertex.vert", "Datas/Shaders/voxelFragment.frag", "MainProgram")) {
 
@@ -228,7 +210,7 @@ int main() {
 
     GLuint program{engine.getProgram("MainProgram")};
 
-
+    //INITIALISING PLAYER WORLD AND CAMERA //
     Gg::Entity gameID{engine.getNewEntity()},
                worldID{engine.getNewEntity()},
                cameraID{engine.getNewEntity()},
@@ -264,22 +246,16 @@ int main() {
     // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
     // playerTransformation->scale(2);
 
-    // std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    //Cube(playerMesh);
-     //    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
-    //loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
-
-    // loadAnimation(engine, playerID, "Datas/Animated/rb.dae");
-    // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
-    // playerTransformation->scale(2);
 
      std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
     Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
          engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
-    // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
 
-    //Directional
 
+    gameScene->addChild(worldID);
+    gameScene->addChild(playerID);
+    playerScene->addChild(cameraID);
+    //INITIALISING LIGHTS
     Gg::Entity light1ID{engine.getNewEntity()};
 
     std::shared_ptr<Gg::Component::SceneObject> light1Scene{std::make_shared<Gg::Component::SceneObject>()};
@@ -297,42 +273,10 @@ int main() {
     light1Light->m_direction = glm::vec3{0.f, 0.f, -1.f};
     light1Light->m_lightType = Gg::Component::LightType::Directional;
 
-    //Point
-
-    /*Gg::Entity light2ID{engine.getNewEntity()};
-
-    std::shared_ptr<Gg::Component::SceneObject> light2Scene{std::make_shared<Gg::Component::SceneObject>()};
-    std::shared_ptr<Gg::Component::Transformation> light2Transformation{std::make_shared<Gg::Component::Transformation>()};
-    std::shared_ptr<Gg::Component::Light> light2Light{std::make_shared<Gg::Component::Light>()};
-
-    engine.addComponentToEntity(light2ID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Scene));
-    engine.addComponentToEntity(light2ID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Transformation));
-    engine.addComponentToEntity(light2ID, "Light", std::static_pointer_cast<Gg::Component::AbstractComponent>(light2Light));
-
-    light2Light->m_ambient = glm::vec3{0.0f, 0.0f, 0.0f};
-    light2Light->m_diffuse = glm::vec3{0.85f, 0.15f, 0.17f};
-    light2Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
-
-    light2Light->m_constant = 1.f;
-    light2Light->m_linear = 0.027f;
-    light2Light->m_quadratic = 0.0028f;
-
-    light2Transformation->translate(glm::vec3{100.f, 300.f, -100.f});
-
-    light2Light->m_lightType = Gg::Component::LightType::Point;*/
-
-
-
-
-    gameScene->addChild(worldID);
-    gameScene->addChild(playerID);
-    playerScene->addChild(cameraID);
-
-
     gameScene->addChild(light1ID);
     //gameScene->addChild(light2ID);
 
-
+    //INITIALISING SYSTEMS
     UpdateScene sceneUpdate{engine};
     sceneUpdate.addEntity(gameID);
 
@@ -344,10 +288,10 @@ int main() {
     Physics physics{engine};
     physics.addEntity(playerID);
 
-    Collisions collisions{engine,worldID};
+    Collisions collisions{engine,worldID,explosioneventInstance};
     collisions.addEntity(playerID);
 
-    Time time{engine,worldID};
+    Time time{engine,worldID,explosioneventInstance};
 
     Lightning lightning{engine, program};
     lightning.addEntity(light1ID);
@@ -360,7 +304,10 @@ int main() {
 
     sceneDraw.setProjection(projection);
 
+
+    // PARAMETERS (KEYS ,ACCELERATION,CURSOR MODE)
     float P_acc = 0.1f;
+
     int gOldState = GLFW_RELEASE;
     int gNewState = GLFW_RELEASE;
     int rOldState = GLFW_RELEASE;
@@ -370,8 +317,7 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-    eventInstance->setVolume(0.f);
-
+     // explosioneventInstance->setVolume(1.f);
     while (!haveToStop) {
         //Event
         oxpos = xpos;
@@ -393,7 +339,6 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{1.f, 0.f, 0.f});  }
         if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 0.f, 1.f});  }
         if(glfwGetKey(window, GLFW_KEY_E ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(1.f), glm::vec3{0.f, 0.f, 1.f});}
-        // std::cout<<to_string(QuaternionToEuler(cameraTransformation->m_rotation))<<std::endl;
 
         if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f,  0.f,-(2.f*P_acc)} ); }
         if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { playerForces->addForce(glm::vec3{0.f, 0.f, P_acc} ); }
@@ -404,29 +349,28 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
-        if(glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 3); }
-        if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 4); }
-        if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 5); }
-
-        if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) {
-
-            float currentVolume{0.f};
-            eventInstance->getVolume(&currentVolume);
-            eventInstance->setVolume(currentVolume*1.25f);
-        }
-
-        if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS) {
-
-            float currentVolume{0.f};
-            eventInstance->getVolume(&currentVolume);
-            eventInstance->setVolume(currentVolume*0.8f);
-        }
+        // if(glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 3); }
+        // if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 4); }
+        // if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS) { eventInstance->setParameterByName("JojoSelection", 5); }
+        //
+        // if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS) {
+        //
+        //     float currentVolume{0.f};
+        //     eventInstance->getVolume(&currentVolume);
+        //     eventInstance->setVolume(currentVolume*1.25f);
+        // }
+        //
+        // if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS) {
+        //
+        //     float currentVolume{0.f};
+        //     eventInstance->getVolume(&currentVolume);
+        //     eventInstance->setVolume(currentVolume*0.8f);
+        // }
 
 
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
-
-
+        //GRENADE
         if(gOldState == GLFW_PRESS && gNewState == GLFW_RELEASE ) {
           Gg::Entity newG{engine.getNewEntity()};
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -456,11 +400,13 @@ int main() {
           collisions.addEntity(newG);
           time.addEntity(newG);
           sceneUpdate.applyAlgorithms();
+
         }
 
 
         rOldState = rNewState;
         rNewState = glfwGetKey(window, GLFW_KEY_R) ;
+        //ROCKET
         if(rOldState == GLFW_PRESS && rNewState == GLFW_RELEASE ) {
           Gg::Entity newG{engine.getNewEntity()};
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -498,6 +444,19 @@ int main() {
         time.applyAlgorithms();
         physics.applyAlgorithms();
         sceneUpdate.applyAlgorithms();
+
+        //3D LISTENER ATTRIBUTES FOR SPATIALIZED SOUNDS
+        FMOD_3D_ATTRIBUTES att3D_;
+        att3D_.position = FMOD_VECTOR{playerScene->m_globalTransformations[3][0],playerScene->m_globalTransformations[3][1],playerScene->m_globalTransformations[3][2]};//position
+        att3D_.velocity = FMOD_VECTOR{ 0.f,  0.f, 0.f };
+        glm::vec3 f {cameraTransformation->m_rotation*glm::vec3{1.f,0.f,0.f}};   f=glm::normalize(f);  f*=-1;
+        att3D_.forward = FMOD_VECTOR{ f[0],f[1],f[2]};
+        glm::vec3 u {cameraTransformation->m_rotation*glm::vec3{0.f,0.f,1.f}};  u=glm::normalize(u);
+        att3D_.up= FMOD_VECTOR{  u[0],u[1],u[2] };
+
+        soundSystem->setListenerAttributes(0,&att3D_);
+
+
         lightning.applyAlgorithms();
 
         soundSystem->update();

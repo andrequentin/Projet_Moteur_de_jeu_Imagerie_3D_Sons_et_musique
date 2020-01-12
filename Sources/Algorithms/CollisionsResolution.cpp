@@ -14,7 +14,8 @@ namespace Gg {
       m_signature += gulgEngine.getComponentSignature("Forces");
 
     }
-    CollisionsResolution::~CollisionsResolution() {}
+    CollisionsResolution::~CollisionsResolution() {
+    }
 
     glm::vec3 getClosestPoint(glm::vec3 t, glm::vec3 bbmin,glm::vec3 bbmax){
       glm::vec3 result{0.f};
@@ -84,6 +85,13 @@ namespace Gg {
 
              }
            }
+           FMOD_3D_ATTRIBUTES att3D{
+             FMOD_VECTOR{ eT[3][0],eT[3][1],eT[3][2]},
+             FMOD_VECTOR{0.f,0.f,0.f },
+             FMOD_VECTOR{ 0.f,-1.f,0.f},
+             FMOD_VECTOR{0.f,0.f,-1.f}};
+           collisions->explosioneventInstance->set3DAttributes(&att3D);
+           collisions->explosioneventInstance->start();
 
          }else{
            // std::cout<<voxelToCheck.size()<<std::endl;
@@ -137,7 +145,7 @@ namespace Gg {
                     }
                   }
                 }
-    
+
 
               }
               if(voxelToCheck.size()>0 && glm::length(collisional_response)==0.f){

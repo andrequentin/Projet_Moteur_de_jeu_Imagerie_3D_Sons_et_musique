@@ -26,6 +26,7 @@ class CollisionsResolution: public AbstractAlgorithm {
 	private:
 		Gg::Entity &world;
      Collisions* collisions;
+
 };
 
 }}

@@ -18,8 +18,8 @@ namespace Gg {
 
     void UpdateCollisions::apply() {
 
-      collisions->entity_world_collisions.clear();
-      collisions->entity_entity_collisions.clear();
+      this->collisions->entity_world_collisions.clear();
+      this->collisions->entity_entity_collisions.clear();
       //Get world Collider
       glm::mat4 wT{std::static_pointer_cast<Gg::Component::SceneObject>(m_gulgEngine.getComponent(world, "SceneObject"))->m_globalTransformations};
       std::shared_ptr<VoxelMap> vM{

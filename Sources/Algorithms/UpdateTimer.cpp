@@ -60,6 +60,13 @@ namespace Gg {
 
             }
           }
+          FMOD_3D_ATTRIBUTES att3D{
+            FMOD_VECTOR{ eT[3][0],eT[3][1],eT[3][2]},
+            FMOD_VECTOR{0.f,0.f,0.f },
+            FMOD_VECTOR{ 0.f,-1.f,0.f},
+            FMOD_VECTOR{0.f,0.f,-1.f}};
+          timeSystem->explosioneventInstance->set3DAttributes(&att3D);
+          timeSystem->explosioneventInstance->start();
         }
 
       }
