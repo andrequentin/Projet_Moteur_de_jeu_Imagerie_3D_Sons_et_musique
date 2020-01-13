@@ -356,8 +356,6 @@ int main() {
      float inten=0.f;
      musicInstance->setParameterByName("Intensity", inten);
 
-    float oldRotationY{0}, diffRotationY{0};
-
     while (!haveToStop) {
         //Event
         oxpos = xpos;
