@@ -1,5 +1,5 @@
 #include "Algorithms/UpdateCollisions.hpp"
-
+#include <glm/gtx/string_cast.hpp>
 
 namespace Gg {
 
@@ -41,33 +41,14 @@ namespace Gg {
           std::static_pointer_cast<Gg::Component::Forces>(m_gulgEngine.getComponent(currentEntity, "Forces"))
         };
         //TO DO
-        //"bounding box" du caps Collider
-        // bbmin(min((c1.x-r),(c2.x-r)),min((c1.y-r),(c2.y-r)),min((c1.z-r),(c2.z-r)))
-        // bbmax(max((c1.x+r),(c2.x+r)),max((c1.y+r),(c2.y+r)),max((c1.z+r),(c2.z+r)))
-        glm::vec3 c1{ePosition + eCollider->c1  };
-        glm::vec3 c2{ePosition + eCollider->c2  };
-        c1 *= -1;
-        c2 *= -1;
-        c1 -= (eForces->forces + eForces->velocity);
-        c2 -= (eForces->forces + eForces->velocity);
-        // c1[2] -= (eForces->forces[2] + eForces->velocity[2]);
-        // c2[2] -= (eForces->forces[2] + eForces->velocity[2]);
 
-        glm::vec3 bbmin{
-          std::min(c1[0] - eCollider->r,c2[0] - eCollider->r),
-          std::min(c1[1] - eCollider->r,c2[1] - eCollider->r),
-          std::min(c1[2] - eCollider->r,c2[2] - eCollider->r)
-        };
-        glm::vec3 bbmax{
-          std::max(c1[0] + eCollider->r,c2[0] + eCollider->r),
-          std::max(c1[1] + eCollider->r,c2[1] + eCollider->r),
-          std::max(c1[2] + eCollider->r,c2[2] + eCollider->r)
-        };
-        // bbmin+=eCollider->r/2;
-        // bbmax+=eCollider->r/2;
-         // std::cout<<to_string(ePosition)<<to_string(bbmin)<<","<<to_string(bbmax)<<std::endl;
-        //TO DO
-        //Tester pour les autres entités
+        glm::vec3 bbmin{ePosition + eCollider->bbmax  };
+        glm::vec3 bbmax{ ePosition + eCollider->bbmin };
+        bbmin *= -1;
+        bbmax *= -1;
+        bbmin -= (eForces->forces + eForces->velocity);
+        bbmax -= (eForces->forces + eForces->velocity);
+
 
         //tester avec le world
         //récupérer voxel voisins (bbmin -> bbmax)
@@ -101,21 +82,11 @@ namespace Gg {
               std::static_pointer_cast<Gg::Component::Collider>(m_gulgEngine.getComponent(currentEntity2, "Collider"))
             };
             ePosition2 -= 0.5f;
-            glm::vec3 c12{ePosition2 + eCollider2->c1  };
-            glm::vec3 c22{ePosition2 + eCollider2->c2  };
-            c12 *= -1;
-            c22 *= -1;
+            glm::vec3 bbmin2{ePosition2 + eCollider2->bbmax };
+            glm::vec3 bbmax2{ePosition2 + eCollider2->bbmin   };
+            bbmin2 *= -1;
+            bbmax2 *= -1;
 
-            glm::vec3 bbmin2{
-              std::min(c12[0] - eCollider2->r,c22[0] - eCollider2->r),
-              std::min(c12[1] - eCollider2->r,c22[1] - eCollider2->r),
-              std::min(c12[2] - eCollider2->r,c22[2] - eCollider2->r)
-            };
-            glm::vec3 bbmax2{
-              std::max(c12[0] + eCollider2->r,c22[0] + eCollider2->r),
-              std::max(c12[1] + eCollider2->r,c22[1] + eCollider2->r),
-              std::max(c12[2] + eCollider2->r,c22[2] + eCollider2->r)
-            };
 
 
             if( (bbmin.x <= bbmax2.x && bbmax.x >= bbmin2.x) &&
