@@ -257,7 +257,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> meshTransformation{std::make_shared<Gg::Component::Transformation>()};
 
-    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
+    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>(glm::vec3{-0.5f,-0.75f,-1.5f},glm::vec3{2.5f,0.75f,5.5f})};
       std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.1f,1.f,0.3f) };
       std::shared_ptr<Gg::Component::StepSound> playerstepSound{std::make_shared<Gg::Component::StepSound>(stepeventInstance)};
 
