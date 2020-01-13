@@ -357,6 +357,8 @@ int main() {
      float inten=0.f;
      musicInstance->setParameterByName("Intensity", inten);
 
+    float oldRotationY{0}, diffRotationY{0};
+
     while (!haveToStop) {
         //Event
         oxpos = xpos;
@@ -370,6 +372,9 @@ int main() {
         if(oxpos != xpos || oypos != ypos){
           cameraTransformation->rotate(glm::radians(ypos-oypos)*sensi,  glm::vec3{1.f,0.f,0.f});
           cameraTransformation->rotate(glm::radians(xpos-oxpos)*sensi, glm::vec3{0.f,0.f,1.f}*glm::conjugate(cameraTransformation->m_rotation));
+          diffRotationY = (glm::eulerAngles(cameraTransformation->m_rotation)[1] - oldRotationY);
+          oldRotationY = glm::eulerAngles(cameraTransformation->m_rotation)[1];
+          meshTransformation->rotate(diffRotationY, glm::vec3{0.f, 1.f, 0.f});
         }
 
         if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS) { cameraTransformation->rotate(glm::radians(-1.f), glm::vec3{0.f, 1.f, 0.f});   }
