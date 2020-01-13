@@ -44,7 +44,7 @@ bool initOpenGL(GLFWwindow **window) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
         // Open a window and create its OpenGL context
-    *window = glfwCreateWindow( 800, 600, "C'est le projet de votre année", NULL, NULL);
+    *window = glfwCreateWindow( 1200, 800, "C'est le projet de votre année", NULL, NULL);
 
     if(*window == nullptr){
 
@@ -173,7 +173,30 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
         return -1;
     }
+    FMOD::Studio::EventDescription *MusicDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/MusicLoop", &MusicDescription);
+    if (fmodResult != FMOD_OK) {
 
+        std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
+
+
+    FMOD::Studio::EventInstance *musicInstance{nullptr};
+    fmodResult = MusicDescription->createInstance(&musicInstance);
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+    }
+
+     fmodResult = musicInstance->start();
+
+     if (fmodResult != FMOD_OK) {
+
+        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
+        return -1;
+    }
 
 
     /*---------*/
@@ -304,7 +327,7 @@ int main() {
     lightning.addEntity(light1ID);
     //lightning.addEntity(light2ID);
 
-    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
+    glm::mat4 projection{glm::perspective(glm::radians(45.0f), 1200.f / 800.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
     cameraTransformation->translate(glm::vec3{0.f, 0.f, -40.f});
      playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
@@ -324,7 +347,10 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-     // explosioneventInstance->setVolume(1.f);
+     ambianceeventInstance->setVolume(1.f);
+     float inten=0.f;
+     musicInstance->setParameterByName("Intensity", inten);
+
     while (!haveToStop) {
         //Event
         oxpos = xpos;
@@ -356,7 +382,16 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
-
+        if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
+          if(inten<100.f)inten++;
+          std::cout<<"intensity : "<<inten<<std::endl;
+          musicInstance->setParameterByName("Intensity", inten);
+        }
+        if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+          if(inten>0.f)inten--;
+          std::cout<<"intensity : "<<inten<<std::endl;
+          musicInstance->setParameterByName("Intensity", inten);
+        }
 
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
