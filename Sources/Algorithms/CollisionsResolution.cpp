@@ -67,8 +67,7 @@ namespace Gg {
                Gg::Entity newG{m_gulgEngine.getNewEntity()};
                std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
                std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
-               std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>
-                 (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
+               std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>()};
                std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.1f,1.f,2.f)};
                std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(m_gulgEngine.getProgram("MainProgram"))};
                Cube(newGMesh,0.5f,vM->getColor(vv[j]));
@@ -106,20 +105,12 @@ namespace Gg {
 
          }else{
            // std::cout<<voxelToCheck.size()<<std::endl;
-           glm::vec3 c1{ePosition + eCollider->c1  };
-           glm::vec3 c2{ePosition + eCollider->c2  };
-           // c1 -= (eForces->forces + eForces->velocity);
-           // c2 -= (eForces->forces + eForces->velocity);
-           glm::vec3 bbmin{
-             std::min(c1[0] - eCollider->r,c2[0] - eCollider->r),
-             std::min(c1[1] - eCollider->r,c2[1] - eCollider->r),
-             std::min(c1[2] - eCollider->r,c2[2] - eCollider->r)
-           };
-           glm::vec3 bbmax{
-             std::max(c1[0] + eCollider->r,c2[0] + eCollider->r),
-             std::max(c1[1] + eCollider->r,c2[1] + eCollider->r),
-             std::max(c1[2] + eCollider->r,c2[2] + eCollider->r)
-           };
+           glm::vec3 bbmin{  ePosition + eCollider->bbmin};
+           glm::vec3 bbmax{ePosition + eCollider->bbmax  };
+    
+           bbmin -= (eForces->forces + eForces->velocity);
+           bbmax -= (eForces->forces + eForces->velocity);
+           // std::cout<<to_string(bbmin)<<std::endl<<to_string(bbmax)<<std::endl;
 
            glm::vec3 collisional_response{0.f,0.f,0.f};
            glm::vec3 vcolor{0.f,0.f,0.f};

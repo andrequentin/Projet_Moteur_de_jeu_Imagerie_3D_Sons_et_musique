@@ -257,8 +257,7 @@ int main() {
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> meshTransformation{std::make_shared<Gg::Component::Transformation>()};
 
-    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>
-      (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
+    std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
       std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.1f,1.f,0.3f) };
       std::shared_ptr<Gg::Component::StepSound> playerstepSound{std::make_shared<Gg::Component::StepSound>(stepeventInstance)};
 
@@ -283,9 +282,9 @@ int main() {
     meshTransformation->scale(4);
 
 
-    //std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    //Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
-    //engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
+    Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
+    engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
 
 
     gameScene->addChild(worldID);
@@ -353,7 +352,7 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-     ambianceeventInstance->setVolume(1.f);
+     ambianceeventInstance->setVolume(0.1f);
      float inten=0.f;
      musicInstance->setParameterByName("Intensity", inten);
 
@@ -364,6 +363,7 @@ int main() {
         oxpos = xpos;
         oypos = ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
+
 
 
         glfwPollEvents();
@@ -399,9 +399,11 @@ int main() {
           musicInstance->setParameterByName("Intensity", inten);
         }
         if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-          if(inten>0.f)inten--;
-          std::cout<<"intensity : "<<inten<<std::endl;
-          musicInstance->setParameterByName("Intensity", inten);
+          std::cout<<to_string(playerTransformation->m_rotation)<<std::endl
+          <<to_string(playerTransformation->m_translation)<<std::endl
+          <<to_string(playerTransformation->m_scale)<<std::endl
+          <<to_string(playerTransformation->m_specificTransformation)<<std::endl
+          <<to_string(playerTransformation->getTransformationMatrix())<<std::endl ;
         }
 
         gOldState = gNewState;
@@ -411,8 +413,7 @@ int main() {
           Gg::Entity newG{engine.getNewEntity()};
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
           std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
-          std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>
-            (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
+          std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>()};
           std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>()};
           std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
           Cube(newGMesh,0.5f,glm::vec3{1.f,0.f,0.f});
@@ -447,8 +448,7 @@ int main() {
           Gg::Entity newG{engine.getNewEntity()};
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
           std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
-          std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>
-            (glm::vec3{0.f,0.f,0.f},glm::vec3{0.f,0.f,0.f},0.5f)};
+          std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>()};
           std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.f,1.f,2.f)};
           std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
           Cube(newGMesh,0.5f,glm::vec3{1.f,0.f,0.f});

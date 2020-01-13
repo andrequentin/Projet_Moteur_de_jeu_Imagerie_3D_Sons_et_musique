@@ -14,7 +14,7 @@ namespace Gg {
 
       Collider();
 
-      Collider(const glm::vec3 c1,const glm::vec3 c2, const float r);
+      Collider(const glm::vec3 bmi,const glm::vec3 bma);
 
       Collider(const Collider &col);
 
@@ -24,8 +24,7 @@ namespace Gg {
       }
 
 
-      glm::vec3 c1,c2;
-      float r;
+      glm::vec3 bbmin,bbmax;
     };
   }
 }
