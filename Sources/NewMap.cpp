@@ -126,6 +126,8 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 		 t[x].push_back((worldDimension[0]*worldDimension[1]*0.997f)<(engin()%(worldDimension[0]*worldDimension[1])));
 	 }
 	}
+  
+
 
 	if(worldDimension[0] % interpolationFrequency != 0 || worldDimension[1] % interpolationFrequency != 0){
 	throw std::runtime_error("Error : worldDimension[0] and worldDimension[1] must be multiples of interpolationFrequency");
