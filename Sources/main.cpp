@@ -447,15 +447,15 @@ int main() {
           std::shared_ptr<Gg::Component::SceneObject> newGScene{std::make_shared<Gg::Component::SceneObject>()};
           std::shared_ptr<Gg::Component::Transformation> newGTransformation{std::make_shared<Gg::Component::Transformation>()};
           std::shared_ptr<Gg::Component::Collider> newGCollider{std::make_shared<Gg::Component::Collider>()};
-          std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.f,1.f,2.f)};
+          std::shared_ptr<Gg::Component::Forces> newGForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.f,1.f,8.f)};
           std::shared_ptr<Gg::Component::Mesh> newGMesh{std::make_shared<Gg::Component::Mesh>(program)};
           Cube(newGMesh,0.5f,glm::vec3{1.f,0.f,0.f});
-          std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>(5,ON_COLLISION)};
+          std::shared_ptr<Gg::Component::Explosive> newGExp{std::make_shared<Gg::Component::Explosive>(7,ON_COLLISION)};
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
           glm::vec3 f {(glm::vec3{0.f, 0.f, 1.f} * cameraTransformation->m_rotation)};
 
-          newGForces->addForce(playerForces->velocity + f*8.f);
+          newGForces->addForce(playerForces->velocity + f*4.f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
           engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
@@ -526,6 +526,7 @@ int main() {
           physics.addEntity(toD);
           sceneUpdate.addEntity(toD);
           sceneDraw.addEntity(toD);
+          time.addEntity(toD);
           gameScene->addChild(toD);
         }
 
@@ -543,6 +544,7 @@ int main() {
           physics.addEntity(toD);
           sceneUpdate.addEntity(toD);
           sceneDraw.addEntity(toD);
+          time.addEntity(toD);
           gameScene->addChild(toD);
         }
         if(collisions.toAdd.size()>0 || time.toAdd.size()>0)sceneUpdate.applyAlgorithms();

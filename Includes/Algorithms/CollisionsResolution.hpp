@@ -10,6 +10,7 @@
 #include "Components/VoxelMap.hpp"
 #include "Components/Explosive.hpp"
 #include "Components/StepSound.hpp"
+#include "Components/Timer.hpp"
 
 
 namespace Gg {
