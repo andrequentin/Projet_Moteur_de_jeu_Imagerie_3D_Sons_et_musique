@@ -167,7 +167,8 @@ bool loadWeights(std::shared_ptr<Gg::Component::AnimatedMesh> mesh,
 	int currentOffset{0};
 	unsigned int currentNbBones{0}, vertexNbBones{0};
 
-
+	mesh->m_vertexBones.resize(mesh->m_vertexPosition.size());
+	mesh->m_vertexWeight.resize(mesh->m_vertexPosition.size());
 	for(unsigned int currentVertex{0}; currentVertex < nbBones.size(); currentVertex++) {
 
 		vertexNbBones = nbBones[currentVertex];

@@ -249,14 +249,15 @@ int main() {
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
     engine.addComponentToEntity(playerID, "StepSound", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerstepSound));
 
-    // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
-    // playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f});
-    // playerTransformation->scale(2);
+    loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
+    playerTransformation->rotate(glm::radians(180.f), glm::vec3{0.f, 0.f, 1.f});
+    playerTransformation->rotate(glm::radians(-90.f), glm::vec3{1.f, 0.f, 0.f});
+    playerTransformation->scale(4);
 
 
-     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
-    Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
-         engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
+    //std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
+    //Cube(playerMesh,0.5f,glm::vec3{0.f,0.3f,1.0f});
+    //engine.addComponentToEntity(playerID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerMesh));
 
 
     gameScene->addChild(worldID);
@@ -307,7 +308,7 @@ int main() {
     glm::mat4 projection{glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 2000.f)};
     //cameraTransformation->setSpecificTransformation(glm::lookAt(glm::vec3{0.f, 0.f, 10.f}, glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 1.f, 0.f}));
     cameraTransformation->translate(glm::vec3{0.f, 0.f, -40.f});
-     playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
+    //playerTransformation->translate(glm::vec3{0.f, 0.f, -20.f} * cameraTransformation->m_rotation);
 
     sceneDraw.setProjection(projection);
 
