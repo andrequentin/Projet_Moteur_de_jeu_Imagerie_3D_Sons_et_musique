@@ -242,17 +242,20 @@ int main() {
     Gg::Entity gameID{engine.getNewEntity()},
                worldID{engine.getNewEntity()},
                cameraID{engine.getNewEntity()},
-               playerID{engine.getNewEntity()};
+               playerID{engine.getNewEntity()},
+               meshID{engine.getNewEntity()};
 
     newMap(engine,worldID,program);
 
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> playerScene{std::make_shared<Gg::Component::SceneObject>()};
+    std::shared_ptr<Gg::Component::SceneObject> meshScene{std::make_shared<Gg::Component::SceneObject>()};
 
     std::shared_ptr<Gg::Component::Transformation> gameTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> cameraTransformation{std::make_shared<Gg::Component::Transformation>()};
     std::shared_ptr<Gg::Component::Transformation> playerTransformation{std::make_shared<Gg::Component::Transformation>()};
+    std::shared_ptr<Gg::Component::Transformation> meshTransformation{std::make_shared<Gg::Component::Transformation>()};
 
     std::shared_ptr<Gg::Component::Collider> playerCollider{std::make_shared<Gg::Component::Collider>()};
       std::shared_ptr<Gg::Component::Forces> playerForces{std::make_shared<Gg::Component::Forces>(glm::vec3{0.f},0.1f,1.f,0.3f) };
@@ -262,19 +265,21 @@ int main() {
     engine.addComponentToEntity(gameID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameScene));
     engine.addComponentToEntity(cameraID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraScene));
     engine.addComponentToEntity(playerID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerScene));
+    engine.addComponentToEntity(meshID, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(meshScene));
 
     engine.addComponentToEntity(gameID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(gameTransformation));
     engine.addComponentToEntity(cameraID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(cameraTransformation));
     engine.addComponentToEntity(playerID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerTransformation));
+    engine.addComponentToEntity(meshID, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(meshTransformation));
 
     engine.addComponentToEntity(playerID, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerCollider));
     engine.addComponentToEntity(playerID, "Forces", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerForces));
     engine.addComponentToEntity(playerID, "StepSound", std::static_pointer_cast<Gg::Component::AbstractComponent>(playerstepSound));
 
-    // loadAnimation(engine, playerID, "Datas/Animated/rambo.dae");
-    // playerTransformation->rotate(glm::radians(180.f), glm::vec3{0.f, 0.f, 1.f});
-    // playerTransformation->rotate(glm::radians(-90.f), glm::vec3{1.f, 0.f, 0.f});
-    // playerTransformation->scale(1);
+    loadAnimation(engine, meshID, "Datas/Animated/rambo.dae");
+    meshTransformation->rotate(glm::radians(180.f), glm::vec3{0.f, 0.f, 1.f});
+    meshTransformation->rotate(glm::radians(-90.f), glm::vec3{1.f, 0.f, 0.f});
+    meshTransformation->scale(4);
 
 
     std::shared_ptr<Gg::Component::Mesh> playerMesh{std::make_shared<Gg::Component::Mesh>(program)};
@@ -285,6 +290,7 @@ int main() {
     gameScene->addChild(worldID);
     gameScene->addChild(playerID);
     playerScene->addChild(cameraID);
+    playerScene->addChild(meshID);
     //INITIALISING LIGHTS
     Gg::Entity light1ID{engine.getNewEntity()};
 
@@ -304,7 +310,6 @@ int main() {
     light1Light->m_lightType = Gg::Component::LightType::Directional;
 
     gameScene->addChild(light1ID);
-    //gameScene->addChild(light2ID);
 
     //INITIALISING SYSTEMS
     UpdateScene sceneUpdate{engine};
@@ -312,7 +317,7 @@ int main() {
 
     DrawScene sceneDraw{engine};
     sceneDraw.addEntity(worldID);
-    sceneDraw.addEntity(playerID);
+    sceneDraw.addEntity(meshID);
     sceneDraw.setCameraEntity(cameraID);
 
     Physics physics{engine};
