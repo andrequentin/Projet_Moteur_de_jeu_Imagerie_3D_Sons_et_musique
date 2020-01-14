@@ -406,7 +406,17 @@ int main() {
             light1Light->m_diffuse = glm::vec3{0.2f, 0.2f, 0.5f};
             light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
 
-            light1Light->m_direction = glm::vec3{0.f, -0.3f, -1.f};
+            light1Light->m_direction = glm::vec3{0.5f, -0.3f, -1.f};
+            light1Light->m_lightType = Gg::Component::LightType::Directional;
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+
+            light1Light->m_ambient = glm::vec3{0.4f, 0.3f, 0.1f};
+            light1Light->m_diffuse = glm::vec3{0.8f, 0.7f, 0.3f};
+            light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
+
+            light1Light->m_direction = glm::vec3{-1.f, 0.f, -0.3f};
             light1Light->m_lightType = Gg::Component::LightType::Directional;
         }
 
