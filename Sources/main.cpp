@@ -389,6 +389,27 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
+        if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) { 
+
+            light1Light->m_ambient = glm::vec3{0.75f, 0.75f, 0.75f};
+            light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
+            light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
+
+            light1Light->m_direction = glm::vec3{0.f, 0.f, -1.f};
+            light1Light->m_lightType = Gg::Component::LightType::Directional;
+
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+
+            light1Light->m_ambient = glm::vec3{0.025f, 0.025f, 0.3f};
+            light1Light->m_diffuse = glm::vec3{0.2f, 0.2f, 0.5f};
+            light1Light->m_specular = glm::vec3{1.f, 1.f, 1.f};
+
+            light1Light->m_direction = glm::vec3{0.f, -0.3f, -1.f};
+            light1Light->m_lightType = Gg::Component::LightType::Directional;
+        }
+
         inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/6.f;
         musicInstance->setParameterByName("Intensity", inten);
 
