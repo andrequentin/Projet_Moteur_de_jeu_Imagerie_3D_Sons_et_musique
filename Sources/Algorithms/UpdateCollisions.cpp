@@ -9,6 +9,7 @@ namespace Gg {
     	AbstractAlgorithm{gulgEngine},world{w},collisions{c} {
 
     	m_signature = gulgEngine.getComponentSignature("SceneObject");
+      m_signature += gulgEngine.getComponentSignature("Transformations");
       m_signature += gulgEngine.getComponentSignature("Collider");
       m_signature += gulgEngine.getComponentSignature("Forces");
 

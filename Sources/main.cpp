@@ -44,7 +44,7 @@ bool initOpenGL(GLFWwindow **window) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
         // Open a window and create its OpenGL context
-    *window = glfwCreateWindow( 1200, 800, "C'est le projet de votre année", NULL, NULL);
+    *window = glfwCreateWindow( 1200, 800, "Broxel", NULL, NULL);
 
     if(*window == nullptr){
 
@@ -353,7 +353,7 @@ int main() {
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
      ambianceeventInstance->setVolume(0.1f);
-     float inten=0.f;
+     float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
      musicInstance->setParameterByName("Intensity", inten);
 
     while (!haveToStop) {
@@ -389,18 +389,19 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
+        inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/6.f;
+        musicInstance->setParameterByName("Intensity", inten);
+
         if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
-          if(inten<100.f)inten++;
           std::cout<<"intensity : "<<inten<<std::endl;
-          musicInstance->setParameterByName("Intensity", inten);
         }
-        if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-          std::cout<<to_string(playerTransformation->m_rotation)<<std::endl
-          <<to_string(playerTransformation->m_translation)<<std::endl
-          <<to_string(playerTransformation->m_scale)<<std::endl
-          <<to_string(playerTransformation->m_specificTransformation)<<std::endl
-          <<to_string(playerTransformation->getTransformationMatrix())<<std::endl ;
-        }
+        // if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+        //   std::cout<<to_string(playerTransformation->m_rotation)<<std::endl
+        //   <<to_string(playerTransformation->m_translation)<<std::endl
+        //   <<to_string(playerTransformation->m_scale)<<std::endl
+        //   <<to_string(playerTransformation->m_specificTransformation)<<std::endl
+        //   <<to_string(playerTransformation->getTransformationMatrix())<<std::endl ;
+        // }
 
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
@@ -419,7 +420,9 @@ int main() {
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
           glm::vec3 f {(glm::vec3{0.f, 0.f, 10.f} * cameraTransformation->m_rotation)};
           f[2] += -5.f;
-          newGForces->addForce(playerForces->velocity + f);
+          f[0]+=playerForces->velocity[0];
+          f[1]+=playerForces->velocity[1];
+          newGForces->addForce( f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
           engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
