@@ -126,8 +126,8 @@
 	</object>
 	<object class="MixerBusEffectChain" id="{f59dfb9a-e01f-460b-b1aa-0e3d10e0feaf}">
 		<relationship name="effects">
-			<destination>{a27a3e10-e480-47cb-a2e3-85404b18d771}</destination>
 			<destination>{e11bd832-513e-4353-909d-5d2a0a6bfcf0}</destination>
+			<destination>{a27a3e10-e480-47cb-a2e3-85404b18d771}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{26a846c6-8d41-47dc-980e-452e5249dd28}" />
@@ -138,11 +138,14 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{9df99b78-12d7-47d3-9c3e-e5056e4f4c3a}" />
+	<object class="MixerBusFader" id="{e11bd832-513e-4353-909d-5d2a0a6bfcf0}" />
 	<object class="SpatialiserEffect" id="{a27a3e10-e480-47cb-a2e3-85404b18d771}">
+		<property name="distanceRolloffType">
+			<value>1</value>
+		</property>
 		<property name="maximumDistance">
 			<value>55</value>
 		</property>
 	</object>
-	<object class="MixerBusFader" id="{e11bd832-513e-4353-909d-5d2a0a6bfcf0}" />
 	<object class="MixerBusFader" id="{830642b1-a614-407f-b3bf-dedc2a1cfaf7}" />
 </objects>
