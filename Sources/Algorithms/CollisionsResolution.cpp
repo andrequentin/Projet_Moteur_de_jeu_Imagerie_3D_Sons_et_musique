@@ -80,7 +80,7 @@ namespace Gg {
                glm::vec3 f{vP - ePosition  };
                f=glm::normalize(f);
                if(f[2]>0.f)f[2] = -f[2];
-               newGForces->addForce(f*eP);
+               newGForces->addForce(f*(eP/2.f));
                m_gulgEngine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
                m_gulgEngine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
                m_gulgEngine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
@@ -161,7 +161,7 @@ namespace Gg {
               if(voxelToCheck.size()>0 && glm::length(collisional_response)==0.f){
                 collisional_response[2] = (eForces->velocity[2]+eForces->forces[2]);
               }
-              glm::vec soundTest {eForces->velocity+eForces->forces}; soundTest[2]=0.f;
+              glm::vec3 soundTest {eForces->velocity+eForces->forces}; soundTest[2]=0.f;
               if(collisional_response[2] != 0
                 && glm::length(soundTest) > 0.1f
                 && m_gulgEngine.entityHasComponent(currentEntity.first,"StepSound")

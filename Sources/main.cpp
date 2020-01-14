@@ -455,8 +455,9 @@ int main() {
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
           glm::vec3 f {(glm::vec3{0.f, 0.f, 1.f} * cameraTransformation->m_rotation)};
-
-          newGForces->addForce(playerForces->velocity + f*4.f);
+          f[0]+=playerForces->velocity[0];
+          f[1]+=playerForces->velocity[1];
+          newGForces->addForce( f*4.f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
           engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
