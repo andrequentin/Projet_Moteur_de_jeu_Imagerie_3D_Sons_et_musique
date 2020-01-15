@@ -158,13 +158,11 @@ int main() {
     }
 
 
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> e6763eafa20c7bfd7bbf8dcc7d73d706e51691fd
+
     FMOD::Studio::EventDescription *MusicDescription{nullptr};
     fmodResult = soundSystem->getEvent("event:/MusicLoop", &MusicDescription);
     if (fmodResult != FMOD_OK) {
@@ -237,12 +235,9 @@ int main() {
                playerID{engine.getNewEntity()},
                meshID{engine.getNewEntity()};
 
-<<<<<<< HEAD
 
-    newMap(engine,worldID,program);
-=======
-    std::vector<FMOD::Studio::EventInstance*> birds{newMap(engine,worldID,program, explosioneventDescription)};
->>>>>>> e6763eafa20c7bfd7bbf8dcc7d73d706e51691fd
+    // newMap(engine,worldID,program,birdDescription);
+    std::vector<FMOD::Studio::EventInstance*> birds{newMap(engine,worldID,program, birdDescription)};
 
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -349,8 +344,7 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-     float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
-     musicInstance->setParameterByName("Intensity", inten);
+
 
     float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
     musicInstance->setParameterByName("Intensity", inten);

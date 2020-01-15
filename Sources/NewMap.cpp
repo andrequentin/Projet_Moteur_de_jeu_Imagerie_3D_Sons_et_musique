@@ -129,7 +129,7 @@ std::vector<glm::vec3> generateWorld(VoxelMap &currentMap, const unsigned int in
 		 t[x].push_back((worldDimension[0]*worldDimension[1]*0.997f)<(engin()%(worldDimension[0]*worldDimension[1])));
 	 }
 	}
-  
+
 
 
 	if(worldDimension[0] % interpolationFrequency != 0 || worldDimension[1] % interpolationFrequency != 0){
@@ -506,14 +506,14 @@ std::vector<FMOD::Studio::EventInstance*> generateBirds(std::vector<glm::vec3> b
 
 	    result.emplace_back(birdeventInstance);
 	    FMOD_3D_ATTRIBUTES att3D{
-             FMOD_VECTOR{ birdPosition[i][0],birdPosition[i][1],birdPosition[i][2]},
+             FMOD_VECTOR{ -birdPosition[i][0],-birdPosition[i][1],-birdPosition[i][2]},
              FMOD_VECTOR{0.f,0.f,0.f },
              FMOD_VECTOR{ 0.f,-1.f,0.f},
              FMOD_VECTOR{0.f,0.f,-1.f}};
 
-        std::cout << birdPosition[i][0] << " " << birdPosition[i][1] << " " << birdPosition[i][2] << std::endl;
+        std::cout << -birdPosition[i][0] << " " <<- birdPosition[i][1] << " " << -birdPosition[i][2] << std::endl;
         birdeventInstance->set3DAttributes(&att3D);
-        birdeventInstance->setVolume(0.5f);
+        birdeventInstance->setVolume(1.f);
         birdeventInstance->start();
 	}
 	return result;
