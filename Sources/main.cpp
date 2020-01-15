@@ -143,7 +143,6 @@ int main() {
 
     FMOD::Studio::EventInstance *stepeventInstance{nullptr};
     fmodResult = stepeventDescription->createInstance(&stepeventInstance);
-
      if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
@@ -180,7 +179,7 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
 
-    //fmodResult = musicInstance->start();
+    fmodResult = musicInstance->start();
 
      if (fmodResult != FMOD_OK) {
 
@@ -348,7 +347,7 @@ int main() {
 
     float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
     musicInstance->setParameterByName("Intensity", inten);
-    musicInstance->setVolume(0.1f);
+    musicInstance->setVolume(0.2f);
     while (!haveToStop) {
         //Event
         oxpos = xpos;
@@ -415,6 +414,7 @@ int main() {
 
         inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/6.f;
         musicInstance->setParameterByName("Intensity", inten);
+        musicInstance->setVolume(0.15f + inten/400.f);
 
         if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
           std::cout<<"intensity : "<<inten<<std::endl;

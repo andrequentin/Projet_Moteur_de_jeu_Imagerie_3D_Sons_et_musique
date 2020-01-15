@@ -511,9 +511,9 @@ std::vector<FMOD::Studio::EventInstance*> generateBirds(std::vector<glm::vec3> b
              FMOD_VECTOR{ 0.f,-1.f,0.f},
              FMOD_VECTOR{0.f,0.f,-1.f}};
 
-        std::cout << -birdPosition[i][0] << " " <<- birdPosition[i][1] << " " << -birdPosition[i][2] << std::endl;
+        // std::cout << -birdPosition[i][0] << " " <<- birdPosition[i][1] << " " << -birdPosition[i][2] << std::endl;
         birdeventInstance->set3DAttributes(&att3D);
-        birdeventInstance->setVolume(1.f);
+        birdeventInstance->setVolume(2.f);
         birdeventInstance->start();
 	}
 	return result;
