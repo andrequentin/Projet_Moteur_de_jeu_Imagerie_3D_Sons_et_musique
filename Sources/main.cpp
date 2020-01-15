@@ -158,21 +158,9 @@ int main() {
     }
 
 
-    FMOD::Studio::EventInstance *ambianceeventInstance{nullptr};
-    fmodResult = ambianceDescription->createInstance(&ambianceeventInstance);
 
-     if (fmodResult != FMOD_OK) {
 
-        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
-    }
 
-     fmodResult = ambianceeventInstance->start();
-
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
-    }
     FMOD::Studio::EventDescription *MusicDescription{nullptr};
     fmodResult = soundSystem->getEvent("event:/MusicLoop", &MusicDescription);
     if (fmodResult != FMOD_OK) {
@@ -244,6 +232,7 @@ int main() {
                cameraID{engine.getNewEntity()},
                playerID{engine.getNewEntity()},
                meshID{engine.getNewEntity()};
+
 
     newMap(engine,worldID,program);
 
@@ -352,10 +341,10 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-     ambianceeventInstance->setVolume(0.1f);
-     float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
-     musicInstance->setParameterByName("Intensity", inten);
 
+    float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
+    musicInstance->setParameterByName("Intensity", inten);
+    musicInstance->setVolume(0.1f);
     while (!haveToStop) {
         //Event
         oxpos = xpos;
@@ -389,7 +378,7 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { glm::vec3 toadd{glm::vec3{P_acc,0.f, 0.f} * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {glm::vec3 toadd{glm::vec3{-P_acc,0.f, 0.f } * cameraTransformation->m_rotation};        toadd[2]=0.f;    playerForces->addForce(toadd);  }
 
-        if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) { 
+        if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
 
             light1Light->m_ambient = glm::vec3{0.75f, 0.75f, 0.75f};
             light1Light->m_diffuse = glm::vec3{1.f, 1.f, 1.f};
@@ -426,13 +415,6 @@ int main() {
         if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
           std::cout<<"intensity : "<<inten<<std::endl;
         }
-        // if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-        //   std::cout<<to_string(playerTransformation->m_rotation)<<std::endl
-        //   <<to_string(playerTransformation->m_translation)<<std::endl
-        //   <<to_string(playerTransformation->m_scale)<<std::endl
-        //   <<to_string(playerTransformation->m_specificTransformation)<<std::endl
-        //   <<to_string(playerTransformation->getTransformationMatrix())<<std::endl ;
-        // }
 
         gOldState = gNewState;
         gNewState = glfwGetKey(window, GLFW_KEY_G) ;
@@ -449,8 +431,8 @@ int main() {
           std::shared_ptr<Gg::Component::Timer> newGTimer{std::make_shared<Gg::Component::Timer>(5000)};
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
-          glm::vec3 f {(glm::vec3{0.f, 0.f, 10.f} * cameraTransformation->m_rotation)};
-          f[2] += -5.f;
+          glm::vec3 f {(glm::vec3{0.f, 0.f, 1.f} * cameraTransformation->m_rotation)};
+          f[2] += -1.f;
           f[0]+=playerForces->velocity[0];
           f[1]+=playerForces->velocity[1];
           newGForces->addForce( f);
@@ -486,9 +468,10 @@ int main() {
 
           newGTransformation->setSpecificTransformation(playerScene->m_globalTransformations);
           glm::vec3 f {(glm::vec3{0.f, 0.f, 1.f} * cameraTransformation->m_rotation)};
+          f*=4.f;
           f[0]+=playerForces->velocity[0];
           f[1]+=playerForces->velocity[1];
-          newGForces->addForce( f*4.f);
+          newGForces->addForce( f);
           engine.addComponentToEntity(newG, "SceneObject", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGScene));
           engine.addComponentToEntity(newG, "Transformations", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGTransformation));
           engine.addComponentToEntity(newG, "Collider", std::static_pointer_cast<Gg::Component::AbstractComponent>(newGCollider));
