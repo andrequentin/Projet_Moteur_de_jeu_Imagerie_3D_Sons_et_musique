@@ -839,7 +839,7 @@
 			<value>10</value>
 		</property>
 		<property name="maximum">
-			<value>20</value>
+			<value>100</value>
 		</property>
 		<relationship name="parameter">
 			<destination>{6197e42b-4f5d-4b31-96e4-7fba895af46e}</destination>
@@ -850,7 +850,7 @@
 			<value>20</value>
 		</property>
 		<property name="maximum">
-			<value>30</value>
+			<value>100</value>
 		</property>
 		<relationship name="parameter">
 			<destination>{6197e42b-4f5d-4b31-96e4-7fba895af46e}</destination>
@@ -861,7 +861,7 @@
 			<value>30</value>
 		</property>
 		<property name="maximum">
-			<value>40</value>
+			<value>100</value>
 		</property>
 		<relationship name="parameter">
 			<destination>{6197e42b-4f5d-4b31-96e4-7fba895af46e}</destination>
@@ -872,7 +872,7 @@
 			<value>40</value>
 		</property>
 		<property name="maximum">
-			<value>80</value>
+			<value>100</value>
 		</property>
 		<relationship name="parameter">
 			<destination>{6197e42b-4f5d-4b31-96e4-7fba895af46e}</destination>
@@ -883,7 +883,7 @@
 			<value>80</value>
 		</property>
 		<property name="maximum">
-			<value>95</value>
+			<value>100</value>
 		</property>
 		<relationship name="parameter">
 			<destination>{6197e42b-4f5d-4b31-96e4-7fba895af46e}</destination>
@@ -902,7 +902,7 @@
 	</object>
 	<object class="ParameterCondition" id="{fea2d85a-e721-4176-a660-a56949f6013b}">
 		<property name="minimum">
-			<value>10</value>
+			<value>0</value>
 		</property>
 		<property name="maximum">
 			<value>20</value>
@@ -913,7 +913,7 @@
 	</object>
 	<object class="ParameterCondition" id="{636bd533-5f72-4a7e-bdf5-e052b617641e}">
 		<property name="minimum">
-			<value>20</value>
+			<value>0</value>
 		</property>
 		<property name="maximum">
 			<value>30</value>
@@ -924,7 +924,7 @@
 	</object>
 	<object class="ParameterCondition" id="{29fadd7d-0315-4e65-8e81-ea364270225b}">
 		<property name="minimum">
-			<value>40</value>
+			<value>0</value>
 		</property>
 		<property name="maximum">
 			<value>80</value>
@@ -935,7 +935,7 @@
 	</object>
 	<object class="ParameterCondition" id="{ec571b14-decb-414f-89b5-f9c6fede5ed3}">
 		<property name="minimum">
-			<value>30</value>
+			<value>0</value>
 		</property>
 		<property name="maximum">
 			<value>40</value>
