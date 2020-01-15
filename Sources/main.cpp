@@ -149,30 +149,15 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
 
-    FMOD::Studio::EventDescription *ambianceDescription{nullptr};
-    fmodResult = soundSystem->getEvent("event:/Ambiances", &ambianceDescription);
+    FMOD::Studio::EventDescription *birdDescription{nullptr};
+    fmodResult = soundSystem->getEvent("event:/Ambiances", &birdDescription);
     if (fmodResult != FMOD_OK) {
 
         std::cout << "Error " << fmodResult << " with FMOD studio API bank event description: " << FMOD_ErrorString(fmodResult) << std::endl;
         return -1;
     }
+   
 
-
-    FMOD::Studio::EventInstance *ambianceeventInstance{nullptr};
-    fmodResult = ambianceDescription->createInstance(&ambianceeventInstance);
-
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
-    }
-
-     fmodResult = ambianceeventInstance->start();
-
-     if (fmodResult != FMOD_OK) {
-
-        std::cout << "Error " << fmodResult << " with FMOD studio API event start: " << FMOD_ErrorString(fmodResult) << std::endl;
-        return -1;
-    }
     FMOD::Studio::EventDescription *MusicDescription{nullptr};
     fmodResult = soundSystem->getEvent("event:/MusicLoop", &MusicDescription);
     if (fmodResult != FMOD_OK) {
@@ -190,7 +175,7 @@ int main() {
         std::cout << "Error " << fmodResult << " with FMOD studio API event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
     }
 
-     fmodResult = musicInstance->start();
+    //fmodResult = musicInstance->start();
 
      if (fmodResult != FMOD_OK) {
 
@@ -245,7 +230,7 @@ int main() {
                playerID{engine.getNewEntity()},
                meshID{engine.getNewEntity()};
 
-    newMap(engine,worldID,program);
+    std::vector<FMOD::Studio::EventInstance*> birds{newMap(engine,worldID,program, explosioneventDescription)};
 
     std::shared_ptr<Gg::Component::SceneObject> gameScene{std::make_shared<Gg::Component::SceneObject>()};
     std::shared_ptr<Gg::Component::SceneObject> cameraScene{std::make_shared<Gg::Component::SceneObject>()};
@@ -352,7 +337,6 @@ int main() {
     double oxpos, oypos,xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
     double sensi=0.1f;
-     ambianceeventInstance->setVolume(0.1f);
      float inten=(-1.f * playerTransformation->getTransformationMatrix()[3][1])/600.f;
      musicInstance->setParameterByName("Intensity", inten);
 
@@ -588,7 +572,6 @@ int main() {
 
 
     }
-    fmodResult = ambianceeventInstance->release();
 
     glfwTerminate();
 

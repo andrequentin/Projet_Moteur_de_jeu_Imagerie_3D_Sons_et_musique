@@ -108,7 +108,8 @@ void putTreeHere(unsigned int x,unsigned int y,unsigned int z,VoxelMap &currentM
 
 
 }
-void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency){
+
+std::vector<glm::vec3> generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequency){
 	// BRUIT PERLIN ALÉATOIRE
 	std::vector<std::vector<unsigned int>> bruit;
 	std::array<unsigned int, 3> worldDimension{currentMap.getWorldDimensions()};
@@ -117,8 +118,10 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 	auto const seed = std::time(nullptr);
 //	auto const seed=1575536532;
 	std::cout<<seed<<std::endl;
+
 	std::default_random_engine engin { seed };
 	std::vector<std::vector<bool> > t;
+
 	t.resize(worldDimension[0]);
 	for(unsigned  x{0};x < worldDimension[0] ;x++){
 		for(unsigned int y{0};y < worldDimension[1]; y++){
@@ -158,6 +161,9 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 	}
 	// std::cout<<"--------------"<<std::endl;
 
+	std::vector<glm::vec3> birdsPositions;
+	std::uniform_real_distribution<float> birdDistribution{0.f, 1.f};
+
 	for(unsigned int x{0};x < worldDimension[0] ;x++){
 		for(unsigned int y{0};y < worldDimension[1]; y++){
 			for(unsigned int z{0};z<worldDimension[2] && z<=bruit[x][y]  ;z++){
@@ -167,10 +173,18 @@ void generateWorld(VoxelMap &currentMap, const unsigned int interpolationFrequen
 					currentMap.setColor(currentMap.getVoxelID(x,y,z), glm::vec4{0.56f,0.24f,0.05f, 1.f});
 				}
 			}
-		 	if(t[x][y])	putTreeHere(x,y,bruit[x][y],currentMap,engin);
+		 	if(t[x][y])	 {
+
+		 		putTreeHere(x,y,bruit[x][y],currentMap,engin);
+		 		if(birdDistribution(engin) <= 0.10f) {
+
+		 			birdsPositions.emplace_back(glm::vec3{x, y, bruit[x][y] + 10});
+		 		}
+		 	}
 		}
 	}
 
+	return birdsPositions;
 }
 
 std::vector<std::pair<unsigned int, glm::vec3>> voxelsAndOrientations(const unsigned int voxelMapSize) {
@@ -444,38 +458,68 @@ void Cube(std::shared_ptr<Gg::Component::Mesh> mesh,float size,glm::vec3 color){
 	mesh->m_vertexIndice.resize(allFaces.size()*6);
 
 	glm::vec3 currentNormal;
-  for(unsigned int i{0}; i < allFaces.size(); i++) {
-    pointsToAdd = getPointsOfOrientedFace(allFaces[i].second);
-    mesh->m_vertexPosition[i*4] = size * getPositionOfPoint(pointsToAdd[0]);
-    mesh->m_vertexPosition[i*4 + 1] = size * getPositionOfPoint(pointsToAdd[1]);
-    mesh->m_vertexPosition[i*4 + 2] = size * getPositionOfPoint(pointsToAdd[2]);
-    mesh->m_vertexPosition[i*4 + 3] = size * getPositionOfPoint(pointsToAdd[3]);
-    mesh->m_vertexColor[i*4] = color;
-		mesh->m_vertexColor[i*4 + 1] = color;
-		mesh->m_vertexColor[i*4 + 2] = color;
-		mesh->m_vertexColor[i*4 + 3] = color;
-    currentNormal = glm::triangleNormal(mesh->m_vertexPosition[i*4],
-                      mesh->m_vertexPosition[i*4 + 1],
-                      mesh->m_vertexPosition[i*4 + 2]);
-    mesh->m_vertexNormal[i*4] = currentNormal;
-    mesh->m_vertexNormal[i*4 + 1] = currentNormal;
-    mesh->m_vertexNormal[i*4 + 2] = currentNormal;
-    mesh->m_vertexNormal[i*4 + 3] = currentNormal;
+	  for(unsigned int i{0}; i < allFaces.size(); i++) {
+	    pointsToAdd = getPointsOfOrientedFace(allFaces[i].second);
+	    mesh->m_vertexPosition[i*4] = size * getPositionOfPoint(pointsToAdd[0]);
+	    mesh->m_vertexPosition[i*4 + 1] = size * getPositionOfPoint(pointsToAdd[1]);
+	    mesh->m_vertexPosition[i*4 + 2] = size * getPositionOfPoint(pointsToAdd[2]);
+	    mesh->m_vertexPosition[i*4 + 3] = size * getPositionOfPoint(pointsToAdd[3]);
+	    mesh->m_vertexColor[i*4] = color;
+			mesh->m_vertexColor[i*4 + 1] = color;
+			mesh->m_vertexColor[i*4 + 2] = color;
+			mesh->m_vertexColor[i*4 + 3] = color;
+	    currentNormal = glm::triangleNormal(mesh->m_vertexPosition[i*4],
+	                      mesh->m_vertexPosition[i*4 + 1],
+	                      mesh->m_vertexPosition[i*4 + 2]);
+	    mesh->m_vertexNormal[i*4] = currentNormal;
+	    mesh->m_vertexNormal[i*4 + 1] = currentNormal;
+	    mesh->m_vertexNormal[i*4 + 2] = currentNormal;
+	    mesh->m_vertexNormal[i*4 + 3] = currentNormal;
 
-    mesh->m_vertexIndice[i*6] = i*4;
-    mesh->m_vertexIndice[i*6 + 1] = i*4 + 1;
-    mesh->m_vertexIndice[i*6 + 2] = i*4 + 2;
+	    mesh->m_vertexIndice[i*6] = i*4;
+	    mesh->m_vertexIndice[i*6 + 1] = i*4 + 1;
+	    mesh->m_vertexIndice[i*6 + 2] = i*4 + 2;
 
-    mesh->m_vertexIndice[i*6 + 3] = i*4;
-    mesh->m_vertexIndice[i*6 + 4] = i*4 + 2;
-    mesh->m_vertexIndice[i*6 + 5] = i*4 + 3;
-  }
+	    mesh->m_vertexIndice[i*6 + 3] = i*4;
+	    mesh->m_vertexIndice[i*6 + 4] = i*4 + 2;
+	    mesh->m_vertexIndice[i*6 + 5] = i*4 + 3;
+	  }
 
     mesh->reshape();
 }
 
+std::vector<FMOD::Studio::EventInstance*> generateBirds(std::vector<glm::vec3> birdPosition, FMOD::Studio::EventDescription *birdDescription) {
 
-void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
+	FMOD_RESULT fmodResult;
+
+	std::vector<FMOD::Studio::EventInstance*> result;
+	for(unsigned int i{0}; i <birdPosition.size(); i++) {
+
+		FMOD::Studio::EventInstance *birdeventInstance{nullptr};
+	    fmodResult = birdDescription->createInstance(&birdeventInstance);
+
+	    if (fmodResult != FMOD_OK) {
+
+	        std::cout << "Error " << fmodResult << " with FMOD studio API bird event creation: " << FMOD_ErrorString(fmodResult) << std::endl;
+	        return result;
+	    }
+
+	    result.emplace_back(birdeventInstance);
+	    FMOD_3D_ATTRIBUTES att3D{
+             FMOD_VECTOR{ birdPosition[i][0],birdPosition[i][1],birdPosition[i][2]},
+             FMOD_VECTOR{0.f,0.f,0.f },
+             FMOD_VECTOR{ 0.f,-1.f,0.f},
+             FMOD_VECTOR{0.f,0.f,-1.f}};
+
+        std::cout << birdPosition[i][0] << " " << birdPosition[i][1] << " " << birdPosition[i][2] << std::endl;
+        birdeventInstance->set3DAttributes(&att3D);
+        birdeventInstance->setVolume(0.5f);
+        birdeventInstance->start();
+	}
+	return result;
+}
+
+std::vector<FMOD::Studio::EventInstance*> newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program, FMOD::Studio::EventDescription *birdDescription){
 
 	std::shared_ptr<Gg::Component::SceneObject> worldScene{std::make_shared<Gg::Component::SceneObject>()};
 	std::shared_ptr<Gg::Component::Transformation> worldTransformation{std::make_shared<Gg::Component::Transformation>()};
@@ -487,9 +531,13 @@ void newMap(Gg::GulgEngine & engine, Gg::Entity &worldID, GLuint program){
 	engine.addComponentToEntity(worldID, "MainMesh", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldMesh));
 	engine.addComponentToEntity(worldID, "VoxelMap", std::static_pointer_cast<Gg::Component::AbstractComponent>(worldMap));
 
-	generateWorld(*worldMap, 4);
+	std::vector<glm::vec3> birds{generateWorld(*worldMap, 4)};
+
+	std::vector<FMOD::Studio::EventInstance*> resultBirds{generateBirds(birds, birdDescription)};
 
 	worldMapToMesh(*worldMap, *worldMesh);
 
 	worldMesh->reshape();
+
+	return resultBirds;
 }
